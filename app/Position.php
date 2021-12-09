@@ -1,0 +1,14 @@
+<?php
+
+namespace SGpayroll;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Position extends Model
+{
+    //
+    protected $table = 'positions';
+    protected $fillable = [
+        'position_type','department_code'
+    ];
+}
