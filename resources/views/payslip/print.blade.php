@@ -267,13 +267,13 @@
                     </tr>
                     <tr>
                         <td>Regular Holidays</td>
-                        @if($payslips->regular_holiday_day)
-                            <td class="pl-0">{{$payslips->regular_holiday_day}}</td>
+                        @if($payslips->regular_holiday_day || $payslips->regular_holiday_day_minimum)
+                            <td class="pl-0">{{$payslips->regular_holiday_day + $payslips->regular_holiday_day_minimum}}</td>
                         @else
                             <td class="pl-0">0.00</td>
                         @endif
-                        @if($payslips->regular_holiday_day_amount)
-                        <td class="pull-right pr-1">{{number_format($payslips->regular_holiday_day_amount,2)}}</td>
+                        @if($payslips->regular_holiday_day_amount || $payslips->regular_holiday_day_minimum_amount)
+                        <td class="pull-right pr-1">{{number_format($payslips->regular_holiday_day_amount + $payslips->regular_holiday_day_minimum_amount,2)}}</td>
                         @else
                         <td class="pull-right pr-1">0.00</td>
                         @endif
@@ -287,13 +287,13 @@
 
                     </tr>
                     <tr><td>Special Holidays</td>
-                        @if($payslips->special_holiday_day)
-                            <td class="pl-0">{{$payslips->special_holiday_day}}</td>
+                        @if($payslips->special_holiday_day || $payslips->special_holiday_day_minimum)
+                            <td class="pl-0">{{$payslips->special_holiday_day + $payslips->special_holiday_day_minimum}}</td>
                         @else
                             <td class="pl-0">0.00</td>
                         @endif
-                        @if($payslips->special_holiday_day_amount)
-                            <td class="pull-right pr-1">{{number_format($payslips->special_holiday_day_amount,2)}}</td>
+                        @if($payslips->special_holiday_day_amount || $payslips->special_holiday_day_minimum_amount)
+                            <td class="pull-right pr-1">{{number_format($payslips->special_holiday_day_amount + $payslips->special_holiday_day_minimum_amount,2)}}</td>
                         @else
                             <td class="pull-right pr-1">0.00</td>
                         @endif
