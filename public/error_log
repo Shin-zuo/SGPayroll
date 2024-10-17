@@ -1,0 +1,10 @@
+[03-Dec-2022 11:16:17 America/Chicago] PHP Fatal error:  Cannot redeclare abort() (previously declared in /home1/segovia/sdcpayroll.segoviagroup.com/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php:28) in /tmp/phpFs4ND2 on line 9
+[03-Jan-2023 06:14:26 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:14:30 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:14:44 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:15:52 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:16:30 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:16:35 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:18:49 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:23:48 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
+[03-Jan-2023 06:25:16 UTC] PHP Fatal error:  Can't use function return value in write context in /home1/segovia/sdcpayroll.segoviagroup.com/app/Http/Controllers/Payroll/PayrollController.php on line 563
