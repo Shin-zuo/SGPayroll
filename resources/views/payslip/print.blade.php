@@ -251,7 +251,7 @@
                         @endif
                     </tr>
                     <tr>
-                        <td>Night Differential</td>
+                        <td>Night Diff</td>
                         @if($payslips->night_diff)
                             <td class="pl-0">{{$payslips->night_diff}}</td>
                         @else
@@ -262,6 +262,21 @@
                         @else
                             <td class="pull-right pr-1">0.00</td>
                         @endif
+                       
+                    </tr>
+                    <tr>
+                        <td>Night Diff Restday</td>
+                        @if($payslips->night_diff_restday)
+                            <td class="pl-0">{{$payslips->night_diff_restday}}</td>
+                        @else
+                            <td class="pl-0">0.00</td>
+                        @endif
+                        @if($payslips->night_diff_restday_amount)
+                            <td class="pull-right pr-1">{{number_format($payslips->night_diff_restday_amount,2)}}</td>
+                        @else
+                            <td class="pull-right pr-1">0.00</td>
+                        @endif
+                        
                         <td class="text-muted pl-1"><small> LOANS</small></td>
                         <td class="pull-right"></td>
                     </tr>
@@ -331,23 +346,9 @@
                         @else
                         <td colspan="2" class="pull-right pr-1">0.00</td>
                         @endif
-                        <td class="pl-1">Advance</td>
-                        @if($payslips->company_loan)
-                        <td class="pull-right">{{number_format($payslips->company_loan,2)}}</td>
-                        @else
-                        <td class="pull-right">0.00</td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Thirteen Month Pay</td>
-                        @if($payslips->thirteen_month)
-                            <td colspan="2" class="pull-right pr-1">{{$payslips->thirteen_month}}</td>
-                        @else
-                            <td colspan="2" class="pull-right pr-1">0.00</td>
-                        @endif
-                        <td class="pl-1">Coop.</td>
-                        @if($payslips->other_loan)
-                        <td class="pull-right">{{number_format($payslips->other_loan,2)}}</td>
+                        <td class="pl-1">HDMF(calamity)</td>
+                        @if($payslips->hdmf_calamity_loan)
+                        <td class="pull-right">{{number_format($payslips->hdmf_calamity_loan,2)}}</td>
                         @else
                         <td class="pull-right">0.00</td>
                         @endif
@@ -355,9 +356,9 @@
                     <tr>
                         <td></td>
                             <td colspan="2" class="pull-right pr-1"></td>
-                        <td class="pl-1">Other</td>
-                        @if($payslips->rent)
-                            <td class="pull-right">{{number_format($payslips->rent,2)}}</td>
+                        <td class="pl-1">Advance</td>
+                        @if($payslips->company_loan)
+                            <td class="pull-right">{{number_format($payslips->company_loan,2)}}</td>
                         @else
                             <td class="pull-right">0.00</td>
                         @endif
@@ -372,7 +373,7 @@
                             <strong> Total Deductions</strong>
                         </td>
                         <td class="pull-right bt-1">
-                            <strong> {{number_format($payslips->company_loan + $payslips->hdmf_loan + $payslips->sss_loan + $payslips->other_loan + $payslips->sss_contribution + $payslips->phic_contribution + $payslips->hdmf_contribution + $payslips->insurance + $payslips->rent,2)}}</strong>
+                            <strong> {{number_format($payslips->company_loan + $payslips->hdmf_loan + $payslips->hdmf_calamity_loan + $payslips->sss_loan + $payslips->other_loan + $payslips->sss_contribution + $payslips->phic_contribution + $payslips->hdmf_contribution + $payslips->insurance + $payslips->rent + $payslips->witholding_tax,2)}}</strong>
                         </td>
 
                     </tr>

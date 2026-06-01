@@ -27,8 +27,14 @@ class EmployeeController extends Controller
     }
     public function index()
     {
+        // Only admin/HR (user_type 1) can view employee list
+        if (auth()->user()->user_type != 1) {
+            return redirect('/portal');
+        }
+
+        // Fetch data for admin view
         $department = Department::orderBy('department_name','ASC')->get();
-        $employee = Employee::orderBy('employee_Lname','ASC')->where('employee_status',"1")->get();
+        $employee = Employee::orderBy('employee_Lname','ASC')->where('employee_status','1')->get();
         $data = [
             'department' => $department,
             'employee' => $employee,
@@ -38,7 +44,7 @@ class EmployeeController extends Controller
     public function addEmployee(Request $request)
     {
 //        dd($request);
-        Employee::create(
+        $employee = Employee::create(
             [
                 'employee_id' => $request['employee_id'],
                 'employee_status' => "1",
@@ -52,6 +58,7 @@ class EmployeeController extends Controller
                 'position' => $request['sub_department'],
                 'status' => $request['status'],
                 'address' => $request['address'],
+                'email' => $request['emp_email'],
                 'sss_number'=> $request['sss'],
                 'tin_number' => $request['tin'],
                 'hdmf_number' => $request['hdmf'],
@@ -61,6 +68,20 @@ class EmployeeController extends Controller
                 'passport_exp' => $request['passport_exp'],
             ]
         );
+
+        if ($request['emp_email']) {
+            \SGpayroll\User::firstOrCreate(
+                ['email' => $request['emp_email']],
+                [
+                    'name'        => $employee->full_name,
+                    'password'    => bcrypt('testPass'),
+                    'user_type'   => 2,
+                    'employee_id' => $employee->id,
+                ]
+            );
+        }
+
+        return response()->json(['success' => true]);
     }
     public function accountEmployee($id)
     {
@@ -138,6 +159,19 @@ class EmployeeController extends Controller
             "leave" => $request['leave'],
             "sick_leave" => $request['sick']
         ]);
+
+        $year = \Carbon\Carbon::now()->year;
+        
+        \SGpayroll\LeaveCreditLedger::updateOrCreate(
+            ['employee_id' => $request['employee_id'], 'leave_type' => 'vacation', 'year' => $year],
+            ['credit_limit' => $request['leave'] ?: 0]
+        );
+
+        \SGpayroll\LeaveCreditLedger::updateOrCreate(
+            ['employee_id' => $request['employee_id'], 'leave_type' => 'sick', 'year' => $year],
+            ['credit_limit' => $request['sick'] ?: 0]
+        );
+
         return 0;
     }
     public function deductionEmployee(Request $request)

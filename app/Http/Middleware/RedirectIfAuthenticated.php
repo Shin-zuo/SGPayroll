@@ -18,7 +18,11 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+            // Redirect based on user type
+            if (Auth::user()->user_type == 2) {
+                return redirect('/portal');
+            }
+            return redirect('/employee');
         }
 
         return $next($request);

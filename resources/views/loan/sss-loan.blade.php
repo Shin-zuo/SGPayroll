@@ -55,6 +55,7 @@
                                           <option value="1">SSS LOAN</option>
                                           <option value="2">PAG-IBIG LOAN</option>
                                           <option value="3">COMPANY LOAN</option>
+                                          <option value="3">EMERGENCY LOAN</option>
                                     </select>
                                     </div>
                                 </div>
@@ -203,7 +204,7 @@
                                 <hr class="hr-em">
                             </div>
                             
-                            <!-- <form>
+                            <form>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="loanType">Date Started</label>
@@ -256,7 +257,7 @@
                                       </label>
                                     </div>
                                 </div>
-                            </form> -->
+                            </form> 
                             <form>
                                 <div class="col-sm-4">
                                     <div class="form-group">

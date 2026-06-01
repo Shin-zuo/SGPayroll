@@ -25,6 +25,12 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Employees (user_type 2) should go to their personal portal
+        if (auth()->user()->user_type == 2) {
+            return redirect('/portal');
+        }
+
+        // Admin/HR (user_type 1) see the employee list
         $department = Department::orderBy('department_name','ASC')->get();
         $employee = Employee::orderBy('employee_Lname','ASC')->get();
         $data = [

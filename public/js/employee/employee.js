@@ -224,6 +224,7 @@ $(document).ready(function(){
             ucpb: $('#ucpb').val(),
             passport : $('#passport_no').val(),
             passport_exp : $('#passport_exp').val(),
+            emp_email: $('#emp_email').val(),
         }
 
         var type = "GET";
@@ -238,8 +239,8 @@ $(document).ready(function(){
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                // $('#paymentModal').remove();
-                // location.reload();
+                $('#addEmployee').modal('hide');
+                location.reload();
             },
             error: function (data) {
                 // console.log('Error:', data);

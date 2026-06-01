@@ -25,16 +25,16 @@ $(document).ready(function(){
         }
         else
         {
-            $('#promissory_note').prop('disabled',true);
+            $('#promissory_note').prop('disabled',false);
         }
         if($('#loan_type option:selected').val()==7)
         {
-            $('#original_term').prop('disabled',true);
-            $('#remaining_term').prop('disabled',true);
-            $('#amountLoan').prop('disabled',true);
-            $('#interest').prop('disabled',true);
-            $('#totalLoan').prop('disabled',true);
-            $('#balance').prop('disabled',true);
+            $('#original_term').prop('disabled',false);
+            $('#remaining_term').prop('disabled',false);
+            $('#amountLoan').prop('disabled',false);
+            $('#interest').prop('disabled',false);
+            $('#totalLoan').prop('disabled',false);
+            $('#balance').prop('disabled',false);
         }
     });
     $(document).on('show.bs.modal','.bd-example-modal-sm', function (e) {
