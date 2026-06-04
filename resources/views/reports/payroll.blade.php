@@ -125,9 +125,15 @@
                 <th rowspan="2">SSS (salary)</th>
                 <th rowspan="2">SSS (calamity)</th>
                 <th rowspan="2">Pag-IBIG</th>
+<<<<<<< HEAD
                 <th rowspan="2">Advance</th>
                 <th rowspan="2">Coop</th>
                 <th rowspan="2">Other</th>
+=======
+                <th rowspan="2">HDMF (calamity)</th>
+                <th rowspan="2">Advance</th>
+                <th rowspan="2">Coop</th>
+>>>>>>> branch1
 
                 {{--<th rowspan="2">Coop</th>--}}
 
@@ -178,7 +184,11 @@
                         if ($payroll_reports->employee->sss_status == 1)
                         {
                         $employer_sss = ($employer_share[0]['sss_er']+ $employer_share[0]['ec_er']) -
+<<<<<<< HEAD
                         ($total_first_gross*.09);
+=======
+                        ($total_first_gross*0.1);
+>>>>>>> branch1
                         }
                         else
                         {
@@ -199,23 +209,37 @@
                         @endif
                     @else
                         @if ($payroll_reports->employee->sss_status == 1)
+<<<<<<< HEAD
                             <td>{{ number_format($payroll_reports->gross_pay * 0.09, 2) }}</td>
+=======
+                            <td>{{ number_format($payroll_reports->gross_pay * 0.1, 2) }}</td>
+>>>>>>> branch1
                             {{ $grossEr += $payroll_reports->gross_pay }}
                         @else
                             <td>0.00</td>
                         @endif
 
                     @endif
+<<<<<<< HEAD
                     <td>{{ number_format((($payroll_reports->provident_fund/.045)*.095), 2) }}</td>
+=======
+                    <td>{{ number_format((($payroll_reports->provident_fund/0.05)* 0.1), 2) }}</td>
+>>>>>>> branch1
                     <td>{{ number_format($payroll_reports->phic_contribution, 2) }}</td>
                     <td>{{ number_format($payroll_reports->hdmf_contribution, 2) }}</td>
                     <td>{{ number_format($payroll_reports->insurance, 2) }}</td>
                     <td>{{ number_format($payroll_reports->sss_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->sss_calamity_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->hdmf_loan, 2) }}</td>
+<<<<<<< HEAD
                     <td>{{ number_format($payroll_reports->company_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->other_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->rent, 2) }}</td>
+=======
+                    <td>{{ number_format($payroll_reports->hdmf_calamity_loan,2) }}</td>
+                    <td>{{ number_format($payroll_reports->company_loan, 2) }}</td>
+                    <td>{{ number_format($payroll_reports->other_loan, 2) }}</td>
+>>>>>>> branch1
                     <td>{{ number_format($payroll_reports->net_pay, 2) }}</td>
                 </tr>
 
@@ -229,7 +253,11 @@
                 <td><strong>{{ number_format($payroll_report->sum('regular_holiday_day_amount'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('sick_leave_amount'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('vacation_leave_amount'), 2) }}</strong></td>
+<<<<<<< HEAD
                 <td><strong>0</strong></td>
+=======
+                <td><strong>0.00</strong></td>
+>>>>>>> branch1
                 <td><strong>{{ number_format($payroll_report->sum('cola_amount'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('gross_pay'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('witholding_tax'), 2) }}</strong></td>
@@ -240,18 +268,30 @@
                 @if ($payroll_reports->endMonth == 'true')
                     <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
                 @else
+<<<<<<< HEAD
                     <td>{{ number_format($grossEr * 0.09, 2) }}</td>
                 @endif
                 <td><strong>{{ number_format((($payroll_report->sum('provident_fund')/.045)*.095), 2) }}</strong></td>
+=======
+                    <td>{{ number_format($grossEr * 0.1, 2) }}</td>
+                @endif
+                <td><strong>{{ number_format((($payroll_report->sum('provident_fund')/0.05)* 0.1), 2) }}</strong></td>
+>>>>>>> branch1
                 <td><strong>{{ number_format($payroll_report->sum('phic_contribution'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('hdmf_contribution'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('insurance'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('sss_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('sss_calamity_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('hdmf_loan'), 2) }}</strong></td>
+<<<<<<< HEAD
                 <td><strong>{{ number_format($payroll_report->sum('company_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('other_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('rent')) }}</strong></td>
+=======
+                <td><strong>{{ number_format($payroll_report->sum('hdmf_calamity_loan'), 2) }}</strong></td>
+                <td><strong>{{ number_format($payroll_report->sum('company_loan'), 2) }}</strong></td>
+                <td><strong>{{ number_format($payroll_report->sum('other_loan'), 2) }}</strong></td>
+>>>>>>> branch1
                 <td><strong>{{ number_format($payroll_report->sum('net_pay'), 2) }}</strong></td>
             </tr>
 
@@ -296,9 +336,15 @@
                 <th rowspan="2">SSS (salary)</th>
                 <th rowspan="2">SSS (calamity)</th>
                 <th rowspan="2">Pag-IBIG</th>
+<<<<<<< HEAD
                 <th rowspan="2">Advance</th>
                 <th rowspan="2">Coop</th>
                 <th rowspan="2">Other</th>
+=======
+                <th rowspan="2">HDMF (calamity)</th>
+                <th rowspan="2">Advance</th>
+                <th rowspan="2">Coop</th>
+>>>>>>> branch1
 
                 {{--<th rowspan="2">Coop</th>--}}
 
@@ -349,7 +395,11 @@
                                 $employer_share = \SGpayroll\Sss_Table::whereRaw('? between range_from and range_to',
                                 [round($total_gross, 2)])->get();
                                 $employer_sss = ($employer_share[0]['sss_er']+ $employer_share[0]['ec_er']) -
+<<<<<<< HEAD
                                 ($total_first_gross*.09);
+=======
+                                ($total_first_gross* 0.1);
+>>>>>>> branch1
                                
                                 if($employer_sss <= 0)
                         {
@@ -365,21 +415,34 @@
 
                             @else
                                 @if ($payroll_report_admin->employee->sss_status == 1)
+<<<<<<< HEAD
                                     <td>{{ number_format($payroll_report_admin->gross_pay * 0.09, 2) }}</td>
+=======
+                                    <td>{{ number_format($payroll_report_admin->gross_pay * 0.1, 2) }}</td>
+>>>>>>> branch1
                                     {{ $grossEr += $payroll_report_admin->gross_pay }}
                                 @else
                                     <td>0.00</td>
                                 @endif
                             @endif
+<<<<<<< HEAD
                             <td>{{ number_format((($payroll_report_admin->provident_fund/.045)*.095), 2) }}</td>
+=======
+                            <td>{{ number_format((($payroll_report_admin->provident_fund/.05)* 0.1), 2) }}</td>
+>>>>>>> branch1
                             <td>{{ number_format($payroll_report_admin->phic_contribution, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->hdmf_contribution, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->insurance, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->sss_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->sss_calamity_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->hdmf_loan, 2) }}</td>
+<<<<<<< HEAD
                             <td>{{ number_format($payroll_report_admin->company_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->other_loan, 2) }}</td>
+=======
+                            <td>{{ number_format($payroll_report_admin->hdmf_calamity_loan, 2) }}</td>
+                            <td>{{ number_format($payroll_report_admin->company_loan, 2) }}</td>
+>>>>>>> branch1
                             <td>{{ number_format($payroll_report_admin->rent, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->net_pay, 2) }}</td>
                         </tr>
@@ -415,9 +478,15 @@
                             @if ($payroll_report_admin->endMonth == 'true')
                                 <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
                             @else
+<<<<<<< HEAD
                                 <td>{{ number_format($payroll_report_admins->sum('gross_pay') * 0.09, 2) }}</td>
                             @endif
                             <td><strong>{{ number_format((($payroll_report_admins->sum('provident_fund')/.045)*.095), 2) }}</strong></td>
+=======
+                                <td>{{ number_format($payroll_report_admins->sum('gross_pay') * 0.1, 2) }}</td>
+                            @endif
+                            <td><strong>{{ number_format((($payroll_report_admins->sum('provident_fund')/0.05)*0.1), 2) }}</strong></td>
+>>>>>>> branch1
                             <td><strong>{{ number_format($payroll_report_admins->sum('phic_contribution'), 2) }}</strong>
                             </td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_contribution'), 2) }}</strong>
@@ -426,11 +495,19 @@
                             <td><strong>{{ number_format($payroll_report_admins->sum('sss_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('sss_calamity_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_loan'), 2) }}</strong></td>
+<<<<<<< HEAD
                             <td><strong>{{ number_format($payroll_report_admins->sum('company_loan'), 2) }}</strong>
                             </td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('other_loan'), 2) }}</strong>
                             </td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('rent')) }}</strong></td>
+=======
+                            <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_calamity_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_admins->sum('company_loan'), 2) }}</strong>
+                            </td>
+
+                            <td><strong>{{ number_format($payroll_report_admins->sum('other_loan')) }}</strong></td>
+>>>>>>> branch1
                             <td><strong>{{ number_format($payroll_report_admins->sum('net_pay'), 2) }}</strong></td>
                         </tr>
                     @endif
@@ -447,6 +524,7 @@
             </div>
             <table class="employee" style="margin-top: 20px;">
                 <thead>
+<<<<<<< HEAD
                     <tr>
                         <th rowspan="3" colspan="3">Name</th>
                         <th colspan="6">Basic Pay</th>
@@ -489,6 +567,56 @@
                         <th>HDMF</th>
 
                     </tr>
+=======
+                <tr>
+                <th rowspan="3" colspan="3">Name</th>
+                <th colspan="6">Basic Pay</th>
+                <th colspan="2">Other Pay</th>
+                <th rowspan="3">Gross Pay</th>
+                <th rowspan="3">Wtax</th>
+                <th colspan="8">Contributions</th>
+                {{--<th rowspan="3">Insurance</th>--}}
+                <th rowspan="3">Insurance</th>
+                <th colspan="6">Loans</th>
+                <th rowspan="3">Net Pay</th>
+                {{--<th rowspan="3">Adv.</th>--}}
+
+
+            </tr>
+
+            <tr>
+                <th rowspan="2">Work Day</th>
+                <th rowspan="2">OT Pay</th>
+                <th rowspan="2">Excess Hrs</th>
+                <th rowspan="2">Holiday</th>
+                <th rowspan="2">Vacation Leave</th>
+                <th rowspan="2">Sick Leave</th>
+                <th rowspan="2">Other Taxable Pay</th>
+                <th rowspan="2">Other NT Pay</th>
+                <th colspan="4">Employee</th>
+                <th colspan="4">Employer</th>
+                <th rowspan="2">SSS (salary)</th>
+                <th rowspan="2">SSS (calamity)</th>
+                <th rowspan="2">Pag-IBIG</th>
+                <th rowspan="2">HDMF (calamity)</th>
+                <th rowspan="2">Advance</th>
+                <th rowspan="2">Coop</th>
+
+                {{--<th rowspan="2">Coop</th>--}}
+            </tr>
+
+            <tr>
+                <th>SSS</th>
+                <th>Provident Fund</th>
+                <th>PHIC</th>
+                <th>HDMF</th>
+                <th>SSS</th>
+                <th>Provident Fund</th>
+                <th>PHIC</th>
+                <th>HDMF</th>
+
+            </tr>
+>>>>>>> branch1
 
                 </thead>
                 <tbody>
@@ -505,11 +633,19 @@
                             <td>{{ number_format($payroll_report_cost->sick_leave_amount, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->vacation_leave_amount, 2) }}</td>
                             <td>0.00</td>
+<<<<<<< HEAD
                             <td>{{ number_format($payroll_report_cost->cola_amount + $payroll_report_cost->non_tax_other, 2) }}
                             </td>
                             <td>{{ number_format($payroll_report_cost->gross_pay, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->witholding_tax, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->sss_contribution, 2) }}</td>
+=======
+                            <td>{{ number_format($payroll_report_cost->cola_amount + $payroll_report_cost->non_tax_other, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->gross_pay, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->witholding_tax, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->sss_contribution, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->provident_fund, 2) }}</td>
+>>>>>>> branch1
                             <td>{{ number_format($payroll_report_cost->phic_contribution, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->hdmf_contribution, 2) }}</td>
 
@@ -524,7 +660,11 @@
                                 $employer_share = \SGpayroll\Sss_Table::whereRaw('? between range_from and range_to',
                                 [round($total_gross, 2)])->get();
                                 $employer_sss = ($employer_share[0]['sss_er']+ $employer_share[0]['ec_er']) -
+<<<<<<< HEAD
                                 ($total_first_gross*.09);
+=======
+                                ($total_first_gross*0.1);
+>>>>>>> branch1
                                 
                                 if($employer_sss <= 0)
                         {
@@ -541,20 +681,34 @@
 
                             @else
                                 @if ($payroll_report_cost->employee->sss_status == 1)
+<<<<<<< HEAD
                                     <td>{{ number_format($payroll_report_cost->gross_pay * 0.09, 2) }}</td>
+=======
+                                    <td>{{ number_format($payroll_report_cost->gross_pay * 0.1, 2) }}</td>
+>>>>>>> branch1
                                     {{ $grossEr += $payroll_report_cost->gross_pay }}
                                 @else
                                     <td>0.00</td>
                                 @endif
                             @endif
+<<<<<<< HEAD
+=======
+                            <td>{{ number_format((($payroll_report_cost->provident_fund/.05)* 0.1), 2) }}</td>
+>>>>>>> branch1
                             <td>{{ number_format($payroll_report_cost->phic_contribution, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->hdmf_contribution, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->insurance, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->sss_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->sss_calamity_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->hdmf_loan, 2) }}</td>
+<<<<<<< HEAD
                             <td>{{ number_format($payroll_report_cost->company_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->rent, 2) }}</td>
+=======
+                            <td>{{ number_format($payroll_report_cost->hdmf_calamity_loan, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->company_loan, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->other_loan, 2) }}</td>
+>>>>>>> branch1
                             <td>{{ number_format($payroll_report_cost->net_pay, 2) }}</td>
                         </tr>
 
@@ -572,6 +726,7 @@
                             </td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('sick_leave_amount'), 2) }}</strong>
                             </td>
+<<<<<<< HEAD
                             <td><strong>{{ number_format($payroll_report_costs->sum('vacation_leave_amount'), 2) }}</strong>
                             </td>
                             <td><strong>0</strong></td>
@@ -583,6 +738,16 @@
                             </td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('phic_contribution'), 2) }}</strong>
                             </td>
+=======
+                            <td><strong>{{ number_format($payroll_report_costs->sum('vacation_leave_amount'), 2) }}</strong></td>
+                            <td><strong>0.00</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('cola_amount'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('gross_pay'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('witholding_tax'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('sss_contribution'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('provident_fund'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('phic_contribution'), 2) }}</strong></td>
+>>>>>>> branch1
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong>
                             </td>
 
@@ -591,6 +756,7 @@
                             @elseif ($payroll_report_cost->employee->sss_status == 0)
                                 <td>0.00</td>
                             @else
+<<<<<<< HEAD
                                 <td>{{ number_format($payroll_report_costs->sum('gross_pay') * 0.09, 2) }}</td>
                             @endif
 
@@ -598,12 +764,25 @@
                             </td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong>
                             </td>
+=======
+                                <td>{{ number_format($payroll_report_costs->sum('gross_pay') * 0.1, 2) }}</td>
+                            @endif
+                            <td><strong>{{ number_format((($payroll_report_costs->sum('provident_fund')/0.05)* 0.1), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('phic_contribution'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong></td>
+>>>>>>> branch1
                             <td><strong>{{ number_format($payroll_report_costs->sum('insurance'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('sss_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('sss_company_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_loan'), 2) }}</strong></td>
+<<<<<<< HEAD
                             <td><strong>{{ number_format($payroll_report_costs->sum('company_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('rent')) }}</strong></td>
+=======
+                            <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_calamity_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('company_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('other_loan')) }}</strong></td>
+>>>>>>> branch1
                             <td><strong>{{ number_format($payroll_report_costs->sum('net_pay'), 2) }}</strong></td>
                         </tr>
                     @endif

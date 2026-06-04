@@ -138,5 +138,13 @@ class DepartmentController extends Controller
         ]);
         return 0;
     }
+<<<<<<< HEAD
+=======
+    public function deleteGroup(Request $request)
+    {
+        Department::find($request['id'])->delete();
+        return 0;
+    }
+>>>>>>> branch1
 
 }

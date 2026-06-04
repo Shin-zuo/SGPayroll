@@ -14,6 +14,10 @@ class Employee_Loan extends Model
         'loan_type',
         'loan_name',
         'sss_loan_type',
+<<<<<<< HEAD
+=======
+        'hdmf_loan_type',
+>>>>>>> branch1
         'promissory_note',
         'loan_date',
         'loan_amount',

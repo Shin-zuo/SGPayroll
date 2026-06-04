@@ -111,7 +111,11 @@
 
         <td colspan="3">{{$employee->tin_number}}</td>
         <td colspan="3">{{strtoupper($employee->employee->full_name)}}</td>
+<<<<<<< HEAD
         <td colspan="3">{{number_format($employee->basic_pay + $employee->vacation_leave_amount + $employee->sick_leave_amount,2)}}</td>
+=======
+        <td colspan="3">{{number_format($employee->basic_pay,2)}}</td>
+>>>>>>> branch1
         <td colspan="3">{{$statutory}}</td>
         <td colspan="3">{{number_format($employee->overtime_amount,2)}}</td>
         <td colspan="3">{{number_format($employee->night_diff_amount,2)}}</td>
@@ -169,7 +173,11 @@
     <tbody class="total-border">
     <tr>
         <td colspan="6"><strong>TOTAL</strong></td>
+<<<<<<< HEAD
         <td colspan="3"><strong>{{number_format($employees->sum('basic_pay') + $employees->sum('vacation_leave_amount') + $employees->sum('sick_leave_amount'),2)}}</strong></td>
+=======
+        <td colspan="3"><strong>{{number_format($employees->sum('basic_pay'),2)}}</strong></td>
+>>>>>>> branch1
         <td colspan="3"><strong>{{number_format($totalStatutory,2)}}</strong></td>
         <td colspan="3"><strong>{{number_format($employees->sum('overtime_amount'),2)}}</strong></td>
         <td colspan="3"><strong>{{number_format($employees->sum('night_diff_amount'),2)}}</strong></td>
@@ -236,7 +244,11 @@
         
         <td colspan="3">{{$inactive_employee->tin_number}}</td>
         <td colspan="3">{{strtoupper($inactive_employee->employee->full_name)}}</td>
+<<<<<<< HEAD
         <td colspan="3">{{number_format($inactive_employee->basic_pay + $inactive_employee->vacation_leave_amount + $inactive_employee->sick_leave_amount,2)}}</td>
+=======
+        <td colspan="3">{{number_format($inactive_employee->basic_pay,2)}}</td>
+>>>>>>> branch1
         <td colspan="3">{{number_format($inactive_statutory,2)}}</td>
         <td colspan="3">{{number_format($inactive_employee->overtime_amount,2)}}</td>
         <td colspan="3">{{number_format($inactive_employee->night_diff_amount,2)}}</td>
@@ -285,7 +297,11 @@
         <tbody class="total-border">
         <tr>
         <td colspan="6"><strong>TOTAL</strong></td>
+<<<<<<< HEAD
         <td colspan="3"><strong>{{number_format($inactive_employees->sum('basic_pay') + $inactive_employees->sum('vacation_leave_amount') + $inactive_employees->sum('sick_leave_amount'),2)}}</strong></td>
+=======
+        <td colspan="3"><strong>{{number_format($inactive_employees->sum('basic_pay'),2)}}</strong></td>
+>>>>>>> branch1
         <td colspan="3"><strong>{{number_format($inactive_totalStatutory,2)}}</strong></td>
         <td colspan="3"><strong>{{number_format($inactive_employees->sum('overtime_amount'),2)}}</strong></td>
         <td colspan="3"><strong>{{number_format($inactive_employees->sum('night_diff_amount'),2)}}</strong></td>

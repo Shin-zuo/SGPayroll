@@ -18,7 +18,11 @@ class AddInterestToLoans extends Migration
             $table->string('interest')->nullable()->after('semester');
             $table->string('remaining_term')->nullable()->after('loan_amount');
             $table->string('balance')->nullable()->after('deduction');
+<<<<<<< HEAD
             $table->integer('status')->nullable()->after('balance');
+=======
+            $table->integer('status')->nullable();
+>>>>>>> branch1
         });
     }
 

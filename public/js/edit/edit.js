@@ -41,6 +41,11 @@ $(document).ready(function() {
                         $('#inputER_amount').val(data.ext_reg_hrs_ammount);
                         $('#inputND').val(data.night_diff);
                         $('#inputND_amount').val(data.night_diff_amount);
+<<<<<<< HEAD
+=======
+                        $('#inputNDR').val(data.night_diff_restday);
+                        $('#inputNDR_amount').val(data.night_diff_restday_amount);
+>>>>>>> branch1
                         $('#inputRS').val(data.rest_special);
                         $('#inputRS_amount').val(data.rest_special_amount);
                         $('#inputERS').val(data.exc_rest_special);
@@ -129,6 +134,11 @@ $(document).ready(function() {
                 $('#inputER_amount').val(data.ext_reg_hrs_ammount);
                 $('#inputND').val(data.night_diff);
                 $('#inputND_amount').val(data.night_diff_amount);
+<<<<<<< HEAD
+=======
+                $('#inputNDR').val(data.night_diff_restday);
+                $('#inputNDR_amount').val(data.night_diff_restday_amount);
+>>>>>>> branch1
                 $('#inputRS').val(data.rest_special);
                 $('#inputRS_amount').val(data.rest_special_amount);
                 $('#inputERS').val(data.exc_rest_special);
@@ -170,6 +180,10 @@ $(document).ready(function() {
                 $('#inputHDMF_loan').val(data.hdmf_loan);
                 $('#inputCoop_loan').val(data.other_loan);
                 $('#inputOther_loan').val(data.rent);
+<<<<<<< HEAD
+=======
+                $('#input').val(data.hdmf_calamity_loan);
+>>>>>>> branch1
                 //NET PAY
                 $('#inputNP_amount').val(data.net_pay);
                 //DATE
@@ -192,6 +206,10 @@ $(document).ready(function() {
             overtime_hours: $('#inputOT').val(),
             extra_regular_hour: $('#inputER').val(),
             night_diff: $('#inputND').val(),
+<<<<<<< HEAD
+=======
+            night_diff_restday: $('#inputNDR').val(),
+>>>>>>> branch1
             rest_special: $('#inputRS').val(),
             rest_special_exc: $('#inputERS').val(),
             regular_holiday_hour: $('#inputRH').val(),
@@ -221,6 +239,10 @@ $(document).ready(function() {
                 $('#inputOT_amount').val(data.over_time_amount);
                 $('#inputER_amount').val(data.extra_regular_hours_amount);
                 $('#inputND_amount').val(data.night_diff_amount);
+<<<<<<< HEAD
+=======
+                $('#inputNDR_amount').val(data.night_diff_restday_amount);
+>>>>>>> branch1
                 $('#inputRS_amount').val(data.rest_special_amount);
                 $('#inputERS_amount').val(data.rest_special_exc_amount);
                 $('#inputRH_amount').val(data.regular_holiday_hour_amount);
@@ -257,6 +279,11 @@ $(document).ready(function() {
                     extra_regular_hour_amount: $('#inputER_amount').val(),
                     night_diff: $('#inputND').val(),
                     night_diff_amount: $('#inputND_amount').val(),
+<<<<<<< HEAD
+=======
+                    night_diff_restday: $('#inputNDR').val(),
+                    night_diff_restday_amount: $('#inputNDR_amount').val(),
+>>>>>>> branch1
                     rest_special: $('#inputRS').val(),
                     rest_special_amount: $('#inputRS_amount').val(),
                     rest_special_exc: $('#inputERS').val(),

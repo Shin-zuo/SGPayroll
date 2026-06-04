@@ -41,7 +41,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
+<<<<<<< HEAD
             'host' => env('DB_HOST', '192.168.50.180'),
+=======
+            'host' => env('DB_HOST', '192.168.50.100'),
+>>>>>>> branch1
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'sgpayroll_db'),
             'username' => env('DB_USERNAME', 'segovia'),
@@ -52,6 +56,12 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
+<<<<<<< HEAD
+=======
+            'options' => [
+        PDO::MYSQL_ATTR_SSL_CA => base_path('cacert.pem'),
+    ],
+>>>>>>> branch1
         ],
 
         'pgsql' => [
@@ -64,7 +74,11 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
+<<<<<<< HEAD
             'sslmode' => 'prefer',
+=======
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
+>>>>>>> branch1
         ],
 
         'sqlsrv' => [

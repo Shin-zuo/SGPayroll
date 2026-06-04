@@ -11,6 +11,12 @@
 |
 */
 
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\Employee\EmployeeController;
+
+
+>>>>>>> branch1
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -18,7 +24,12 @@ Route::get('/', function () {
 Auth::routes();
 
 //Employee
+<<<<<<< HEAD
 Route::get('/employee','Employee\EmployeeController@index');
+=======
+Route::get('/employee','Employee\EmployeeController@index')->name('employee');
+
+>>>>>>> branch1
 Route::get('/employee/inactive','Employee\EmployeeController@inactiveEmployee');
 Route::get('/employee/upload-employees','Employee\EmployeeController@uploadEmployee');
 Route::get('/employee/addEmployee','Employee\EmployeeController@addEmployee');
@@ -43,6 +54,10 @@ Route::get('/department/addGroup/addGroups','Department\DepartmentController@add
 Route::get('/department/{id}/addSubGroup','Department\DepartmentController@addSubGroup');
 Route::get('/department/update-period','Department\DepartmentController@updatePeriod');
 Route::get('/department/update-group','Department\DepartmentController@updateGroupName');
+<<<<<<< HEAD
+=======
+Route::get('/department/delete-group','Department\DepartmentController@deleteGroup');
+>>>>>>> branch1
 Route::get('/department/{id}','Department\DepartmentController@edit');
 //Deduction
 Route::get('/deduction','Deduction\DeductionController@index');
@@ -87,6 +102,35 @@ Route::get('/edit/requestEmployeeData', 'EditController@getPreviousData');
 //QuickPayroll
 Route::get('quick-payroll','QuickPayroll\QuickPayrollController@index');
 Route::post('quick-payroll/importExcel', 'QuickPayroll\QuickPayrollController@importExcel');
+<<<<<<< HEAD
 //Home
 Route::get('/', 'HomeController@index')->name('home');
 
+=======
+
+// Leave Applications (Admin)
+Route::get('/leave-applications', 'Leave\LeaveApplicationController@index');
+Route::get('/leave-applications/approve/{id}', 'Leave\LeaveApplicationController@approve');
+Route::get('/leave-applications/reject/{id}', 'Leave\LeaveApplicationController@reject');
+Route::get('/api/leave-balance/{employee_id}/{leave_type}/{year}', 'Leave\LeaveApplicationController@checkBalance');
+
+// Admin Settings
+Route::get('/admin/settings', 'Admin\AdminSettingsController@index');
+Route::post('/admin/settings', 'Admin\AdminSettingsController@update');
+
+
+// Employee Portal
+Route::get('/portal', 'Portal\PortalController@index');
+Route::get('/portal/leave-balance', 'Portal\PortalController@leaveBalance');
+Route::post('/portal/leave-apply', 'Portal\PortalController@applyLeave');
+Route::get('/portal/payslips', 'Portal\PortalController@payslips');
+Route::get('/portal/payslips/{id}/download', 'Portal\PortalController@downloadPayslip');
+Route::get('/portal/contributions', 'Portal\PortalController@contributions');
+Route::get('/portal/profile', 'Portal\EmployeeProfileController@index');
+Route::post('/portal/profile', 'Portal\EmployeeProfileController@update');
+
+//Home
+Route::get('/', 'HomeController@index')->name('home');
+
+
+>>>>>>> branch1

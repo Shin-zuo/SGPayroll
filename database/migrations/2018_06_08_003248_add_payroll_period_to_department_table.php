@@ -16,7 +16,11 @@ class AddPayrollPeriodToDepartmentTable extends Migration
         Schema::table('departments', function (Blueprint $table) {
             //
             $table->string('date_from')->nullable()->after('department_code');
+<<<<<<< HEAD
             $table->string('date_to')->nullable()->after('date_from');
+=======
+            $table->string('date_to')->nullable();
+>>>>>>> branch1
         });
     }
 

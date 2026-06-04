@@ -53,6 +53,10 @@ class Employee extends Model
         'philhealth_number',
         'passport_number',
         'passport_exp',
+<<<<<<< HEAD
+=======
+        'profile_picture',
+>>>>>>> branch1
     ];
     public function getFullNameAttribute()
     {
@@ -86,4 +90,22 @@ class Employee extends Model
     {
         return $this->belongsTo(Department::class,'department','department_code');
     }
+<<<<<<< HEAD
+=======
+
+    public function leave_credit_ledgers()
+    {
+        return $this->hasMany(LeaveCreditLedger::class, 'employee_id');
+    }
+
+    public function leave_applications()
+    {
+        return $this->hasMany(LeaveApplication::class, 'employee_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'employee_id');
+    }
+>>>>>>> branch1
 }

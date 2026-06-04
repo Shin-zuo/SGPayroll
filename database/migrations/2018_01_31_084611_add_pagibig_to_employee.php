@@ -16,8 +16,13 @@ class AddPagibigToEmployee extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('pagibig_amount')->nullable()->after('pag_ibig_contribution');
+<<<<<<< HEAD
             $table->string('loan')->nullable()->after('pagibig_amount');
             $table->string('union')->nullable()->after('loan');
+=======
+            $table->string('loan')->nullable();
+            $table->string('union')->nullable();
+>>>>>>> branch1
         });
     }
 

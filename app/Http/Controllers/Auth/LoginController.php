@@ -20,12 +20,26 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+<<<<<<< HEAD
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
     protected $redirectTo = '/employee';
+=======
+    public function redirectTo()
+    {
+        // Redirect based on user type:
+        //   user_type == 1 => Admin/HR portal
+        //   otherwise => Employee dashboard
+        if (auth()->user()->user_type == 2) {
+            return '/portal';
+        }else if(auth()->user()->user_type == 1){
+            return '/employee';
+        }
+    }
+>>>>>>> branch1
 
     /**
      * Create a new controller instance.

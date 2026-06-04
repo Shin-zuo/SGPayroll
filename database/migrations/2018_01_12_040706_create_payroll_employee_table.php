@@ -31,6 +31,10 @@ class CreatePayrollEmployeeTable extends Migration
             $table->string('insurance_contribution')->nullable();
             $table->string('sss_loans')->nullable();
             $table->string('pag_ibig_loans')->nullable();
+<<<<<<< HEAD
+=======
+            $table->string('pag_ibig_calamity_loans')->nullable();
+>>>>>>> branch1
             $table->string('other_loans')->nullable();
             $table->string('net_pay')->nullable();
             $table->timestamps();

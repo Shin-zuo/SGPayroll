@@ -75,6 +75,10 @@
                             <td><input type="number" class="form-control input-sm" id="overtime_hours" name="overtime_hours"></td>
                             <td><input type="number" class="form-control input-sm" id="extra_regular_hour" name="extra_regular_hour"></td>
                             <td><input type="number" class="form-control input-sm" id="night_diff" name="night_diff"></td>
+<<<<<<< HEAD
+=======
+                            <td><input tyoe="number" class="form-control input-sm" id="night_diff_restday" name="night_diff_restday"></td>
+>>>>>>> branch1
                             <td><input type="number" class="form-control input-sm" id="rest_special" name="rest_special"></td>
                             <td><input type="number" class="form-control input-sm" id="rest_special_exc" name="rest_special_exc"></td>
                             <td><input type="number" class="form-control input-sm" id="regular_holiday_hour" name="regular_holiday_hour"></td>
@@ -115,7 +119,11 @@
                             <td><input type="number" class="form-control input-sm" id="special_holiday" name="special_holiday"></td>
                             <td><input type="number" class="form-control input-sm" id="sick_leave" name="sick_leave"></td>
                             <td><input type="number" class="form-control input-sm" id="other_pay" name="other_pay"></td>
+<<<<<<< HEAD
                             <td><input type="number" class="form-control input-sm" id="thirteen_month" name="_month"></td>
+=======
+                            <td><input type="number" class="form-control input-sm" id="thirteen_month" name="thirteen_month"></td>
+>>>>>>> branch1
                             <td><input type="number" class="form-control input-sm" id="cola" name="cola"></td>
                             <td><input type="number" class="form-control input-sm" id="excess_amount" name="excess_amount" disabled></td>
                             <td><input type="number" class="form-control input-sm" id="gross_pay" name="gross_pay" disabled></td>

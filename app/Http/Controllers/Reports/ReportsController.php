@@ -82,8 +82,13 @@ class ReportsController extends Controller
                 $total_sss_er += $sss_total->sss()->sss_er;
                 $total_ec_er += $sss_total->sss()->ec_er;
                 $total_sss_ee += $sss_total->sss()->sss_ee;
+<<<<<<< HEAD
                 $total_provident_er += $sss_total->sss()->provident_fund*0.095;
                 $total_provident_ee += $sss_total->sss()->provident_fund*0.045;
+=======
+                $total_provident_er += $sss_total->sss()->provident_fund*0.1;
+                $total_provident_ee += $sss_total->sss()->provident_fund*0.05; 
+>>>>>>> branch1
             }
             $data = [
                 'sss_report' => $sss_report,
@@ -236,7 +241,10 @@ class ReportsController extends Controller
             foreach ($pagibig_loan_report as $pagibig_loan_reports) {
                 $total_hdmf_loan += $pagibig_loan_reports->total_hdmf_loan;
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch1
             $data = [
                 'pagibig_loan_report' => $pagibig_loan_report->where('total_hdmf_loan', '>', 0),
                 'total_hdmf_loan' => $total_hdmf_loan,
@@ -245,8 +253,39 @@ class ReportsController extends Controller
             $pdf = PDF::loadView('reports.pag-ibigloan', $data)->setPaper('Legal', 'landscape');
             return $pdf->stream('pag-ibig-loan-reports.pdf');
         }
+<<<<<<< HEAD
          // Thirteen Month Reports
          if ($request['report_type'] == '13 MONTH') {
+=======
+
+        if ($request['report_type'] == 'Pag-IBIG CALAMITY LOANS') {
+            $pagibig_calamity_loan_report = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
+                ->orderBy('employees.employee_Lname')
+                ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
+                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
+                ->where('employee_payrolls.department', $request['department'])
+                ->select('employee_code', DB::raw('SUM(employee_payrolls.hdmf_calamity_loan) as total_hdmf_calamity_loan,employee_payrolls.department'))
+                ->groupBy('employee_code', 'employee_payrolls.department')
+                ->get();
+
+            $total_hdmf_calamity_loan = 0;      
+            foreach ($pagibig_calamity_loan_report as $pagibig_calamity_loan_reports) {
+                $total_hdmf_calamity_loan += $pagibig_calamity_loan_reports->total_hdmf_calamity_loan;
+            }
+            
+            $data = [
+                'pagibig_calamity_loan_report' => $pagibig_calamity_loan_report->where('total_hdmf_calamity_loan', '>', 0),
+                'total_hdmf_calamity_loan' => $total_hdmf_calamity_loan,
+                'month' => $request['monthRep']
+            ];
+            $pdf = PDF::loadView('reports.pag-ibig-calamity', $data)->setPaper('Legal', 'landscape');
+            return $pdf->stream('pag-ibig-calamity-reports.pdf');
+        }
+            
+
+       // Thirteen Month Reports
+        if ($request['report_type'] == '13 MONTH') {
+>>>>>>> branch1
             if (!empty($request['quarterYear']) && $request['quarterYear'] == 1) {
                 // Set range for 1st quarter
                 $strFromFirstQuarter = Carbon::now()->subYear(1)->year.'-11-26';
@@ -263,8 +302,13 @@ class ReportsController extends Controller
                 // Set range for 2nd quarter
                 $strFromFirstQuarter = Carbon::now()->year.'-05-26';
                 $strToFirstQuarter = Carbon::now()->year.'-11-25';
+<<<<<<< HEAD
     
                 // Get the records base on range
+=======
+                
+ 	   // Get the records base on range
+>>>>>>> branch1
                 $thirteen_month = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
                 ->orderBy('employees.employee_Lname')
                 ->whereBetween('employee_payrolls.date_to', [Carbon::parse($strFromFirstQuarter),Carbon::parse($strToFirstQuarter)])
@@ -275,7 +319,11 @@ class ReportsController extends Controller
             }
             $total_thirteen_month = 0;
             foreach ($thirteen_month as $thirteen) {
+<<<<<<< HEAD
                 $total_thirteen_month += $thirteen->basic_pay  + $thirteen->leave_amount; 
+=======
+                $total_thirteen_month += $thirteen->basic_pay;
+>>>>>>> branch1
             }
             $data = [
                 'thirteen_month' => $thirteen_month,
@@ -293,7 +341,11 @@ class ReportsController extends Controller
                 ->where('employees.employee_status', 1)
                 ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
                 ->where('employee_payrolls.department', $request['department'])
+<<<<<<< HEAD
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,employee_payrolls.department,employees.salary_status'))
+=======
+                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,SUM(employee_payrolls.night_diff_restday_amount) as night_diff_restday_amount,employee_payrolls.department,employees.salary_status'))
+>>>>>>> branch1
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen','employees.salary_status')
                 ->get();
             $inactive_employee = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
@@ -302,7 +354,11 @@ class ReportsController extends Controller
                 ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
                 ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
                 ->where('employee_payrolls.department', $request['department'])
+<<<<<<< HEAD
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,employee_payrolls.department,employees.salary_status'))
+=======
+                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,SUM(employee_payrolls.night_diff_restday_amount) as night_diff_restday_amount,employee_payrolls.department,employees.salary_status'))
+>>>>>>> branch1
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen','employees.salary_status')
                 ->get();
 
@@ -326,21 +382,35 @@ class ReportsController extends Controller
                 $totalDue += $taxDues - $active->annual_witholding_tax;
                 $totalRefund += $active->annual_witholding_tax - $taxDues;
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch1
             $totalStatutory = 0;
             foreach ($active_employee as $active) {
                 $statutoryDues = 0;
                 if ($active->salary_status == 'true') {
+<<<<<<< HEAD
                     $statutoryDues = ($active->annual_work_days_amount - ($active->annual_sss + $active ->annual_phic + $active ->annual_hdmf));
                     $totalStatutory += $statutoryDues;
                 }
             }   
+=======
+                    $statutoryDues = ($active->annual_work_days_amount - ($active->annual_thirteen + $active->annual_sss + $active ->annual_phic + $active ->annual_hdmf));
+                    $totalStatutory += $statutoryDues;
+                }
+            }
+>>>>>>> branch1
 
             $totalTaxableIncome = 0;
             foreach ($active_employee as $active) {
                $taxableIncome = 0;
                if ($active->salary_status == 'false') {
+<<<<<<< HEAD
                  $taxableIncome = ($active->annual_work_days_amount - ($active->annual_sss + $active->annual_phic + $active->annual_hdmf));
+=======
+                 $taxableIncome = ($active->annual_work_days_amount - ($active->annual_thirteen + $active->annual_sss + $active->annual_phic + $active->annual_hdmf));
+>>>>>>> branch1
                  $totalTaxableIncome += $taxableIncome;
                }
             }
@@ -367,6 +437,7 @@ class ReportsController extends Controller
                 $inactive_totalDue += $inactive_taxDues - $active->annual_witholding_tax;
                 $inactive_totalRefund += $active->annual_witholding_tax - $inactive_taxDues;
             }
+<<<<<<< HEAD
             $inactive_totalStatutory = 0;
             foreach ($inactive_employee as $inactive) {
             $statutoryDues = 0;
@@ -376,14 +447,34 @@ class ReportsController extends Controller
 
                 }
             }
+=======
+
+            $inactive_totalStatutory = 0;
+            foreach ($inactive_employee as $inactive) {
+            $inactive_statutoryDues = 0;
+            if ($inactive->salary_status =='true') {
+                $inactive_statutoryDues = (($inactive->annual_work_days_amount) - ($inactive->annual_sss + $inactive->annual_phic + $inactive->annual_hdmf));
+                $inactive_totalStatutory += $inactive_statutoryDues;
+                }
+            }   
+
+>>>>>>> branch1
             $inactive_totalTaxableIncome = 0;
             foreach ($inactive_employee as $inactive) {
                $taxableIncome = 0;
                if ($active->salary_status == 'false') {
+<<<<<<< HEAD
                  $taxableIncome = ($inactive->annual_work_days_amount - ($inactive->annual_thirteen + $inactive->annual_sss + $inactive->annual_phic + $inactive->annual_hdmf));
                  $totalTaxableIncome += $taxableIncome;
                }
             }
+=======
+                 $inactive_taxableIncome = ($inactive->annual_work_days_amount - ($inactive->annual_thirteen + $inactive->annual_sss + $inactive->annual_phic + $inactive->annual_hdmf));
+                 $inactive_totalTaxableIncome += $inactive_taxableIncome;
+               }
+            }   
+
+>>>>>>> branch1
 
             $data = [
                 'employees' => $active_employee,
@@ -404,6 +495,10 @@ class ReportsController extends Controller
             $pdf = PDF::loadView('reports.alphalist', $data)->setPaper('Legal', 'Landscape');
             return $pdf->stream('alphalist.pdf');
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> branch1
         if ($request['report_type'] == 'ALPHA LIST (MONTHLY)') {
             $active_employee = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
                 ->orderBy('employees.employee_Lname')
@@ -411,7 +506,11 @@ class ReportsController extends Controller
                 ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
                 ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
                 ->where('employee_payrolls.department', $request['department'])
+<<<<<<< HEAD
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,employee_payrolls.department,employees.salary_status'))
+=======
+                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,SUM(employee_payrolls.night_diff_restday_amount) as night_diff_restday_amount,employee_payrolls.department,employees.salary_status'))
+>>>>>>> branch1
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen','employees.salary_status')
                 ->get();
             $inactive_employee = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
@@ -420,7 +519,11 @@ class ReportsController extends Controller
                 ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
                 ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
                 ->where('employee_payrolls.department', $request['department'])
+<<<<<<< HEAD
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,employee_payrolls.department,employees.salary_status'))
+=======
+                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum_amount,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum_amount,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.regular_holiday_day_minimum_amount) as regular_holiday_minimum,SUM(employee_payrolls.special_holiday_day_minimum_amount) as special_holiday_minimum,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.thirteen_month) as thirteen_month,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.vacation_leave_amount) as vacation_leave_amount,SUM(employee_payrolls.sick_leave_amount) as sick_leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.regular_holiday_day_amount) as regular_holiday_amount,SUM(employee_payrolls.special_holiday_day_amount) as special_holiday_amount,SUM(employee_payrolls.overtime_amount) as overtime_amount,SUM(employee_payrolls.night_diff_amount) as night_diff_amount,SUM(employee_payrolls.night_diff_restday_amount) as night_diff_restday_amount,employee_payrolls.department,employees.salary_status'))
+>>>>>>> branch1
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen','employees.salary_status')
                 ->get();
 
@@ -529,7 +632,11 @@ class ReportsController extends Controller
             $employee_info = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
                 ->orderBy('employees.employee_Lname')
                 ->where('employees.employee_status', 1)
+<<<<<<< HEAD
                 ->where('employee_payrolls.year', 2019)
+=======
+                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
+>>>>>>> branch1
                 ->where('employee_payrolls.department', $request['department'])
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.sick_leave_amount) as sick_leave_total,SUM(employee_payrolls.thirteen_month) as annual_thirteen,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,employee_payrolls.department'))
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen')
@@ -538,7 +645,11 @@ class ReportsController extends Controller
             $inactive_employee = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
                 ->orderBy('employees.employee_Lname')
                 ->where('employees.employee_status', 2)
+<<<<<<< HEAD
                 ->where('employee_payrolls.year', 2019)
+=======
+                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
+>>>>>>> branch1
                 ->where('employee_payrolls.department', $request['department'])
                 ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.sick_leave_amount) as sick_leave_total,SUM(employee_payrolls.thirteen_month) as annual_thirteen,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,employee_payrolls.department'))
                 ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen')

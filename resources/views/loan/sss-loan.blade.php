@@ -55,6 +55,10 @@
                                           <option value="1">SSS LOAN</option>
                                           <option value="2">PAG-IBIG LOAN</option>
                                           <option value="3">COMPANY LOAN</option>
+<<<<<<< HEAD
+=======
+                                          <option value="3">EMERGENCY LOAN</option>
+>>>>>>> branch1
                                     </select>
                                     </div>
                                 </div>
@@ -203,7 +207,11 @@
                                 <hr class="hr-em">
                             </div>
                             
+<<<<<<< HEAD
                             <!-- <form>
+=======
+                            <form>
+>>>>>>> branch1
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="loanType">Date Started</label>
@@ -256,7 +264,11 @@
                                       </label>
                                     </div>
                                 </div>
+<<<<<<< HEAD
                             </form> -->
+=======
+                            </form> 
+>>>>>>> branch1
                             <form>
                                 <div class="col-sm-4">
                                     <div class="form-group">

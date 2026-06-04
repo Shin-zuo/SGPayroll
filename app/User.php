@@ -15,7 +15,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+<<<<<<< HEAD
         'name', 'email', 'password',
+=======
+        'name', 'email', 'password', 'user_type', 'employee_id', 'profile_picture'
+>>>>>>> branch1
     ];
 
     /**
@@ -26,4 +30,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+<<<<<<< HEAD
+=======
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+>>>>>>> branch1
 }

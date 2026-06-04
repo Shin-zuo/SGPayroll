@@ -21,6 +21,11 @@ class Employee_Payrolls extends Model
         'ext_reg_hrs_ammount',
         'night_diff',
         'night_diff_amount',
+<<<<<<< HEAD
+=======
+        'night_diff_restday',
+        'night_diff_restday_amount',
+>>>>>>> branch1
         'rest_special',
         'rest_special_amount',
         'exc_rest_special',
@@ -86,6 +91,10 @@ class Employee_Payrolls extends Model
         'insurance',
         'sss_loan',
         'sss_calamity_loan',
+<<<<<<< HEAD
+=======
+        'hdmf_calamity_loan',
+>>>>>>> branch1
         'hdmf_loan',
         'company_loan',
         'other_loan',

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+<<<<<<< HEAD
 <div class="col-md-12">
     <div class="panel panel-default" style="background-color:#f7e8f0">
         <div class="panel-heading" style="background-color:#f1c6de"><h1 class="text-center"><strong>Employee</strong></h1></div>
@@ -54,6 +55,116 @@
             
         </div>
 
+=======
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-slate-800">Admin Dashboard</h1>
+    <nav class="text-sm font-medium text-slate-500" aria-label="Breadcrumb">
+        <ol class="flex space-x-2">
+            <li><a href="#" class="hover:text-slate-800 transition-colors">Home</a></li>
+            <li><span>/</span></li>
+            <li class="text-slate-800">Employees</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Stat Cards (Top Row) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    @php
+        $totalEmp = count($employee);
+        $activeEmp = collect($employee)->where('status', '!=', 'Inactive')->count();
+    @endphp
+    <!-- Total Users -->
+    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
+        <div class="absolute top-4 left-4 text-blue-500">
+            <i class="fa fa-users text-lg"></i>
+        </div>
+        <div class="ml-10">
+            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Total Employees</h3>
+            <p class="text-2xl font-bold text-slate-800">{{ $totalEmp }}</p>
+        </div>
+    </div>
+
+    <!-- Active Users -->
+    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
+        <div class="absolute top-4 left-4 text-green-500">
+            <i class="fa fa-user-check text-lg"></i>
+        </div>
+        <div class="ml-10">
+            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Active Employees</h3>
+            <p class="text-2xl font-bold text-slate-800">{{ $activeEmp }}</p>
+        </div>
+    </div>
+
+    <!-- Pending Leaves (Placeholder) -->
+    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
+        <div class="absolute top-4 left-4 text-yellow-500">
+            <i class="fa fa-calendar-alt text-lg"></i>
+        </div>
+        <div class="ml-10">
+            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Pending Leaves</h3>
+            <p class="text-2xl font-bold text-slate-800">0</p>
+        </div>
+    </div>
+
+    <!-- Departments (Placeholder) -->
+    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
+        <div class="absolute top-4 left-4 text-purple-500">
+            <i class="fa fa-sitemap text-lg"></i>
+        </div>
+        <div class="ml-10">
+            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Departments</h3>
+            <p class="text-2xl font-bold text-slate-800">4</p>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table Section -->
+<div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden mb-6">
+    <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-white">
+        <h2 class="text-base font-semibold text-slate-800">Employee Directory</h2>
+        <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
+            <i class="fa fa-plus mr-1.5"></i> Add Employee
+        </button>
+    </div>
+    <div class="overflow-x-auto p-4">
+        <table id="emptable" class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                    <th class="px-4 py-2 border-b border-slate-200">ID</th>
+                    <th class="px-4 py-2 border-b border-slate-200">Name</th>
+                    <th class="px-4 py-2 border-b border-slate-200">Department</th>
+                    <th class="px-4 py-2 border-b border-slate-200">Position</th>
+                    <th class="px-4 py-2 border-b border-slate-200">Status</th>
+                    <th class="px-4 py-2 border-b border-slate-200 text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach($employee as $employees)
+                <tr class="hover:bg-slate-50 transition-colors bg-white">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$employees->id}}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-800">{{strtoupper($employees->full_name)}}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{strtoupper($employees->department)}}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$employees->position}}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm">
+                        @if($employees->status == 'Inactive')
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>
+                        @else
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="/employee/account/{{$employees->id}}" class="text-blue-600 hover:text-blue-900 mr-3" target="_blank" title="View Account">
+                            <i class="fa fa-user-edit"></i>
+                        </a>
+                        <a href="#" data-toggle="modal" data-id="{{$employees->id}}" data-target=".bd-example-modal-sm" class="text-red-600 hover:text-red-900" title="Set Inactive">
+                            <i class="fa fa-user-times"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+>>>>>>> branch1
     </div>
 </div>
 <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
@@ -95,19 +206,28 @@
                             <div class="form-group error">
                                 <label for="inputLastName" class="col-sm-4 control-label">Last Name :</label>
                                 <div class="col-sm-8">
+<<<<<<< HEAD
                                     <input type="text" class="form-control  has-error" id="last_name" name="last_name">
+=======
+                                    <input type="text" class="form-control  has-error" id="last_name" name="last_name" required>
+>>>>>>> branch1
                                 </div>
                             </div>
 
                             <div class="form-group error">
                                 <label for="inputFirstName" class="col-sm-4 control-label">First Name :</label>
                                 <div class="col-sm-8">
+<<<<<<< HEAD
                                     <input type="text" class="form-control  has-error" id="first_name" name="first_name" >
+=======
+                                    <input type="text" class="form-control  has-error" id="first_name" name="first_name" required>
+>>>>>>> branch1
                                 </div>
                             </div>
                             <div class="form-group error">
                                 <label for="inputMidName" class="col-sm-4 control-label">Middle Name :</label>
                                 <div class="col-sm-8">
+<<<<<<< HEAD
                                     <input type="text" class="form-control  has-error" id="mid_name" name="mid_name" >
                                 </div>
                             </div>
@@ -115,6 +235,15 @@
                                 <label for="inputGender" class="col-sm-4 control-label">Gender :</label>
                                 <div class="col-sm-8">
                                     <select id="gender" class="form-control" name="gender" >
+=======
+                                    <input type="text" class="form-control  has-error" id="mid_name" name="mid_name"  >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputGender" class="col-sm-4 control-label" >Gender :</label>
+                                <div class="col-sm-8">
+                                    <select id="gender" class="form-control" name="gender" required>
+>>>>>>> branch1
                                         <option value="" selected>Select Category</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -124,7 +253,11 @@
                             <div class="form-group error">
                                 <label for="inputStatus" class="col-sm-4 control-label">Status :</label>
                                 <div class="col-sm-8">
+<<<<<<< HEAD
                                     <select id="status" class="form-control" name="status" >
+=======
+                                    <select id="status" class="form-control" name="status" required>
+>>>>>>> branch1
                                         <option value="" selected>Select Status</option>
                                         <option value="Single" >Single</option>
                                         <option value="Married" >Married</option>
@@ -132,6 +265,7 @@
                                 </div>
                             </div>
                             <div class="form-group error">
+<<<<<<< HEAD
                                 <label for="inputDateHired" class="col-sm-4 control-label">Date Hired :</label>
                                 <div class="col-sm-8">
                                     <input type="date" class="form-control has-error" id="date_hired" name="date_hired"  value="">
@@ -141,13 +275,29 @@
                                 <label for="inputBirthDate" class="col-sm-4 control-label">Date of Birth :</label>
                                 <div class="col-sm-8">
                                     <input type="date" class="form-control has-error" id="birth_date" name="birth_date"  value="">
+=======
+                                <label for="inputDateHired" class="col-sm-4 control-label" >Date Hired :</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control has-error" id="date_hired" name="date_hired"  value="" required>
+                                </div>
+                            </div>
+                            <div class="form-group error">
+                                <label for="inputBirthDate" class="col-sm-4 control-label" >Date of Birth :</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control has-error" id="birth_date" name="birth_date"  value="" required>
+>>>>>>> branch1
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputDepartment" class="col-sm-4 control-label">Group :</label>
                                 <div class="col-sm-8">
+<<<<<<< HEAD
                                     <select id="department" class="form-control" name="department" >
                                         <option value="" selected>Select Department</option>
+=======
+                                    <select id="department" class="form-control" name="department" required>
+                                        <option value="" selected disabled>Select Department</option>
+>>>>>>> branch1
                                         @foreach($department as $departments)
                                         <option value="{{$departments->id}}">{{$departments->department_name}}</option>
                                         @endforeach
@@ -155,10 +305,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
+<<<<<<< HEAD
                                 <label for="inputSubDepartment" class="col-sm-4 control-label">SubGroup :</label>
                                 <div class="col-sm-8">
                                     <select id="sub_department" class="form-control" name="sub_department" >
                                         <option value="" selected>Select Sub Department</option>
+=======
+                                <label for="inputSubDepartment" class="col-sm-4 control-label" >SubGroup :</label>
+                                <div class="col-sm-8">
+                                    <select id="sub_department" class="form-control" name="sub_department" required>
+                                        <option value="" selected disabled>Select Sub Department</option>
+>>>>>>> branch1
                                     </select>
                                 </div>
                             </div>
@@ -206,6 +363,16 @@
                                 </div>
                             </div>
                             <div class="form-group error">
+<<<<<<< HEAD
+=======
+                                <label for="inputEmail" class="col-sm-4 control-label">Email :</label>
+                                <div class="col-sm-8">
+                                    <input type="email" class="form-control has-error" id="emp_email" name="emp_email" >
+                                    <small class="text-muted">This will be the employee's login email. Default password: testPass</small>
+                                </div>
+                            </div>
+                            <div class="form-group error">
+>>>>>>> branch1
                                 <label for="inputTin" class="col-sm-4 control-label">Passport no. :</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control  has-error" id="passport_no" name="passport_no" >
@@ -231,7 +398,11 @@
 </div>
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<<<<<<< HEAD
 <script type="text/javascript" src="/js/employee/employee.js"></script>
+=======
+<script type="text/javascript" src="/js/employee/employee.js?v={{ time() }}"></script>
+>>>>>>> branch1
 <script>
     $(document).ready(function() {
         $('#emptable').DataTable();

@@ -279,6 +279,11 @@ class QuickPayrollController extends Controller
                     $data['ext_reg_hrs_ammount'] =  $extra_regular_hours;
                     $data['night_diff'] = $row['night_hours'];
                     $data['night_diff_amount'] = $night_diff;
+<<<<<<< HEAD
+=======
+                    $data['night_diff_restday']= $night_diff_restday;
+                    $data['night_diff_restday_amount']= $night_diff_restday_amount;
+>>>>>>> branch1
                     $data['rest_special'] = $row['special'];
                     $data['rest_special_amount'] = $special;
                     $data['exc_rest_special'] = $row['overtimesphrs'];

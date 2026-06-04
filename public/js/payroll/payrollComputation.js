@@ -14,10 +14,16 @@ $(document).ready(function () {
     var lastPayrollNo = {
         deptCode: $('#deptCode').val(),
     };
+<<<<<<< HEAD
     var type = "GET";
     var checkPayrollNo = '/payroll/{department}/checkPayrollNo';
     $.ajax({
         type: type,
+=======
+    var checkPayrollNo = '/payroll/' + $('#deptCode').val() + '/checkPayrollNo';
+    $.ajax({
+        type: "GET",
+>>>>>>> branch1
         url: checkPayrollNo,
         data: lastPayrollNo,
         dataType: 'json',
@@ -72,6 +78,11 @@ $(document).ready(function () {
                         extra_regular_hours_amount: $(this).find('input[name=extra_regular_hours_amount]').val(),
                         night_diff: $(this).find('input[name=night_diff]').val(),
                         night_diff_amount: $(this).find('input[name=night_diff_amount]').val(),
+<<<<<<< HEAD
+=======
+                        night_diff_restday: $(this).find('input[name=night_diff_restday]').val(),
+                        night_diff_restday_amount: $(this).find('input[name=night_diff_restday_amount]').val(), 
+>>>>>>> branch1
                         //HOLIDAY
                         rest_special:  $(this).find('input[name=rest_special]').val(),
                         rest_special_amount:  $(this).find('input[name=rest_special_amount]').val(),
@@ -117,6 +128,10 @@ $(document).ready(function () {
                         sss_loan: $(this).find('[name=sss_loan]').text(),
                         sss_calamity_loan :  $(this).find('[name=calamity_loan]').text(),
                         pagibig_loan: $(this).find('[name=hdmf_loan]').text(),
+<<<<<<< HEAD
+=======
+                        pagibig_calamity_loan: $(this).find('[name=hdmf_calamity_loan]').text(),
+>>>>>>> branch1
                         company_loan: $(this).find('[name=company_loan]').text(),
                         other_loan: $(this).find('[name=other_loan]').text(),
                         rent: $(this).find('[name=rent_other]').text(),
@@ -131,6 +146,7 @@ $(document).ready(function () {
                         //END MONTH
                         endMonth: $('#endMonth').prop('checked'),
                     };
+<<<<<<< HEAD
                     $.ajax({
                         type: "GET",
                         url: '/payroll/{department}/insetFinishData',
@@ -139,6 +155,20 @@ $(document).ready(function () {
                         success: function (data) {
                            // $('#insertFinishData').hide();
                            //  alertify.success(data.employee + " " + 'Data Save!');
+=======
+                    var dept = $('#deptCode').val();
+                    $.ajax({
+                        type: "GET",
+                        url: '/payroll/' + dept + '/insetFinishData',
+                        data:arrayData ,
+                        dataType: 'json',
+                        success: function (data) {
+                            alertify.success(data.employee + ' Data Saved!');
+                        },
+                        error: function (xhr) {
+                            alertify.error('Error saving data. Please try again.');
+                            console.error(xhr.responseText);
+>>>>>>> branch1
                         }
                     });
                 });
@@ -164,6 +194,10 @@ $(document).ready(function () {
                     extra_regular_hour: $(e.currentTarget).find('input[name=extra_regular_hour]').val(),
                     extra_regular_hour_amount: $(e.currentTarget).find('input[name=extra_regular_hours_amount]').val(),
                     night_diff: $(e.currentTarget).find('input[name=night_diff]').val(),
+<<<<<<< HEAD
+=======
+                    night_diff_restday: $(e.currentTarget).find('input[name=night_diff_restday]').val(),
+>>>>>>> branch1
                     //HOLIDAY
                     rest_special:  $(e.currentTarget).find('input[name=rest_special]').val(),
                     rest_special_exc: $(e.currentTarget).find('input[name=rest_special_exc]').val(),
@@ -202,10 +236,19 @@ $(document).ready(function () {
                     date_from: $('#date_from').val(),
                     date_to: $('#date_to').val(),
                     endMonth: $('#endMonth').prop('checked'),
+<<<<<<< HEAD
                 };
                 $.ajax({
                 type: "GET",
                 url: "/payroll/{department}/BasicComputation",
+=======
+                    thirteenMonth: $('#13Month').prop('checked'),
+                };
+                var deptCode = $('#deptCode').val();
+                $.ajax({
+                type: "GET",
+                url: "/payroll/" + deptCode + "/BasicComputation",
+>>>>>>> branch1
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
@@ -216,6 +259,10 @@ $(document).ready(function () {
                     $(e.currentTarget).find('input[name=over_time_amount]').val(data.over_time_amount);
                     $(e.currentTarget).find('input[name=extra_regular_hours_amount]').val(data.extra_regular_hours_amount);
                     $(e.currentTarget).find('input[name=night_diff_amount]').val(data.night_diff_amount);
+<<<<<<< HEAD
+=======
+                    $(e.currentTarget).find('input[name=night_diff_restday_amount]').val(data.night_diff_restday_amount);
+>>>>>>> branch1
                     $(e.currentTarget).find('input[name=excess_amount]').val(data.extra_regular_hours_amount);
                     //HOLIDAY
                     $(e.currentTarget).find('input[name=rest_special_amount]').val(data.rest_special_amount);
@@ -243,6 +290,10 @@ $(document).ready(function () {
                     //LOAN
                     $(e.currentTarget).find('[name=sss_loan]').text(data.sss_loan_deduction);
                     $(e.currentTarget).find('[name=hdmf_loan]').text(data.pagibig_loan_deduction);
+<<<<<<< HEAD
+=======
+                    $(e.currentTarget).find('[name=hdmf_calamity_loan]').text(data.pagibig_calamity_loan_deduction);
+>>>>>>> branch1
                     $(e.currentTarget).find('[name=company_loan]').text(data.company_loan_deduction);
                     $(e.currentTarget).find('[name=other_loan]').text(data.other_loan);
                     $(e.currentTarget).find('[name=calamity_loan]').text(data.sss_calamity_loan);
@@ -259,4 +310,33 @@ $(document).ready(function () {
             });
         }
     });
+<<<<<<< HEAD
+=======
+
+    // Leave Validation Guard
+    $('.payroll-table-main').on('change', 'input[name=sick_leave], input[name=vacation_leave]', function () {
+        var inputElement = $(this);
+        var inputDays = parseFloat(inputElement.val()) || 0;
+        if (inputDays <= 0) return;
+
+        var employeeId = inputElement.closest('.payroll-table-main').find('input[name=employee]').val();
+        var leaveType = inputElement.attr('name') === 'sick_leave' ? 'sick' : 'vacation';
+        var year = new Date().getFullYear();
+
+        $.ajax({
+            type: "GET",
+            url: "/api/leave-balance/" + employeeId + "/" + leaveType + "/" + year,
+            success: function (data) {
+                if (inputDays > data.remaining) {
+                    alertify.error('Only ' + data.remaining + ' day(s) remaining for ' + leaveType + ' leave');
+                    inputElement.val(data.remaining);
+                    // trigger recompute
+                    var e = jQuery.Event("keyup");
+                    e.keyCode = 13;
+                    inputElement.closest('.payroll-table-main').trigger(e);
+                }
+            }
+        });
+    });
+>>>>>>> branch1
 });
