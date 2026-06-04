@@ -16,7 +16,7 @@ class AddSssLoanTypeToEmployeeLoanTable extends Migration
         Schema::table('employee_loans', function (Blueprint $table) {
             //
             $table->string('sss_loan_type')->nullable()->after('loan_name');
-            $table->string('promissory_note')->nullable()->after('sss_loan_type');
+            $table->string('promissory_note')->nullable();
         });
     }
 

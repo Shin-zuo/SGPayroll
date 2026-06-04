@@ -149,26 +149,26 @@
                             <div class="form-group error">
                                 <label for="inputLastName" class="col-sm-4 control-label">Last Name :</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="last_name" name="last_name">
+                                    <input type="text" class="form-control  has-error" id="last_name" name="last_name" required>
                                 </div>
                             </div>
 
                             <div class="form-group error">
                                 <label for="inputFirstName" class="col-sm-4 control-label">First Name :</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="first_name" name="first_name" >
+                                    <input type="text" class="form-control  has-error" id="first_name" name="first_name" required>
                                 </div>
                             </div>
                             <div class="form-group error">
                                 <label for="inputMidName" class="col-sm-4 control-label">Middle Name :</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="mid_name" name="mid_name" >
+                                    <input type="text" class="form-control  has-error" id="mid_name" name="mid_name"  >
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputGender" class="col-sm-4 control-label">Gender :</label>
+                                <label for="inputGender" class="col-sm-4 control-label" >Gender :</label>
                                 <div class="col-sm-8">
-                                    <select id="gender" class="form-control" name="gender" >
+                                    <select id="gender" class="form-control" name="gender" required>
                                         <option value="" selected>Select Category</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -178,7 +178,7 @@
                             <div class="form-group error">
                                 <label for="inputStatus" class="col-sm-4 control-label">Status :</label>
                                 <div class="col-sm-8">
-                                    <select id="status" class="form-control" name="status" >
+                                    <select id="status" class="form-control" name="status" required>
                                         <option value="" selected>Select Status</option>
                                         <option value="Single" >Single</option>
                                         <option value="Married" >Married</option>
@@ -186,22 +186,22 @@
                                 </div>
                             </div>
                             <div class="form-group error">
-                                <label for="inputDateHired" class="col-sm-4 control-label">Date Hired :</label>
+                                <label for="inputDateHired" class="col-sm-4 control-label" >Date Hired :</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control has-error" id="date_hired" name="date_hired"  value="">
+                                    <input type="date" class="form-control has-error" id="date_hired" name="date_hired"  value="" required>
                                 </div>
                             </div>
                             <div class="form-group error">
-                                <label for="inputBirthDate" class="col-sm-4 control-label">Date of Birth :</label>
+                                <label for="inputBirthDate" class="col-sm-4 control-label" >Date of Birth :</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control has-error" id="birth_date" name="birth_date"  value="">
+                                    <input type="date" class="form-control has-error" id="birth_date" name="birth_date"  value="" required>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputDepartment" class="col-sm-4 control-label">Group :</label>
                                 <div class="col-sm-8">
-                                    <select id="department" class="form-control" name="department" >
-                                        <option value="" selected>Select Department</option>
+                                    <select id="department" class="form-control" name="department" required>
+                                        <option value="" selected disabled>Select Department</option>
                                         @foreach($department as $departments)
                                         <option value="{{$departments->id}}">{{$departments->department_name}}</option>
                                         @endforeach
@@ -209,10 +209,10 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputSubDepartment" class="col-sm-4 control-label">SubGroup :</label>
+                                <label for="inputSubDepartment" class="col-sm-4 control-label" >SubGroup :</label>
                                 <div class="col-sm-8">
-                                    <select id="sub_department" class="form-control" name="sub_department" >
-                                        <option value="" selected>Select Sub Department</option>
+                                    <select id="sub_department" class="form-control" name="sub_department" required>
+                                        <option value="" selected disabled>Select Sub Department</option>
                                     </select>
                                 </div>
                             </div>

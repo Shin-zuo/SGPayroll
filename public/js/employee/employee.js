@@ -68,7 +68,7 @@ $(document).ready(function(){
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                var appendData = '';
+                var appendData = '<option value="" selected disabled>Select Sub Department</option>';
                 $.each(data, function (index, dept) {
                     appendData += '<option value="'+ dept.sub_department_name+'">'+dept.sub_department_name+'</option>'
             })
@@ -213,8 +213,8 @@ $(document).ready(function(){
             gender: $('#gender').val(),
             date_hired: $('#date_hired').val(),
             birth_date: $('#birth_date').val(),
-            department: $("#department :selected").text(),
-            sub_department: $("#sub_department :selected").text(),
+            department: $('#department').val() ? $("#department :selected").text() : "",
+            sub_department: $('#sub_department').val() ? $("#sub_department :selected").text() : "",
             status: $('#status').val(),
             address: $('#address').val(),
             sss: $('#sss_no').val(),
@@ -225,6 +225,35 @@ $(document).ready(function(){
             passport : $('#passport_no').val(),
             passport_exp : $('#passport_exp').val(),
             emp_email: $('#emp_email').val(),
+        }
+
+        if(formData.employee_id=="" ) {
+            alertify.error("Employee I.D is required !");
+            return;
+        } else if(formData.employee_Lname=="" ) {
+            alertify.error("LastName is required !");
+            return;
+        } else if(formData.employee_Fname=="" ) {
+            alertify.error("FirstName is required !");
+            return;
+        } else if(formData.employee_Mname=="" ) {
+            alertify.error("MiddleName is required !");
+            return;
+        } else if(formData.gender=="" || formData.gender==null) {
+            alertify.error("Gender is required !");
+            return;
+        } else if(formData.date_hired=="" ) {
+            alertify.error("Date Hired is required !");
+            return;
+        } else if(formData.birth_date=="" ) {
+            alertify.error("Date of Birth is required !");
+            return;
+        } else if(formData.department=="" || formData.department==null) {
+            alertify.error("Department is required !");
+            return;
+        } else if(formData.sub_department=="" || formData.sub_department==null) {
+            alertify.error("SubGroup is required !");
+            return;
         }
 
         var type = "GET";
@@ -244,48 +273,7 @@ $(document).ready(function(){
             },
             error: function (data) {
                 // console.log('Error:', data);
-                     if(formData.employee_id=="" )
-                     {
-                            alertify.error("Employee I.D is required !")
-                    }
-                     else if(formData.employee_Lname=="" )
-                    {
-                        alertify.error("LastName is required !")
-                    }
-                    else if(formData.employee_Fname=="" )
-                    {
-                        alertify.error("FirstName is required !")
-                    }
-                    else if(formData.employee_Mname=="" )
-                    {
-                        alertify.error("MiddleName is required !")
-                    }
-                     else if(formData.gender=="" )
-                     {
-                         alertify.error("Gender is required !")
-                     }
-                     else if(formData.date_hired=="" )
-                     {
-                         alertify.error("Date Hired is required !")
-                     }
-                     else if(formData.birth_date=="" )
-                     {
-                         alertify.error("Date of Birth is required !")
-                     }
-                     else if(formData.department=="" )
-                     {
-                         alertify.error("Department is required !")
-                     }
-                     else if(formData.position=="" )
-                     {
-                         alertify.error("Position is required !")
-                     }
-                    else
-                     {
-                         // $('#paymentModal').remove();
-                         location.reload();
-                     }
-
+                alertify.error("An error occurred while adding the employee.");
             }
         });
     });

@@ -16,7 +16,7 @@ class AddEmployerTinSssToDepartmentTable extends Migration
         Schema::table('departments', function (Blueprint $table) {
             //
             $table->string('employer_tin')->nullable()->after('department_name');
-            $table->string('employer_sss')->nullable()->after('employer_tin');
+            $table->string('employer_sss')->nullable();
         });
     }
 

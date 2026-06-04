@@ -16,12 +16,12 @@ class AddIdToEmployeeTable extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('status')->nullable()->after('department');
-            $table->string('address')->nullable()->after('status');
-            $table->string('sss_number')->nullable()->after('address');
-            $table->string('tin_number')->nullable()->after('sss_number');
-            $table->string('philhealth_number')->nullable()->after('tin_number');
-            $table->string('passport_number')->nullable()->after('philhealth_number');
-            $table->string('passport_exp')->nullable()->after('passport_number');
+            $table->string('address')->nullable();
+            $table->string('sss_number')->nullable();
+            $table->string('tin_number')->nullable();
+            $table->string('philhealth_number')->nullable();
+            $table->string('passport_number')->nullable();
+            $table->string('passport_exp')->nullable();
         });
     }
 

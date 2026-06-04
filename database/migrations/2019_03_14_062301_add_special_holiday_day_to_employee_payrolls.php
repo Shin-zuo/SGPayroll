@@ -16,7 +16,7 @@ class AddSpecialHolidayDayToEmployeePayrolls extends Migration
         Schema::table('employee_payrolls', function (Blueprint $table) {
             //
             $table->string('special_holiday_day')->nullable()->after('regular_holiday_day_amount');
-            $table->string('special_holiday_day_amount')->nullable()->after('special_holiday_day');
+            $table->string('special_holiday_day_amount')->nullable();
         });
     }
 

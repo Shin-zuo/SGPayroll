@@ -13,7 +13,10 @@ class AddMissingColumnsToEmployeePayrolls extends Migration
      */
     public function up()
     {
-        // Columns already exist due to partial migration failure.
+        Schema::table('employee_payrolls', function (Blueprint $table) {
+            $table->decimal('hdmf_calamity_loan', 10, 2)->default(0.00);
+            $table->decimal('gross_deducted_witholding', 10, 2)->default(0.00);
+        });
     }
 
     /**

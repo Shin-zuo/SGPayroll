@@ -14,3 +14,14 @@ yarn-error.log
 *.env.mysql
 *.env.pg
 *.md
+*.env.mysql1
+*.sql
+*scratch*.php
+*scratch*.json
+*scratch*.sql
+*.bat
+scratch.php
+scratch.json
+scratch.sql
+features.md
+tasks.md

@@ -52,6 +52,9 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
+            'options' => [
+        PDO::MYSQL_ATTR_SSL_CA => base_path('cacert.pem'),
+    ],
         ],
 
         'pgsql' => [
@@ -64,7 +67,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
         'sqlsrv' => [

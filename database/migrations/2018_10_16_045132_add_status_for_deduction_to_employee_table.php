@@ -16,7 +16,7 @@ class AddStatusForDeductionToEmployeeTable extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('sss_status')->nullable()->after('tax_status');
-            $table->string('phic_status')->nullable()->after('sss_status');
+            $table->string('phic_status')->nullable();
         });
     }
 
