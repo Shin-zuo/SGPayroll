@@ -9,11 +9,8 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 # Your existing start command (e.g., apache2-foreground)
 CMD ["apache2-foreground"]
 
-# Fix Debian archive repositories because Debian 9 (Stretch) is EOL
-RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
-           -e 's|security.debian.org|archive.debian.org/|g' \
-           -e '/stretch-updates/d' /etc/apt/sources.list \
-    && apt-get update -y && apt-get install -y \
+# Cleaned up APT configuration for Debian 11 (Bullseye)
+RUN apt-get update -y && apt-get install -y \
     libmcrypt-dev \
     libxml2-dev \
     zlib1g-dev \
@@ -22,7 +19,7 @@ RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
     git \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql pdo_pgsql pgsql mcrypt xml zip mbstring gd \
+    && docker-php-ext-install pdo_mysql pdo_pgsql pgsql xml zip mbstring gd \
     && a2enmod rewrite
 
 # Install Composer
@@ -56,5 +53,3 @@ COPY cacert.pem /var/www/html/cacert.pem
 
 # Start the startup script
 CMD ["/usr/local/bin/start.sh"]
-
-# RUN php artisan migrate --force
