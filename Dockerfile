@@ -9,13 +9,14 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 # Your existing start command (e.g., apache2-foreground)
 CMD ["apache2-foreground"]
 
-# Cleaned up APT configuration for Debian 11 (Bullseye)
+# Cleaned up APT configuration with libzip-dev added
 RUN apt-get update -y && apt-get install -y \
     libmcrypt-dev \
     libxml2-dev \
     zlib1g-dev \
     libpng-dev \
     libpq-dev \
+    libzip-dev \
     git \
     zip \
     unzip \
