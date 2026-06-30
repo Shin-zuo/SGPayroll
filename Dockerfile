@@ -1,3 +1,5 @@
+FROM php:7.1-apache
+
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
@@ -6,8 +8,6 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Your existing start command (e.g., apache2-foreground)
 CMD ["apache2-foreground"]
-
-FROM php:7.1-apache
 
 # Fix Debian archive repositories because Debian 9 (Stretch) is EOL
 RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
