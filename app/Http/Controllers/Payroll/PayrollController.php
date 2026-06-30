@@ -69,6 +69,7 @@ class PayrollController extends Controller
         $over_time_pay = ($per_hour_computation*1.25)*$request['overtime_hours'];
         $extra_regular_hours = $per_hour_computation*$request['extra_regular_hour'];
         $night_diff = ($per_hour_computation*0.1)*$request['night_diff'];
+        $night_diff_restday = ($per_hour_computation*0.1*1.3)*$request['night_diff_restday'];
         $absent = ($employee['basic_pay'] + $employee['cola'] + $employee['other_nt_pay'])*$request['absent'];
         //RESTDAY
         if($request['rest_special']==null || $request['rest_special']==0) {
@@ -93,14 +94,14 @@ class PayrollController extends Controller
         $restday_on_special_exc = ($per_hour_computation * 1.95) * $request['restday_on_special_exc'];
         //DEBIT
         // For above minimum
-        $regular_holiday = ($employee['basic_pay']+$employee['cola']+$employee['other_nt_pay'])*$request['regular_holiday'];
-        $special_holiday = (($employee['basic_pay']*1.3)+$employee['cola']+$employee['other_nt_pay'])*$request['special_holiday'];
+        $regular_holiday = ($employee['basic_pay']+$employee['other_nt_pay'])*$request['regular_holiday'];
+        $special_holiday = (($employee['basic_pay']*1.3)+$employee['other_nt_pay'])*$request['special_holiday'];
         //For minimum wager
-        $regular_holiday_minimum = ($employee['basic_pay']+$employee['cola']+$employee['other_nt_pay'])*$request['regular_holiday_minimum'];
-        $special_holiday_minimum = (($employee['basic_pay']*1.3)+$employee['cola']+$employee['other_nt_pay'])*$request['special_holiday_minimum'];
+        $regular_holiday_minimum = ($employee['basic_pay']+$employee['other_nt_pay'])*$request['regular_holiday_minimum'];
+        $special_holiday_minimum = (($employee['basic_pay']*1.3)+$employee['other_nt_pay'])*$request['special_holiday_minimum'];
         //LEAVE PAY
-        $sick_leave = ($employee['basic_pay']+$employee['cola']+$employee['other_nt_pay'])*$request['sick_leave'];
-        $vacation_leave = ($employee['basic_pay']+$employee['cola']+$employee['other_nt_pay'])*$request['vacation_leave'];
+        $sick_leave = ($employee['basic_pay']+$employee['other_nt_pay'])*$request['sick_leave'];
+        $vacation_leave = ($employee['basic_pay']+$employee['other_nt_pay'])*$request['vacation_leave'];
         //OTHER PAY
         $non_tax_other = $request['nt_pay'];
         $cola = $employee['cola']*$request['work_days'];
@@ -110,10 +111,11 @@ class PayrollController extends Controller
         $status_sss = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->pluck('active');
         $status_sss_calamity = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','2')->pluck('active');
         $status_hdmf = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','3')->pluck('active');
+        $status_hdmf_calamity = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('active');
         $status_company = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('active');
         $status_other =  $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('active');
         $status_insurance = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','6')->pluck('active');
-        $status_rent = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('active');
+        $status_sss_emergency = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('active');
         if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->count() > 0 && $status_sss[0] == 'true') {
             $deduction_date_sss= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->pluck('deduction_date');
             $remaining_term = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->pluck('remaining_term');
@@ -162,6 +164,25 @@ class PayrollController extends Controller
                 else
                 {
                     $hdmf_loan = 0;
+                }
+                if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','8')->count() > 0 && $status_hdmf_calamity[0] == 'true')
+
+                {
+                    $deduction_date_hdmf_calamity = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('deduction_date');
+                    $remaining_term = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('remaining_term');
+                    if($remaining_term[0] > 0 && Carbon::parse($deduction_date_hdmf_calamity[0]) <= Carbon::now() )
+                    {
+                        $hdmf_calamity_loan = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('deduction');
+                        $hdmf_calamity_loan = $hdmf_calamity_loan[0];
+                    }
+                    else
+                    {
+                        $hdmf_calamity_loan = 0;
+                    }
+                }
+                else
+                {
+                    $hdmf_calamity_loan = 0;
                 }
                 if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->count() > 0 && $status_company[0]== 'true')
                 {
@@ -219,25 +240,25 @@ class PayrollController extends Controller
         {
             $insurance = 0;
         }
-        if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->count() > 0 && $status_rent[0]== 'true')
+        if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->count() > 0 && $status_sss_emergency[0]== 'true')
         {
-            $deduction_date_rent= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction_date');
-            if(Carbon::parse($deduction_date_rent[0]) < Carbon::now())
+            $deduction_date_sss_emergency = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction_date');
+            if(Carbon::parse($deduction_date_sss_emergency[0]) <= Carbon::now())
             {
-                $rent = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction');
-                $rent = $rent[0];
+                $sss_emergency_loan = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction');
+                $sss_emergency_loan = $sss_emergency_loan[0];
             }
             else
             {
-                $rent = 0;
+                $sss_emergency_loan = 0;
             }
         }
         else
         {
-            $rent = 0;
+            $sss_emergency_loan = 0;
         }
 
-                $total_loan_deduction = $sss_salary_loan + $sss_calamity_loan + $hdmf_loan + $company_loan + $insurance + $other_loan + $rent;
+                $total_loan_deduction = $sss_salary_loan + $sss_calamity_loan + $hdmf_calamity_loan + $hdmf_loan + $company_loan + $insurance + $other_loan + $sss_emergency_loan;
                 //GROSSPAY
                     $total_grosspay = $basic_amount +
                         $cola +
@@ -246,6 +267,7 @@ class PayrollController extends Controller
                         $other_pay +
                         $extra_regular_hours +
                         $night_diff +
+                        $night_diff_restday +
                         $regular_holiday +
                         $rest_special +
                         $regular_holiday_minimum +
@@ -261,6 +283,8 @@ class PayrollController extends Controller
                         $sick_leave +
                         $vacation_leave -
                         $absent;
+
+    
                 if ($employee['payroll_type'] == 2)
                 {
                     $basic_amount = round($employee['basic_pay'],2)/2;
@@ -286,11 +310,11 @@ class PayrollController extends Controller
                 }
                 if($request['payroll_no'] == 1 && round($total_grosspay,2) < 10000 && $employee['phic_status']==1)
                 {
-                    $philhealth_deduction = 150;
+                    $philhealth_deduction = 250;
                 }
                 else if ($request['payroll_no'] == 1 && round($total_grosspay,2) > 10000 && round($total_grosspay,2) < 60000 && $employee['phic_status']==1)
                 {
-                    $philhealth_deduction = $total_grosspay * 0.015 ;
+                    $philhealth_deduction = $total_grosspay * 0.025 ;
                 }
                 else if ($request['payroll_no'] == 1 && round($total_grosspay,2) > 60000 && $employee['phic_status']==1)
                 {
@@ -304,11 +328,11 @@ class PayrollController extends Controller
                 //SSS
                 if($employee['sss_status'] == 1)
                 {
-                    $sss_deduction_total = $total_grosspay*0.045;
+                    $sss_deduction_total = $total_grosspay*0.05;
                     $sss_provident_fund = 0;
-                    if($sss_deduction_total>900.00 )
+                    if($sss_deduction_total>1000.00 )
                     {
-                        $sss_deduction_total = 900.00;
+                        $sss_deduction_total = 1000;
                     }
                 }
                 else
@@ -330,11 +354,11 @@ class PayrollController extends Controller
                         }
                         if ($monthly_total_grosspay >= 1 && $monthly_total_grosspay <= 10000.00)
                         {
-                            $philhealth_deduction = round(150,2) - $total_philhealth_deduction;
+                            $philhealth_deduction = round(0,2);
                         }
                         if($monthly_total_grosspay >= 10000.01 && $monthly_total_grosspay <= 59999.99)
                         {
-                            $philhealth_deduction = (round($monthly_total_grosspay,2)*0.03/2) - $total_philhealth_deduction;
+                            $philhealth_deduction = (round($monthly_total_grosspay,2)*0.05/2) - $total_philhealth_deduction;
                         }
                         if($monthly_total_grosspay >= 60000.00 && $monthly_total_grosspay <= 9999999999999.99)
                         {
@@ -350,7 +374,7 @@ class PayrollController extends Controller
                     {
                         $sss_deduction = Sss_Table::whereRaw('? between range_from and range_to', [round($monthly_total_grosspay, 2)])->get();
                         $sss_deduction_total = $sss_deduction[0]['sss_ee'] - $total_sss_in_month;
-                        $sss_provident_fund = $sss_deduction[0]['provident_fund']*.045;
+                        $sss_provident_fund = $sss_deduction[0]['provident_fund']*0.05;
                     }
                     else
                     {
@@ -358,48 +382,12 @@ class PayrollController extends Controller
                         $sss_deduction_total = 0;
                     }
                 }
-
-        //WITHOLDING TAX for Payroll 1
-        if($employee['tax_status'])
-        {
-            if(round($total_grosspay,2) <= 10417.00)
-            {
-                $witholding_tax_deduction = 0;
-            }
-            if(round($total_grosspay,2) >= 10417.01 && round($total_grosspay,2) <= 16667.00)
-            {
-                $witholding = ($total_grosspay - 10417) * 0.2;
-                $witholding_tax_deduction = $witholding;
-            }
-            if(round($total_grosspay,2) >= 16667.01 && round($total_grosspay,2) <= 33333.00)
-            {
-                $witholding = ($total_grosspay-16667.00) * 0.25;
-                $witholding_tax_deduction = $witholding + 1250.00;
-            }
-            if(round($total_grosspay,2) >= 33333.01 && round($total_grosspay,2) <= 83333.00)
-            {
-                $witholding = ($total_grosspay-33333.00) * 0.3;
-                $witholding_tax_deduction = $witholding + 5416.67;
-            }
-            if(round($total_grosspay,2) >= 83333.01 && round($total_grosspay,2) <= 333333.00)
-            {
-                $witholding = ($total_grosspay-83333.00) * 0.32;
-                $witholding_tax_deduction = $witholding + 20416.67;
-            }
-            if(round($total_grosspay,2) >= 333333.01)
-            {
-                $witholding = ($total_grosspay-333333.00) * 0.35;
-                $witholding_tax_deduction = $witholding + 100416.67;
-            }
-        }
-        else
-        {
-            $witholding_tax_deduction = 0;
-        }
-
+               
                 $total_deduction = $sss_deduction_total + $philhealth_deduction + $pag_ibig_deduction;
+                $taxable_net_income = $total_grosspay - $total_deduction;
                 $ot_pay_total = $over_time_pay +
-                    $night_diff +
+                    $night_diff + 
+                    $night_diff_restday +
                     $extra_regular_hours +
                     $rest_special +
                     $rest_special_exc +
@@ -410,7 +398,84 @@ class PayrollController extends Controller
                     $restday_on_special +
                     $restday_on_special_exc;
                 $leave_pay_total = $vacation_leave + $sick_leave;
+                //WITHOLDING TAX for Payroll 1
+                
+
+            if($employee['tax_status'])
+             {
+            if(round($taxable_net_income,2) <= 10417.00)
+            {
+                $witholding_tax_deduction = 0;
+            }
+            if(round($taxable_net_income,2) >= 10417.01 && round($taxable_net_income,2) <= 16667.00)
+            {
+                $witholding = ($taxable_net_income - 10417) * 0.15;
+                $witholding_tax_deduction = $witholding;
+            }
+            if(round($taxable_net_income,2) >= 16667.01 && round($taxable_net_income,2) <= 33333.00)
+            {
+                $witholding = ($taxable_net_income-16667.00) * 0.2;
+                $witholding_tax_deduction = $witholding + 937.50;
+            }
+            if(round($taxable_net_income,2) >= 33333.01 && round($taxable_net_income,2) <= 83333.00)
+            {
+                $witholding = ($taxable_net_income-33333.00) * 0.25;
+                $witholding_tax_deduction = $witholding + 4270.7;
+            }
+            if(round($taxable_net_income,2) >= 83333.01 && round($taxable_net_income,2) <= 333333.00)
+            {
+                $witholding = ($taxable_net_income-83333.00) * 0.3;
+                $witholding_tax_deduction = $witholding + 16770.7;
+            }
+            if(round($taxable_net_income,2) >= 333333.01)
+            {
+                $witholding = ($taxable_net_income) * 0.35;
+                $witholding_tax_deduction = $witholding + 91770.7;
+            }
+        }
+        else
+        {
+            $witholding_tax_deduction = 0;
+        }
+        
                 $net_pay = (($total_grosspay-$total_deduction)-($total_loan_deduction+$sss_provident_fund))-$witholding_tax_deduction;
+
+         //Witholding Tax for Payroll Type 3
+         if ($employee['payroll_type'] == 3)
+         {
+
+            if($employee['tax_status'])
+             {
+            if(round($taxable_net_income,2) <= 4808.00)
+            {
+                $witholding_tax_deduction = 0;
+            }
+            if(round($taxable_net_income,2) >= 4808.01 && round($taxable_net_income,2) <= 7691)
+            {
+                $witholding = ($taxable_net_income - 4808.00) * 0.15;
+                $witholding_tax_deduction = $witholding;
+            }
+            if(round($taxable_net_income,2) >= 7692.01 && round($taxable_net_income,2) <= 15385.00)
+            {
+                $witholding = ($taxable_net_income-7692) * 0.2;
+                $witholding_tax_deduction = $witholding + 432.60;
+            }
+            if(round($taxable_net_income,2) >= 15385.01 && round($taxable_net_income,2) <= 38461.00)
+            {
+                $witholding = ($taxable_net_income-15385.00) * 0.25;
+                $witholding_tax_deduction = $witholding + 1971.20;
+            }
+        }
+        else
+        {
+            $witholding_tax_deduction = 0;
+        }
+        
+                $net_pay = (($total_grosspay-$total_deduction)-($total_loan_deduction+$sss_provident_fund))-$witholding_tax_deduction;
+
+         }
+
+
 
             return [
                 //BASIC PAY
@@ -419,6 +484,7 @@ class PayrollController extends Controller
                 "over_time_amount" => round($over_time_pay,2),
                 "extra_regular_hours_amount" => round($extra_regular_hours,2),
                 "night_diff_amount" => round($night_diff,2),
+                "night_diff_restday_amount" => round($night_diff_restday,2),
                 //HOLIDAY
                 "rest_special_amount" => round($rest_special,2),
                 "rest_special_exc_amount" => round($rest_special_exc,2),
@@ -431,6 +497,7 @@ class PayrollController extends Controller
                 "total_grosspay" => round($total_grosspay,2),
                 "extra_regular_hour" => round($extra_regular_hours,2),
                 "night_diff" =>round($night_diff,2),
+                "night_diff_restday" =>round($night_diff,2),
                 "rest_special" =>round($rest_special,2),
                 "regular_holiday_hour" => round($regular_holiday_hour,2),
                 "regular_holiday_hour_exc" => round($regular_holiday_hour_exc,2),
@@ -458,9 +525,10 @@ class PayrollController extends Controller
                 "sss_loan_deduction" => round($sss_salary_loan,2),
                 "sss_calamity_loan" => round($sss_calamity_loan,2),
                 "pagibig_loan_deduction" => round($hdmf_loan,2),
+                "pagibig_calamity_loan_deduction" => round($hdmf_calamity_loan,2),
                 "company_loan_deduction" => round($company_loan,2),
                 "other_loan" => round($other_loan,2),
-                "rent" => round($rent,2),
+                "sss_emergency_loan" => round($sss_emergency_loan,2),
                 //NET PAY
                 "net_pay" => round($net_pay,2),
                 //TOTAL
@@ -492,6 +560,8 @@ class PayrollController extends Controller
             'ext_reg_hrs_ammount' => round($request['extra_regular_hours_amount'],2),
             'night_diff' => $request['night_diff'],
             'night_diff_amount' => round($request['night_diff_amount'],2),
+            'night_diff_restday' => $request['night_diff_restday'],
+            'night_diff_restday_amount' => round($request['night_diff_restday_amount'],2),
             'rest_special' => $request['rest_special'],
             'rest_special_amount' => round($request['rest_special_amount'],2),
             'exc_rest_special' => $request['rest_special_exc'],
@@ -556,10 +626,12 @@ class PayrollController extends Controller
             'sss_loan'=> round($request['sss_loan'],2),
             'sss_calamity_loan' => round($request['sss_calamity_loan'],2),
             'hdmf_loan'=> round($request['pagibig_loan'],2),
+            'hdmf_calamity_loan' => round($request['pagibig_calamity_loan'],2),
             'company_loan'=> round($request['company_loan'],2),
             'other_loan'=>  round($request['other_loan'],2),
-            'rent' => round($request['rent'],2),
+            'sss_emergency_loan' => round($request['sss_emergency_loan'] ?? 0, 2),
             'total_deduction'=> "0",
+            'gross_deducted_witholding' => "0",
             'net_pay' => $request['net_pay'],
         ]);
 
@@ -569,19 +641,14 @@ class PayrollController extends Controller
         $remaining_balance_sss_calamity = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','2')->pluck('balance');
         $remaining_term_hdmf =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','3')->pluck('remaining_term');
         $remaining_balance_hdmf = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','3')->pluck('balance');
+        $remaining_term_hdmf_calamity=  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('remaining_term');
+        $remaining_balance_hdmf_calamity = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('balance');
         $remaining_term_advancement =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('remaining_term');
         $remaining_balance_advancement = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('balance');
         $remaining_term_coop =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('remaining_term');
         $remaining_balance_coop = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('balance');
         $remaining_term_insurance =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','6')->pluck('remaining_term');
         $remaining_balance_insurance = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','6')->pluck('balance');
-        $remaining_leave =  Employee::find($request['employee_id']);
-        Employee::find($request['employee_id'])->update([
-            "leave" => $remaining_leave['leave'] - $request['sick_leave']
-        ]);
-        Employee::find($request['employee_id'])->update([
-            "sick_leave" => $remaining_leave['sick_leave'] - $request['vacation_leave']
-        ]);
         if ($request['sss_loan'] != 0 && $remaining_term_sss[0] > 0)
         {
             Employee_Loan::where('employee_id','=',$request['employee_id'])->where('loan_type','=','1')->update([
@@ -603,7 +670,17 @@ class PayrollController extends Controller
                 "remaining_term" => $remaining_term_hdmf[0]-1,
                 "balance"  => $remaining_balance_hdmf[0]  - $request['pagibig_loan']
             ]);
+        
+        }
+        
+        if ($request['pagibig_calamity_loan'] != 0 && $remaining_term_hdmf_calamity[0] > 0)
+        {
 
+            Employee_Loan::where('employee_id','=',$request['employee_id'])->where('loan_type','=','8')->update([
+                "remaining_term" => $remaining_term_hdmf_calamity[0]-1,
+                "balance"  => $remaining_balance_hdmf_calamity[0]  - $request['pagibig_calamity_loan']
+            ]);
+        
         }
         //ADVANCEMENT
         if ($request['company_loan'] != 0 && $remaining_term_advancement[0] > 0)
@@ -632,6 +709,17 @@ class PayrollController extends Controller
             ]);
         }
 
+        //SSS EMERGENCY LOAN
+        $remaining_term_sss_emergency = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('remaining_term');
+        $remaining_balance_sss_emergency = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('balance');
+        if (isset($request['sss_emergency_loan']) && $request['sss_emergency_loan'] != 0 && $remaining_term_sss_emergency[0] > 0)
+        {
+            Employee_Loan::where('employee_id','=',$request['employee_id'])->where('loan_type','=','7')->update([
+                "remaining_term" => $remaining_term_sss_emergency[0]-1,
+                "balance" => $remaining_balance_sss_emergency[0] - $request['sss_emergency_loan']
+            ]);
+        }
+
         return [
             'employee' => Employee::find($request['employee_id'])->getFullNameAttribute()
         ];
@@ -649,6 +737,8 @@ class PayrollController extends Controller
            'ext_reg_hrs_ammount' => $request['extra_regular_hour_amount'],
            'night_diff' => $request['night_diff'],
            'night_diff_amount' => $request['night_diff_amount'],
+           'night_diff_restday' => $request['night_diff_restday'],
+           'night_diff_restday_amount' => $request['night_diff_restday_amount'],
            'rest_special' => $request['rest_special'],
            'rest_special_amount' => $request['rest_special_amount'],
            'exc_rest_special' => $request['rest_special_exc'],
@@ -681,6 +771,7 @@ class PayrollController extends Controller
            'insurance' => $request['insurance'],
            'sss_loan' => $request['sss_loan'],
            'hdmf_loan' => $request['hdmf_loan'],
+           'hdmf_calamity_loan' => $request['hdmf_calamity_loan'],
            'other_loan' => $request['other_loan'],
            'rent' => $request['rent'],
            'net_pay' => $request['net_pay']

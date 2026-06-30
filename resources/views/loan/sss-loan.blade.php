@@ -19,17 +19,25 @@
                 <th>Loan Type</th>
                 <th>Date Started</th>
                 <th>Amount</th>
+                <th>Remaining Term</th>
+                <th>Balance</th>
                 <th>Action</th>
             </tr>
             </thead>
             <tbody>
+            @foreach($loans as $loan)
                 <tr>
-                    <td>John Smith</td>
-                    <td>SSS</td>
-                    <td>5/23/2018</td>
-                    <td>12,000</td>
-                    <td><button class="btn btn-success" type="button" data-toggle="modal" data-target="#editLoan" aria-hidden="true">Edit</button></td>
+                    <td>{{ $loan->employee ? $loan->employee->full_name : 'N/A' }}</td>
+                    <td>{{ $loan->loan_name }}</td>
+                    <td>{{ $loan->loan_date }}</td>
+                    <td>{{ number_format($loan->loan_amount, 2) }}</td>
+                    <td>{{ $loan->remaining_term }}</td>
+                    <td>{{ number_format($loan->balance, 2) }}</td>
+                    <td>
+                        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#editLoan" data-id="{{ $loan->id }}">Edit</button>
+                    </td>
                 </tr>
+            @endforeach
             </tbody>
 
         </table>
@@ -55,6 +63,7 @@
                                           <option value="1">SSS LOAN</option>
                                           <option value="2">PAG-IBIG LOAN</option>
                                           <option value="3">COMPANY LOAN</option>
+                                          <option value="3">EMERGENCY LOAN</option>
                                     </select>
                                     </div>
                                 </div>
@@ -203,7 +212,7 @@
                                 <hr class="hr-em">
                             </div>
                             
-                            <!-- <form>
+                            <form>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="loanType">Date Started</label>
@@ -256,7 +265,7 @@
                                       </label>
                                     </div>
                                 </div>
-                            </form> -->
+                            </form> 
                             <form>
                                 <div class="col-sm-4">
                                     <div class="form-group">

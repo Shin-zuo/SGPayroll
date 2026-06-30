@@ -19,7 +19,8 @@ class LoanController extends Controller
     public function sss_loan()
     {
         $department = Department::all();
-        return view('loan.sss-loan',compact('department'));
+        $loans = Employee_Loan::with('employee')->get();
+        return view('loan.sss-loan',compact('department', 'loans'));
     }
     public function departmentEmployee(Request $request)
     {
@@ -28,7 +29,7 @@ class LoanController extends Controller
     }
     public function insertLoanData(Request $request)
     {
-//        dd($request);
+//        ($request);
         $sss_loan_type ='';
         if($request['loan_type']==1)
         {
@@ -37,6 +38,14 @@ class LoanController extends Controller
         if($request['loan_type']==2)
         {
             $sss_loan_type = 'C';
+        }
+        if($request['loan_type']==3)
+        {
+            $hdmf_loan_type = 'S';
+        }
+        if($request['loan_type']==8)
+        {
+            $hdmf_loan_type = 'C';
         }
         Employee_Loan::create([
             'employee_code' => $request['employee_id'],
@@ -88,3 +97,4 @@ class LoanController extends Controller
         return 0;
     }
 }
+

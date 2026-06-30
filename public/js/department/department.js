@@ -163,4 +163,33 @@ $(document).ready(function(){
             }
         });
     });
+
+    $(document).on('click', '.btn-delete-group', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+
+        alertify.confirm("Delete Group", "Are you sure you want to delete group '" + name + "'?",
+            function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/department/delete-group",
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function (data) {
+                        alertify.success("Group deleted successfully!");
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    },
+                    error: function (data) {
+                        alertify.error("Something went wrong. Please try again.");
+                    }
+                });
+            },
+            function () {
+                // user clicked cancel
+            }
+        );
+    });
 });

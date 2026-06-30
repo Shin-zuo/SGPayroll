@@ -16,8 +16,8 @@ class AddContributionToEmployeeTable extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('sss_contribution')->nullable()->after('basic_pay');
-            $table->string('philhealth_contribution')->nullable()->after('sss_contribution');
-            $table->string('pag_ibig_contribution')->nullable()->after('philhealth_contribution');
+            $table->string('philhealth_contribution')->nullable();
+            $table->string('pag_ibig_contribution')->nullable();
         });
     }
 

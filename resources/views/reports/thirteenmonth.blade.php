@@ -51,8 +51,8 @@
         @endphp
         <tr>
             <td>{{strtoupper($thirteen_month_report->employee->full_name)}}</td>
-            <td>{{number_format($thirteen_month_report->basic_pay + $thirteen_month_report->leave_amount)}}</td>
-            <td>{{number_format(($thirteen_month_report->basic_pay + $thirteen_month_report->leave_amount)/12,2)}}</td>
+            <td>{{number_format($thirteen_month_report->basic_pay)}}</td>
+            <td>{{number_format(($thirteen_month_report->basic_pay)/12,2)}}</td>
         </tr>
     @endforeach
     </tbody>

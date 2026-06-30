@@ -75,6 +75,7 @@
                             <td><input type="number" class="form-control input-sm" id="overtime_hours" name="overtime_hours"></td>
                             <td><input type="number" class="form-control input-sm" id="extra_regular_hour" name="extra_regular_hour"></td>
                             <td><input type="number" class="form-control input-sm" id="night_diff" name="night_diff"></td>
+                            <td><input tyoe="number" class="form-control input-sm" id="night_diff_restday" name="night_diff_restday"></td>
                             <td><input type="number" class="form-control input-sm" id="rest_special" name="rest_special"></td>
                             <td><input type="number" class="form-control input-sm" id="rest_special_exc" name="rest_special_exc"></td>
                             <td><input type="number" class="form-control input-sm" id="regular_holiday_hour" name="regular_holiday_hour"></td>

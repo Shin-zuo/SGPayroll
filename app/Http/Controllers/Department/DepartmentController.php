@@ -138,5 +138,10 @@ class DepartmentController extends Controller
         ]);
         return 0;
     }
+    public function deleteGroup(Request $request)
+    {
+        Department::find($request['id'])->delete();
+        return 0;
+    }
 
 }

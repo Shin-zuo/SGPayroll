@@ -16,7 +16,7 @@ class AddDescriptionToDepartmentTable extends Migration
         Schema::table('departments', function (Blueprint $table) {
             //
             $table->string('description')->nullable()->after('department_name');
-            $table->string('department_address')->nullable()->after('description');
+            $table->string('department_address')->nullable();
         });
     }
 

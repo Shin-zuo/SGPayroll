@@ -16,8 +16,8 @@ class AddLoansToEmployeeTable extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('sss_loan_deduction')->nullable()->after('loan');
-            $table->string('pagibig_loan_deduction')->nullable()->after('sss_loan_deduction');
-            $table->string('company_loan_deduction')->nullable()->after('pagibig_loan_deduction');
+            $table->string('pagibig_loan_deduction')->nullable();
+            $table->string('company_loan_deduction')->nullable();
         });
     }
 

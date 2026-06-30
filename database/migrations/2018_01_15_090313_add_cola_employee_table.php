@@ -16,7 +16,7 @@ class AddColaEmployeeTable extends Migration
         Schema::table('employees', function (Blueprint $table) {
             //
             $table->string('cola')->nullable()->after('basic_pay');
-            $table->string('other_nt_pay')->nullable()->after('cola');
+            $table->string('other_nt_pay')->nullable();
         });
     }
 

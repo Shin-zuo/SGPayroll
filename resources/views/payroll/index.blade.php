@@ -1,222 +1,225 @@
 @extends('layouts.app')
 @section('content')
-    @if($employee->count()!=0)
-<div class="panel panel-default">
-    <div class="panel-heading"><h3 class="text-center"><strong>{{$employee->first()->department}}</strong></h3></div>
-    <input type="hidden" id="payrollType" value="{{$employee->first()->payroll_type}}">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-12">
-                @if(session()->has('message'))
-                    <div class="alert alert-success">
-                        {{ session()->get('message') }}
-                    </div>
-                @endif
-                <form class="form-horizontal" action="/payroll" method="get">
-                    {{csrf_field()}}
-                    <div class="form-group">
-                        <input type="hidden" id="employeePayroll_type" name="employeePayroll_type" value="{{$employee->first()->payroll_type}}">
-                        <input type="hidden" id="deptCode" name="deptCode" value="{{$employee->first()->department}}">
-                        <label for="payNo" class="col-md-2 control-label">Payroll No.</label>
 
-                        <div class="col-md-1">
-                          @if($employee->first()->payroll_type==1 || $employee->first()->payroll_type==2)
-                            <select class="form-control" id="payroll_no" name="payroll_no">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </select>
-                          @elseif($employee->first()->payroll_type==3 || $employee->first()->payroll_type==4)
-                            <select class="form-control" id="payroll_no" name="payroll_no">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                          @endif
-                        </div>
-                        <label for="periodFrom" class="col-md-2 control-label">Payroll period from: </label>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control" id="date_from" name="date_from">
-                        </div>
-                        <label class="col-md-1 label-center control-label">to</label>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control" id="date_to" name="date_to" >
-                        </div>
-                    </div>
-                </form>
-
-
-           </div>
-            <div class="col-md-12">
-                 <div class="col-md-2 pull-right">
-                    <div class="row">
-                     <button type="button" id="insertFinishData" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-save"></i> Save Data</button>
-                     </div>
+@if($employee->count()!=0)
+<div class="mb-4">
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+            <h3 class="text-base font-bold text-slate-800">{{$employee->first()->department}}</h3>
+            <div class="flex space-x-4 items-center">
+                <div class="flex items-center space-x-2">
+                    <input class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" value="1" id="13Month" name="13Month">
+                    <label class="text-sm font-medium text-slate-700" for="13Month">Compute 13th month</label>
                 </div>
-                <div class="col-md-6 pull-right">
-                    <div class="well well-sm row">
-                        <div class="col-md-6">
-                            <div class="form-check control-label">
-                                <input class="form-check-input" type="checkbox" value="1" id="13Month" name="13Month">
-                                <label class="form-check-label" for="13Month">
-                                    Compute 13th month
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check control-label">
-                                <input class="form-check-input" type="checkbox" value="1" id="endMonth" name="endMonth">
-                                <label class="form-check-label" for="endMonth">
-                                    End of Month
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <input class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" value="1" id="endMonth" name="endMonth">
+                    <label class="text-sm font-medium text-slate-700" for="endMonth">End of Month</label>
                 </div>
+                <button type="button" id="insertFinishData" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded flex items-center transition-colors">
+                    <i class="fa fa-save mr-1.5"></i> Save Data
+                </button>
             </div>
-       </div>
-   </div>
+        </div>
+        
+        <input type="hidden" id="payrollType" value="{{$employee->first()->payroll_type}}">
+        
+        <div class="p-4 bg-white">
+            @if(session()->has('message'))
+                <div class="mb-4 rounded-md bg-green-50 p-3 border border-green-200 text-green-700 text-sm">
+                    {{ session()->get('message') }}
+                </div>
+            @endif
+            
+            <form action="/payroll" method="get" class="flex flex-wrap items-end gap-4">
+                {{csrf_field()}}
+                <input type="hidden" id="employeePayroll_type" name="employeePayroll_type" value="{{$employee->first()->payroll_type}}">
+                <input type="hidden" id="deptCode" name="deptCode" value="{{$employee->first()->department}}">
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Payroll No.</label>
+                    <select class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="payroll_no" name="payroll_no">
+                        @if($employee->first()->payroll_type==1 || $employee->first()->payroll_type==2 || empty($employee->first()->payroll_type))
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        @elseif($employee->first()->payroll_type==3 || $employee->first()->payroll_type==4)
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        @endif
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Period From</label>
+                    <input type="date" class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="date_from" name="date_from">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Period To</label>
+                    <input type="date" class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="date_to" name="date_to">
+                </div>
+                
+                <div>
+                    <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-1.5 rounded border border-slate-300 transition-colors">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endif
+
 @foreach($employee as $employees)
-<form id="payrollCompute">
+<form id="payrollCompute" class="mb-6 payroll-table-main">
     {{csrf_field()}}
-    <div class="panel panel-primary payroll-table-main">
-        <input type="hidden" id="employee" name="employee" value="{{$employees->id}}">
-        <input type="hidden" id="deptName" name="deptName" value="{{$employees->department}}">
-        <div class="panel-heading">
-            {{--<button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#exampleModal3">--}}
-                {{--Edit--}}
-            {{--</button>--}}
-            <h4 class="text-center"><strong><i class="fa fa-user"></i>  {{$employees->full_name}}</strong></h4>
-            {{--<button class="btn btn-default" id="hideSubmit" name="hideSubmit">Submit</button>--}}
-
+    <input type="hidden" id="employee" name="employee" value="{{$employees->id}}">
+    <input type="hidden" id="deptName" name="deptName" value="{{$employees->department}}">
+    
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-blue-600 px-4 py-2 border-b border-blue-700">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa fa-user"></i> {{$employees->full_name}}
+            </h4>
         </div>
-        <div class="panel-body">
-            <table class="table payroll-table">
+        
+        <div class="p-0 overflow-x-auto">
+            <!-- Basic Pay Table -->
+            <table class="w-full text-left border-collapse border-b border-slate-200 text-xs">
                 <thead>
-                    <tr class="info">
-                        <th colspan="12">Basic Pay</th>
+                    <tr class="bg-blue-50 text-blue-800 font-semibold border-b border-slate-200">
+                        <th class="px-2 py-1.5 border-r border-slate-200 text-center" colspan="13">Basic Pay Earnings (Hours/Days)</th>
+                    </tr>
+                    <tr class="bg-slate-50 text-slate-600 font-medium border-b border-slate-200 text-[10px] uppercase tracking-wider">
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Work(days)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">OT(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Ext.Reg(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Night Diff(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">ND Rest(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Rest Day(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Rest(ehrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Reg Hol(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Reg Hol(ehrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Reg(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Reg(ehrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Spl(hrs)</th>
+                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Spl(ehrs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="work_days" name="work_days"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="overtime_hours" name="overtime_hours"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="extra_regular_hour" name="extra_regular_hour"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="night_diff" name="night_diff"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="night_diff_restday" name="night_diff_restday"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="rest_special" name="rest_special"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="rest_special_exc" name="rest_special_exc"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_hour" name="regular_holiday_hour"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_hour_exc" name="regular_holiday_hour_exc"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_regular" name="restday_on_regular"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_regular_exc" name="restday_on_regular_exc"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_special" name="restday_on_special"></td>
+                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_special_exc" name="restday_on_special_exc"></td>
+                    </tr>
+                </tbody>
+            </table>
 
+            <!-- Debit/Credit Table -->
+            <table class="w-full text-left border-collapse border-b border-slate-200 text-xs mt-4">
+                <thead>
+                    <tr class="border-b border-slate-200">
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-red-50 text-red-800 font-semibold">Debit</th>
+                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 text-center bg-yellow-50 text-yellow-800 font-semibold">Credit</th>
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-purple-50 text-purple-800 font-semibold">Non-Tax Benefits</th>
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-green-50 text-green-800 font-semibold">Non-Tax Other Pay</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-slate-100 text-slate-800 font-bold border-l border-slate-200">Excess Hours</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-blue-100 text-blue-800 font-bold border-l border-slate-200">Gross Pay</th>
                     </tr>
-                    <tr  class="info">
-                        <th>WorkDay(days)</th>
-                        <th>OT(hrs)</th>
-                        <th>Ext.Reg(Hrs)</th>
-                        <th>Night Diff(hrs)</th>
-                        <th>Rest Day(hrs)</th>
-                        <th>Rest Day(ehrs)</th>
-                        <th>Regular Holiday(hrs)</th>
-                        <th>Regular Holiday(ehrs)</th>
-                        <th>Rest Day on Regular(hrs)</th>
-                        <th>Rest Day on Regular(ehrs)</th>
-                        <th>Rest Day on Special(hrs)</th>
-                        <th>Rest Day on Special(ehrs)</th>
+                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200">
+                        <th class="px-1 py-1.5 bg-red-50 text-red-600 border-r border-slate-200 text-center">Absent(days)</th>
+                        <th class="px-1 py-1.5 bg-red-50 text-red-600 border-r border-slate-200 text-center">UT(hrs)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Reg Hol(days)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Spl Hol(days)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Reg Hol(Min)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Spl Hol(Min)</th>
+                        <th class="px-1 py-1.5 bg-purple-50 text-purple-600 border-r border-slate-200 text-center">VL(days)</th>
+                        <th class="px-1 py-1.5 bg-purple-50 text-purple-600 border-r border-slate-200 text-center">SL(days)</th>
+                        <th class="px-1 py-1.5 bg-green-50 text-green-600 border-r border-slate-200 text-center">Other NT</th>
+                        <th class="px-1 py-1.5 bg-green-50 text-green-600 text-center">13th Month</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" class="form-control input-sm" id="work_days" name="work_days"></td>
-                        <td><input type="number" class="form-control input-sm" id="overtime_hours" name="overtime_hours"></td>
-                        <td><input type="number" class="form-control input-sm" id="extra_regular_hour" name="extra_regular_hour"></td>
-                        <td><input type="number" class="form-control input-sm" id="night_diff" name="night_diff"></td>
-                        <td><input type="number" class="form-control input-sm" id="rest_special" name="rest_special"></td>
-                        <td><input type="number" class="form-control input-sm" id="rest_special_exc" name="rest_special_exc"></td>
-                        <td><input type="number" class="form-control input-sm" id="regular_holiday_hour" name="regular_holiday_hour"></td>
-                        <td><input type="number" class="form-control input-sm" id="regular_holiday_hour_exc" name="regular_holiday_hour_exc"></td>
-                        <td><input type="number" class="form-control input-sm" id="restday_on_regular" name="restday_on_regular"></td>
-                        <td><input type="number" class="form-control input-sm" id="restday_on_regular_exc" name="restday_on_regular_exc"></td>
-                        <td><input type="number" class="form-control input-sm" id="restday_on_special" name="restday_on_special"></td>
-                        <td><input type="number" class="form-control input-sm" id="restday_on_special_exc" name="restday_on_special_exc"></td>
+                        <td class="p-1 border-r border-slate-200 bg-red-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="absent" name="absent"></td>
+                        <td class="p-1 border-r border-slate-200 bg-red-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="underTime" name="underTime"></td>
+                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday" name="regular_holiday"></td>
+                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="special_holiday" name="special_holiday"></td>
+                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_minimum" name="regular_holiday_minimum"></td>
+                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="special_holiday_minimum" name="special_holiday_minimum"></td>
+                        <td class="p-1 border-r border-slate-200 bg-purple-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="vacation_leave" name="vacation_leave"></td>
+                        <td class="p-1 border-r border-slate-200 bg-purple-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="sick_leave" name="sick_leave"></td>
+                        <td class="p-1 border-r border-slate-200 bg-green-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="other_pay" name="other_pay"></td>
+                        <td class="p-1 border-r border-slate-200 bg-green-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="thirteen_month" name="thirteen_month"></td>
+                        <td class="p-1 border-l border-r border-slate-200 bg-slate-50"><input type="number" class="w-full text-xs p-1 border rounded bg-transparent font-semibold" id="excess_amount" name="excess_amount" disabled></td>
+                        <td class="p-1 border-l border-slate-200 bg-blue-50/50"><input type="number" class="w-full text-xs p-1 border rounded bg-transparent font-bold text-blue-700" id="gross_pay" name="gross_pay" disabled></td>
                     </tr>
                 </tbody>
             </table>
-            <table class="table payroll-table">
+
+            <!-- Contributions & Loans -->
+            <table class="w-full text-left border-collapse text-xs mt-4">
                 <thead>
-                    <tr>
-                        <th colspan="2" class="info">Debit</th>
-                        <th colspan="4" class="warning">Credit</th>
-                        <th colspan="2" class="danger">Non-Taxable Benefits</th>
-                        <th colspan="2" class="success">Non-Taxable Other Pay</th>
-                        <th rowspan="2" class="active">Excess Hours</th>
-                        <th rowspan="2" class="active">Gross Pay</th>
+                    <tr class="border-b border-slate-200">
+                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 text-center bg-orange-50 text-orange-800 font-semibold">Contributions</th>
+                        <th colspan="8" class="px-2 py-1.5 border-r border-slate-200 text-center bg-teal-50 text-teal-800 font-semibold">Loans</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-green-100 text-green-800 font-bold border-l border-slate-200">Net Pay</th>
                     </tr>
-                    <tr>
-                        <th class="info">Absent(days)</th>
-                        <th class="info">Undertime(hrs)</th>
-                        <th class="warning">Regular Holiday(days)</th>
-                        <th class="warning">Special Holiday(days)</th>
-                        <th class="warning">Regular Holiday(Minimum)</th>
-                        <th class="warning">Special Holiday(Minimum)</th>
-                        <th class="danger">Vacation Leave(days)</th>
-                        <th class="danger">Sick Leave(days)</th>
-                        <th class="success">Other Nt Pay</th>
-                        <th class="success">13th month pay</th>
+                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200">
+                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">W.Tax</th>
+                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">SSS</th>
+                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">PHIC</th>
+                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">HDMF</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Insure</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">SSS</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Calamity</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Cal(HDMF)</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Advance</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Coop</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 text-center">SSS Emerg.</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" class="form-control input-sm" id="absent" name="absent"></td>
-                        <td><input type="number" class="form-control input-sm" id="underTime" name="underTime"></td>
-                        <td><input type="number" class="form-control input-sm" id="regular_holiday" name="regular_holiday"></td>
-                        <td><input type="number" class="form-control input-sm" id="special_holiday" name="special_holiday"></td>
-                        <td><input type="number" class="form-control input-sm" id="regular_holiday_minimum" name="regular_holiday_minimum"></td>
-                        <td><input type="number" class="form-control input-sm" id="special_holiday_minimum" name="special_holiday_minimum"></td>
-                        <td><input type="number" class="form-control input-sm" id="sick_leave" name="sick_leave"></td>
-                        <td><input type="number" class="form-control input-sm" id="vacation_leave" name="vacation_leave"></td>
-                        <td><input type="number" class="form-control input-sm" id="other_pay" name="other_pay"></td>
-                        <td><input type="number" class="form-control input-sm" id="thirteen_month" name="thirteen_month"></td>
-                        <td><input type="number" class="form-control input-sm" id="excess_amount" name="excess_amount" disabled></td>
-                        <td><input type="number" class="form-control input-sm" id="gross_pay" name="gross_pay" disabled></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table payroll-table">
-                <thead>
-                    <tr class="secondary">
-                        <th colspan="4" class="danger">Contributions</th>
-                        <th colspan="7" class="warning">Loans</th>
-                        <th rowspan="2" class="active">Net Pay</th>
-                    </tr>
-                    <tr>
-                        <th class="danger">Witholding Tax</th>
-                        <th class="danger">SSS</th>
-                        <th class="danger">PHIC</th>
-                        <th class="danger">HDMF</th>
-                        <th class="warning">Insurance</th>
-                        <th class="warning">SSS</th>
-                        <th class="warning">Calamity</th>
-                        <th class="warning">Pag-IBIG</th>
-                        <th class="warning">Advancement</th>
-                        <th class="warning">Coop</th>
-                        <th class="warning">Others</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td name="witholding_tax">0.00</td>
-                        <td name="sss_deduction">0.00</td>
-                        <td name="phil_deduction">0.00</td>
-                        <td name="pagibig_deduction">0.00</td>
-                        <td name="insurance">0.00</td>
-                        <td name="sss_loan">0.00</td>
-                        <td name="calamity_loan">0.00</td>
-                        <td name="hdmf_loan">0.00</td>
-                        <td name="company_loan">0.00</td>
-                        <td name="other_loan">0.00</td>
-                        <td name="rent_other">0.00</td>
-                        <td name="net_pay">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="witholding_tax">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="sss_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="phil_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="pagibig_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="insurance">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="calamity_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_calamity_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="company_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="other_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_emergency_loan">0.00</td>
+                        <td class="p-2 border-l border-slate-200 bg-green-50 text-center text-sm font-bold text-green-700" name="net_pay">0.00</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <td><input type="hidden" class="form-control input-sm" id="nt_pay" name="nt_pay"></td>
+        
+        <!-- Hidden Inputs for JS Computation -->
+        <input type="hidden" id="nt_pay" name="nt_pay">
         <input type="hidden" id="basic_amount" name="basic_amount" value="">
         <input type="hidden" id="work_days_amount" name="work_days_amount" value="">
         <input type="hidden" id="over_time_amount" name="over_time_amount" value="">
         <input type="hidden" id="extra_regular_hours_amount" name="extra_regular_hours_amount" value="">
         <input type="hidden" id="night_diff_amount" name="night_diff_amount" value="">
+        <input type="hidden" id="night_diff_restday_amount" name="night_diff_restday_amount" value="">
         <input type="hidden" id="rest_special_amount" name="rest_special_amount" value="">
         <input type="hidden" id="rest_special_exc_amount" name="rest_special_exc_amount" value="">
         <input type="hidden" id="regular_holiday_hour_amount" name="regular_holiday_hour_amount" value="">
@@ -241,6 +244,7 @@
         <input type="hidden" id="sss_provident_fund" name="sss_provident_fund" value="">
         <input type="hidden" id="sss_calamity_loan_total" name="sss_calamity_loan_total" value="">
         <input type="hidden" id="hdmf_loan_total" name="hdmf_loan_total" value="">
+        <input type="hidden" id="hdmf_calamity_loan_total" name="hdmf_calamity_loan_total" value="">
         <input type="hidden" id="cola" name="cola" value="">
         <input type="hidden" id="other_loan_total" name="other_loan_total" value="">
         <input type="hidden" id="net_pay_total" name="net_pay_total" value="">
@@ -250,244 +254,8 @@
         <input type="hidden" id="special_holiday_minimum_amount" name="special_holiday_minimum_amount" value="">
     </div>
 </form>
-
-<!-- edit modal -->
-<!-- <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="modal-title" id="exampleModal3Label">Employee Name</h5>
-            </div>
-            <div class="modal-body">
-                <label class="legend-label">Employee's Pay and Contributions</label> 
-                <hr>
-                <div class="row">
-                    <div class="col-md-3">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">Basic Pay</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">Gross Pay</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">Net Pay</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                        </form>
-                        <label class="legend-label">Basis</label> 
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">SSS</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">WTax</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-5 control-label">HDMF</label>
-                                <div class="col-sm-7">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-5">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <div class="col-sm-2">
-                                    <p class="form-control-static"></p>
-                                </div>
-                                <label class="col-sm-5 legend-label">Employer's Contribution</label>
-                                <label class="col-sm-5 legend-label">Employee's Contribution</label>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">HDMF</label>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">EC</label>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                                <div class="col-sm-5">
-
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">HDMF</label>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">Union</label>
-                                <div class="col-sm-5">
-
-                                </div>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">WTax</label>
-                                <div class="col-sm-5">
-
-                                </div>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBP" class="col-sm-2 control-label">PHC</label>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                                <div class="col-sm-5">
-                                    <input type="number" class="input-sm form-control" id="inputBP">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form>
-                            <label class="legend-label">Taxable Compensation income</label>
-                            <div class="form-group">
-                                <label for="input13">13th Month Pay and Other Benefits</label>
-                                <input type="number" class="form-control input-sm" id="input13">
-                            </div>
-                        </form>
-                        <hr>
-                        <form>
-                            <label class="legend-label">Non-Taxable Compensation income</label>
-                            <div class="form-group">
-                                <label for="input13">13th Month Pay and Other Benefits</label>
-                                <input type="number" class="form-control input-sm" id="input13">
-                            </div>
-                            <div class="form-group">
-                                <label for="input13">Salaries and Other Forms of Compenstation</label>
-                                <input type="number" class="form-control input-sm" id="input13">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-              <h5 class="modal-title" id="exampleModalLabel">Specific Pay Group and Period</h5>        
-          </div>
-          <div class="modal-body">
-            <h5>Payroll Period</h5>
-            <hr class="hr-em">
-            <form>
-                <div class="form-group col-md-4">
-                    <label>Pay Group :</label>
-                    <select id="" class="form-control">
-                        <option value="" selected>SDC</option>
-                        <option value="1">WL</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-5">
-                    <label for="formGroupExampleInput2">Payroll Period</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="formGroupExampleInput2">Payroll No.</label>
-                    <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
-                </div>
-            </form>
-            <form>
-              <div class="form-group col-md-4">
-                <label for="formGroupExampleInput">Month :</label>
-                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="formGroupExampleInput2">Year :</label>
-                <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="formGroupExampleInput2">Period Type</label>
-                <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
-            </div>
-        </form>
-
-        <div class="form-check text-center">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-          <label class="form-check-label" for="defaultCheck1">
-            Check if end of the month
-        </label>
-    </div>
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-md-3 control-label">Pay Group :</label>
-            <div class="col-md-9">
-                <input type="text" class="form-control">
-            </div>
-        </div>
-    </form>
-    <h5>Cut-off Date</h5>
-    <hr class="hr-em">
-    <form class="form-horizontal">
-        <div class="form-group">
-            <div class="col-md-6">
-                <input type="date" class="form-control">
-            </div>
-            <label class="col-md-1 control-label">to</label>
-            <div class="col-md-5">
-                <input type="date" class="form-control">
-            </div>
-        </div>
-    </form>
-    <h5>Last Period</h5>
-    <hr class="hr-em">
-    <input type="date" class="form-control">
-</div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="button" class="btn btn-primary">Save changes</button>
-</div>
-</div>
-</div>
-</div>
 @endforeach
+
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="/js/payroll/payrollComputation.js"></script>

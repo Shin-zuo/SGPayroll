@@ -141,7 +141,7 @@ class QuickPayrollController extends Controller
                     }
                     if((int)$sheet->getCell('D7')->getValue() == 1 && round($total_grosspay,2) < 10000 && $employee['phic_status']==1)
                     {
-                        $philhealth_deduction = 150;
+                        $philhealth_deduction = 200;
                     }
                     else if ((int)$sheet->getCell('D7')->getValue() == 1 && round($total_grosspay,2) > 10000 && round($total_grosspay,2) < 60000 && $employee['phic_status']==1)
                     {
@@ -186,11 +186,11 @@ class QuickPayrollController extends Controller
                             }
                             if ($monthly_total_grosspay >= 1 && $monthly_total_grosspay <= 10000.00)
                             {
-                                $philhealth_deduction = round(150,2) - $total_philhealth_deduction;
+                                $philhealth_deduction = round(0,2);
                             }
                             if($monthly_total_grosspay >= 10000.01 && $monthly_total_grosspay <= 59999.99)
                             {
-                                $philhealth_deduction = (round($monthly_total_grosspay,2)*0.03/2) - $total_philhealth_deduction;
+                                $philhealth_deduction = (round($monthly_total_grosspay,2)*0.04/2) - $total_philhealth_deduction;
                             }
                             if($monthly_total_grosspay >= 60000.00 && $monthly_total_grosspay <= 9999999999999.99)
                             {
@@ -279,6 +279,8 @@ class QuickPayrollController extends Controller
                     $data['ext_reg_hrs_ammount'] =  $extra_regular_hours;
                     $data['night_diff'] = $row['night_hours'];
                     $data['night_diff_amount'] = $night_diff;
+                    $data['night_diff_restday']= $night_diff_restday;
+                    $data['night_diff_restday_amount']= $night_diff_restday_amount;
                     $data['rest_special'] = $row['special'];
                     $data['rest_special_amount'] = $special;
                     $data['exc_rest_special'] = $row['overtimesphrs'];

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 1. Your Laravel Application
+  app:
+    build: .
+    ports:
+      - "8080:10000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  # 2. Your Local MySQL Database
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: sgpayroll_db
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+
+volumes:
+  db_data:

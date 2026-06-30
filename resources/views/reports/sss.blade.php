@@ -49,11 +49,11 @@
             </tr>
             <tr>
                 <th>SSS</th>
-                <th>Privident Fund</th>
+                <th>Provident Fund</th>
                 <th>EC</th>
                 <th>Total</th>
                 <th>SSS</th>
-                <th>Privident Fund</th>
+                <th>Provident Fund</th>
                 <th>Total</th>
             </tr>
         </thead>
@@ -64,12 +64,12 @@
                 <td>{{$sss_reports->employee->sss_number}}</td>
                 <td>{{number_format($sss_reports->total_gross,2)}}</td>
                 <td>{{number_format($sss_reports->sss()->sss_er,2)}}</td>
-                <td>{{number_format($sss_reports->sss()->provident_fund*.085,2)}}</td>
+                <td>{{number_format($sss_reports->sss()->provident_fund*.1,2)}}</td>
                 <td>{{number_format($sss_reports->sss()->ec_er,2)}}</td>
-                <td>{{number_format($sss_reports->sss()->sss_er + $sss_reports->sss()->ec_er + ($sss_reports->sss()->provident_fund*.085),2)}}</td>
+                <td>{{number_format($sss_reports->sss()->sss_er + $sss_reports->sss()->ec_er + ($sss_reports->sss()->provident_fund*.1),2)}}</td>
                 <td>{{number_format($sss_reports->sss()->sss_ee,2)}}</td>
-                <td>{{number_format($sss_reports->sss()->provident_fund*.045,2)}}</td>
-                <td>{{number_format($sss_reports->sss()->sss_ee + ($sss_reports->sss()->provident_fund*.045),2)}}</td>
+                <td>{{number_format($sss_reports->sss()->provident_fund*.05,2)}}</td>
+                <td>{{number_format($sss_reports->sss()->sss_ee + ($sss_reports->sss()->provident_fund*.05),2)}}</td>
                 <td>{{number_format($sss_reports->sss()->total,2)}}</td>
             </tr>
             @endforeach

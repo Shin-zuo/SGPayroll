@@ -24,6 +24,8 @@ class CreateEmployeePayrollsTable extends Migration
             $table->string('ext_reg_hrs_ammount')->nullable();
             $table->string('night_diff')->nullable();
             $table->string('night_diff_amount')->nullable();
+            $table->string('night_diff_restday')->nullable();
+            $table->string('night_diff_restday_amount')->nullable();
             $table->string('rest_special')->nullable();
             $table->string('rest_special_amount')->nullable();
             $table->string('exc_rest_special')->nullable();
