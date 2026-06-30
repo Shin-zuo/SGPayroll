@@ -43,5 +43,7 @@ apache2-foreground' > /usr/local/bin/start.sh \
 # Render will provide the PORT environment variable
 ENV PORT=10000
 
+COPY cacert.pem /var/www/html/cacert.pem
+
 # Start the startup script
 CMD ["/usr/local/bin/start.sh"]
