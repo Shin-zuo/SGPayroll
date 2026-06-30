@@ -47,3 +47,5 @@ COPY cacert.pem /var/www/html/cacert.pem
 
 # Start the startup script
 CMD ["/usr/local/bin/start.sh"]
+
+RUN php artisan migrate --force
