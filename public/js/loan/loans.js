@@ -58,7 +58,10 @@ $(document).ready(function(){
             dataType: 'json',
             success: function (data) {
                 $('.bd-example-modal-sm').remove();
-                location.reload();
+                alertify.success('Loan deleted successfully!');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             },
 
         });
@@ -87,7 +90,10 @@ $(document).ready(function(){
            data: loanData,
            dataType: 'json',
            success: function (data) {
-               location.reload();
+               alertify.success('Loan saved successfully!');
+               setTimeout(function() {
+                   location.reload();
+               }, 1000);
            }
        });
    });
@@ -147,7 +153,10 @@ $(document).ready(function(){
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                location.reload();
+                alertify.success('Loan updated successfully!');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             }
         });
     });

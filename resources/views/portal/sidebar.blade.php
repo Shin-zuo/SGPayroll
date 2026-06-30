@@ -21,6 +21,11 @@
         <span class="ml-4">Gov. Contributions</span>
     </a>
 
+    <a href="/portal/loans" class="group flex items-center px-5 py-4 text-base font-medium rounded-lg hover:bg-blue-50 hover:text-blue-600 text-slate-500 transition-colors">
+        <i class="fa fa-credit-card text-lg w-6 text-center text-slate-400 group-hover:text-blue-500"></i>
+        <span class="ml-4">My Loans</span>
+    </a>
+
     <p class="px-5 text-sm font-bold text-slate-400 uppercase tracking-wider mt-8 mb-3">Settings</p>
 
     <a href="/portal/profile" class="group flex items-center px-5 py-4 text-base font-medium rounded-lg hover:bg-blue-50 hover:text-blue-600 text-slate-500 transition-colors">

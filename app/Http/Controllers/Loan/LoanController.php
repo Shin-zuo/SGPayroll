@@ -19,7 +19,8 @@ class LoanController extends Controller
     public function sss_loan()
     {
         $department = Department::all();
-        return view('loan.sss-loan',compact('department'));
+        $loans = Employee_Loan::with('employee')->get();
+        return view('loan.sss-loan',compact('department', 'loans'));
     }
     public function departmentEmployee(Request $request)
     {

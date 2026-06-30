@@ -106,6 +106,7 @@ Route::post('/admin/settings', 'Admin\AdminSettingsController@update');
 
 // Employee Portal
 Route::get('/portal', 'Portal\PortalController@index');
+Route::get('/portal/loans', 'Portal\PortalController@loans');
 Route::get('/portal/leave-balance', 'Portal\PortalController@leaveBalance');
 Route::post('/portal/leave-apply', 'Portal\PortalController@applyLeave');
 Route::get('/portal/payslips', 'Portal\PortalController@payslips');

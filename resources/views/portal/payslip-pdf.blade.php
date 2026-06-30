@@ -58,7 +58,7 @@
         </tr>
         <tr>
             <td>Leave Pay</td><td class="text-right">{{ number_format($payroll->sick_leave_amount + $payroll->vacation_leave_amount, 2) }}</td>
-            <td>Loans</td><td class="text-right">{{ number_format($payroll->sss_loan + $payroll->sss_calamity_loan + $payroll->hdmf_loan + $payroll->hdmf_calamity_loan + $payroll->company_loan + $payroll->other_loan, 2) }}</td>
+            <td>Loans</td><td class="text-right">{{ number_format($payroll->sss_loan + $payroll->sss_calamity_loan + $payroll->hdmf_loan + $payroll->hdmf_calamity_loan + $payroll->company_loan + $payroll->other_loan + $payroll->sss_emergency_loan, 2) }}</td>
         </tr>
         <tr>
             <td>Other Pay (COLA, etc)</td><td class="text-right">{{ number_format($payroll->cola_amount + $payroll->non_tax_other, 2) }}</td>

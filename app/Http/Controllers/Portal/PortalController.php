@@ -140,4 +140,11 @@ class PortalController extends Controller
 
         return view('portal.contributions', compact('yearlyContributions', 'payrolls'));
     }
+    
+    public function loans()
+    {
+        $employee_id = auth()->user()->employee_id;
+        $loans = \SGpayroll\Employee_Loan::where('employee_code', $employee_id)->orWhere('employee_id', $employee_id)->orderBy('id', 'DESC')->get();
+        return view('portal.loans', compact('loans'));
+    }
 }

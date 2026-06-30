@@ -121,7 +121,7 @@ $(document).ready(function () {
                         pagibig_calamity_loan: $(this).find('[name=hdmf_calamity_loan]').text(),
                         company_loan: $(this).find('[name=company_loan]').text(),
                         other_loan: $(this).find('[name=other_loan]').text(),
-                        rent: $(this).find('[name=rent_other]').text(),
+                        sss_emergency_loan: $(this).find('[name=sss_emergency_loan]').text(),
                         net_pay:$(this).find('[name=net_pay]').text(),
                         //DATE
                         date_from: $('#date_from').val(),
@@ -257,7 +257,7 @@ $(document).ready(function () {
                     $(e.currentTarget).find('[name=company_loan]').text(data.company_loan_deduction);
                     $(e.currentTarget).find('[name=other_loan]').text(data.other_loan);
                     $(e.currentTarget).find('[name=calamity_loan]').text(data.sss_calamity_loan);
-                    $(e.currentTarget).find('[name=rent_other]').text(data.rent);
+                    $(e.currentTarget).find('[name=sss_emergency_loan]').text(data.sss_emergency_loan);
                     //DEBIT
                     $(e.currentTarget).find('[name=regular_holiday_amount]').val(data.regular_holiday);
                     $(e.currentTarget).find('[name=special_holiday_amount]').val(data.special_holiday);

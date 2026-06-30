@@ -52,9 +52,10 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
-            'options' => [
+
+'options' => env('DB_SSL_MODE') === 'required' ? [
         PDO::MYSQL_ATTR_SSL_CA => base_path('cacert.pem'),
-    ],
+    ] : [],
         ],
 
         'pgsql' => [

@@ -95,7 +95,7 @@
                             <option value="4">ADVANCEMENT LOAN</option>
                             <option value="5">COOP LOAN</option>
                             <option value="6">INSURANCE LOAN</option>
-                            <option value="7">EMERGENCY LOAN</option>
+                            <option value="7">SSS EMERGENCY LOAN</option>
                         </select>
                     </div>
                     <div class="form-group">

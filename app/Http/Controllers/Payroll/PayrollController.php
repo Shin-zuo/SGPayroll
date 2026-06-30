@@ -115,7 +115,7 @@ class PayrollController extends Controller
         $status_company = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('active');
         $status_other =  $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('active');
         $status_insurance = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','6')->pluck('active');
-        $status_rent = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('active');
+        $status_sss_emergency = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('active');
         if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->count() > 0 && $status_sss[0] == 'true') {
             $deduction_date_sss= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->pluck('deduction_date');
             $remaining_term = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','1')->pluck('remaining_term');
@@ -240,25 +240,25 @@ class PayrollController extends Controller
         {
             $insurance = 0;
         }
-        if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->count() > 0 && $status_rent[0]== 'true')
+        if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->count() > 0 && $status_sss_emergency[0]== 'true')
         {
-            $deduction_date_rent= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction_date');
-            if(Carbon::parse($deduction_date_rent[0]) < Carbon::now())
+            $deduction_date_sss_emergency = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction_date');
+            if(Carbon::parse($deduction_date_sss_emergency[0]) <= Carbon::now())
             {
-                $rent = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction');
-                $rent = $rent[0];
+                $sss_emergency_loan = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('deduction');
+                $sss_emergency_loan = $sss_emergency_loan[0];
             }
             else
             {
-                $rent = 0;
+                $sss_emergency_loan = 0;
             }
         }
         else
         {
-            $rent = 0;
+            $sss_emergency_loan = 0;
         }
 
-                $total_loan_deduction = $sss_salary_loan + $sss_calamity_loan + $hdmf_calamity_loan + $hdmf_loan + $company_loan + $insurance + $other_loan + $rent;
+                $total_loan_deduction = $sss_salary_loan + $sss_calamity_loan + $hdmf_calamity_loan + $hdmf_loan + $company_loan + $insurance + $other_loan + $sss_emergency_loan;
                 //GROSSPAY
                     $total_grosspay = $basic_amount +
                         $cola +
@@ -528,7 +528,7 @@ class PayrollController extends Controller
                 "pagibig_calamity_loan_deduction" => round($hdmf_calamity_loan,2),
                 "company_loan_deduction" => round($company_loan,2),
                 "other_loan" => round($other_loan,2),
-                "rent" => round($rent,2),
+                "sss_emergency_loan" => round($sss_emergency_loan,2),
                 //NET PAY
                 "net_pay" => round($net_pay,2),
                 //TOTAL
@@ -629,7 +629,7 @@ class PayrollController extends Controller
             'hdmf_calamity_loan' => round($request['pagibig_calamity_loan'],2),
             'company_loan'=> round($request['company_loan'],2),
             'other_loan'=>  round($request['other_loan'],2),
-            'rent' => round($request['rent'],2),
+            'sss_emergency_loan' => round($request['sss_emergency_loan'] ?? 0, 2),
             'total_deduction'=> "0",
             'gross_deducted_witholding' => "0",
             'net_pay' => $request['net_pay'],
@@ -709,13 +709,14 @@ class PayrollController extends Controller
             ]);
         }
 
-        //OTHERS
-        if ($request['other'] != 0 && $remaining_term_insurance[0] > 0)
+        //SSS EMERGENCY LOAN
+        $remaining_term_sss_emergency = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('remaining_term');
+        $remaining_balance_sss_emergency = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','7')->pluck('balance');
+        if (isset($request['sss_emergency_loan']) && $request['sss_emergency_loan'] != 0 && $remaining_term_sss_emergency[0] > 0)
         {
-
             Employee_Loan::where('employee_id','=',$request['employee_id'])->where('loan_type','=','7')->update([
-                "remaining_term" => $remaining_term_insurance[0]-1,
-                "balance" => $remaining_balance_insurance[0] - $request['insurance']
+                "remaining_term" => $remaining_term_sss_emergency[0]-1,
+                "balance" => $remaining_balance_sss_emergency[0] - $request['sss_emergency_loan']
             ]);
         }
 

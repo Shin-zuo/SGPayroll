@@ -174,7 +174,7 @@
                 <thead>
                     <tr class="border-b border-slate-200">
                         <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 text-center bg-orange-50 text-orange-800 font-semibold">Contributions</th>
-                        <th colspan="7" class="px-2 py-1.5 border-r border-slate-200 text-center bg-teal-50 text-teal-800 font-semibold">Loans</th>
+                        <th colspan="8" class="px-2 py-1.5 border-r border-slate-200 text-center bg-teal-50 text-teal-800 font-semibold">Loans</th>
                         <th rowspan="2" class="px-2 py-1.5 text-center bg-green-100 text-green-800 font-bold border-l border-slate-200">Net Pay</th>
                     </tr>
                     <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200">
@@ -188,7 +188,8 @@
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG</th>
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Cal(HDMF)</th>
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Advance</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 text-center">Coop</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Coop</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 text-center">SSS Emerg.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -203,7 +204,8 @@
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_calamity_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="company_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="rent_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="other_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_emergency_loan">0.00</td>
                         <td class="p-2 border-l border-slate-200 bg-green-50 text-center text-sm font-bold text-green-700" name="net_pay">0.00</td>
                     </tr>
                 </tbody>
