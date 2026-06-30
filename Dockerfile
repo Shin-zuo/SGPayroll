@@ -1,3 +1,12 @@
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# This sets your script to run before the command
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Your existing start command (e.g., apache2-foreground)
+CMD ["apache2-foreground"]
+
 FROM php:7.1-apache
 
 # Fix Debian archive repositories because Debian 9 (Stretch) is EOL
@@ -48,4 +57,4 @@ COPY cacert.pem /var/www/html/cacert.pem
 # Start the startup script
 CMD ["/usr/local/bin/start.sh"]
 
-RUN php artisan migrate --force
+# RUN php artisan migrate --force
