@@ -118,4 +118,15 @@ Route::post('/portal/profile', 'Portal\EmployeeProfileController@update');
 //Home
 Route::get('/', 'HomeController@index')->name('home');
 
+// Batch Imports
+Route::post('/employee/batch-import', 'Employee\EmployeeController@batchImportCsv');
+Route::post('/reports/batch-import', 'Reports\ReportsController@batchImportPayrollCsv');
+
+// Super Admin — Leave Window Management
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    Route::get('/superadmin/leave-window', 'Admin\LeaveWindowController@index')->name('superadmin.leave-window');
+    Route::post('/superadmin/leave-window/open', 'Admin\LeaveWindowController@open')->name('superadmin.leave-window.open');
+    Route::post('/superadmin/leave-window/close', 'Admin\LeaveWindowController@close')->name('superadmin.leave-window.close');
+    Route::post('/superadmin/leave-window/reset-lock', 'Admin\LeaveWindowController@resetEmployeeLock')->name('superadmin.leave-window.reset-lock');
+});
 

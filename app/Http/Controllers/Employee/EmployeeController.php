@@ -9,6 +9,8 @@ use SGpayroll\Employee;
 use Illuminate\Http\Request;
 use SGpayroll\Employee_Loan;
 use SGpayroll\Http\Controllers\Controller;
+use SGpayroll\LeaveCreditLedger;
+use SGpayroll\LeaveWindowSetting;
 use SGpayroll\Loan;
 use SGpayroll\Pagibig_Table;
 use SGpayroll\Payroll_Timesheet;
@@ -85,13 +87,40 @@ class EmployeeController extends Controller
     }
     public function accountEmployee($id)
     {
-        $department = Department::orderBy('department_name','ASC')->get();
-        $employee = Employee::find($id);
+        $department    = Department::orderBy('department_name', 'ASC')->get();
+        $employee      = Employee::find($id);
+        $currentYear   = Carbon::now()->year;
+        $leaveWindowOpen = LeaveWindowSetting::isOpen();
+
+        // Check if leave credit is already locked for this employee this year
+        $vacationLedger = LeaveCreditLedger::where('employee_id', $id)
+            ->where('leave_type', 'vacation')
+            ->where('year', $currentYear)
+            ->first();
+
+        $sickLedger = LeaveCreditLedger::where('employee_id', $id)
+            ->where('leave_type', 'sick')
+            ->where('year', $currentYear)
+            ->first();
+
+        // Already set = at least one ledger row is locked
+        $leaveAlreadySet = ($vacationLedger && $vacationLedger->locked_at)
+                        || ($sickLedger && $sickLedger->locked_at);
+
+        $vacationBalance = $vacationLedger ? max(0, $vacationLedger->credit_limit - $vacationLedger->used_days) : 0;
+        $sickBalance     = $sickLedger     ? max(0, $sickLedger->credit_limit - $sickLedger->used_days)         : 0;
+
         $data = [
-            'department' => $department,
-            "employee" => $employee,
+            'department'       => $department,
+            'employee'         => $employee,
+            'leaveWindowOpen'  => $leaveWindowOpen,
+            'leaveAlreadySet'  => $leaveAlreadySet,
+            'vacationBalance'  => $vacationBalance,
+            'sickBalance'      => $sickBalance,
+            'currentYear'      => $currentYear,
         ];
-       return view('employee.account')->with($data);
+
+        return view('employee.account')->with($data);
     }
     public function updateAccount(Request $request)
     {
@@ -151,28 +180,60 @@ class EmployeeController extends Controller
     }
     public function updateSalary(Request $request)
     {
+        $year = Carbon::now()->year;
+
+        // --- Leave window & lock guard ---
+        if (!LeaveWindowSetting::isOpen()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Leave credits are not editable at this time. The window opens Dec 14–31 or when opened by the Super Admin.'
+            ], 403);
+        }
+
+        // Check if already locked for this year
+        $vacationLocked = LeaveCreditLedger::where('employee_id', $request['employee_id'])
+            ->where('leave_type', 'vacation')
+            ->where('year', $year)
+            ->whereNotNull('locked_at')
+            ->exists();
+
+        $sickLocked = LeaveCreditLedger::where('employee_id', $request['employee_id'])
+            ->where('leave_type', 'sick')
+            ->where('year', $year)
+            ->whereNotNull('locked_at')
+            ->exists();
+
+        if ($vacationLocked || $sickLocked) {
+            return response()->json([
+                'success' => false,
+                'message' => "Leave credits for {$year} have already been set and are locked. Contact the Super Admin to reset."
+            ], 403);
+        }
+        // --- End guard ---
+
         Employee::find($request['employee_id'])->update([
-            "basic_pay" => $request['basic_pay'],
-            "other_nt_pay" => $request['other_nt_pay'],
-            "cola" => $request['cola'],
-            "payroll_type" => $request['payroll_type'],
-            "leave" => $request['leave'],
-            "sick_leave" => $request['sick']
+            'basic_pay'    => $request['basic_pay'],
+            'other_nt_pay' => $request['other_nt_pay'],
+            'cola'         => $request['cola'],
+            'payroll_type' => $request['payroll_type'],
+            'leave'        => $request['leave'],
+            'sick_leave'   => $request['sick'],
         ]);
 
-        $year = \Carbon\Carbon::now()->year;
-        
-        \SGpayroll\LeaveCreditLedger::updateOrCreate(
+        // Write leave credit ledger and lock it immediately
+        $lockTime = now();
+
+        LeaveCreditLedger::updateOrCreate(
             ['employee_id' => $request['employee_id'], 'leave_type' => 'vacation', 'year' => $year],
-            ['credit_limit' => $request['leave'] ?: 0]
+            ['credit_limit' => $request['leave'] ?: 0, 'locked_at' => $lockTime]
         );
 
-        \SGpayroll\LeaveCreditLedger::updateOrCreate(
+        LeaveCreditLedger::updateOrCreate(
             ['employee_id' => $request['employee_id'], 'leave_type' => 'sick', 'year' => $year],
-            ['credit_limit' => $request['sick'] ?: 0]
+            ['credit_limit' => $request['sick'] ?: 0, 'locked_at' => $lockTime]
         );
 
-        return 0;
+        return response()->json(['success' => true, 'message' => 'Salary and leave credits updated successfully.']);
     }
     public function deductionEmployee(Request $request)
     {
@@ -297,6 +358,138 @@ class EmployeeController extends Controller
     public function computeOther(Request $request)
     {
         dd($request);
+    }
+
+    /**
+     * Batch import employees from a CSV file.
+     * For each employee with an email, automatically creates a User account
+     * with password "testPass" (same logic as addEmployee).
+     *
+     * Expected CSV columns (header row required):
+     * employee_id, last_name, first_name, middle_name, gender, status,
+     * date_hired, birth_date, department, position, address, email,
+     * sss_number, tin_number, hdmf_number, philhealth_number, ucpb_number,
+     * basic_pay, cola, other_nt_pay
+     */
+    public function batchImportCsv(Request $request)
+    {
+        // 1. Safe validation for all Laravel 5 versions
+        $this->validate($request, [
+            'import_file' => 'required|file|max:5120',
+        ]);
+
+        // 2. Ensure the file actually uploaded successfully before manipulating it
+        if (!$request->hasFile('import_file') || !$request->file('import_file')->isValid()) {
+            return response()->json(['message' => 'File upload failed or file is invalid.'], 400);
+        }
+
+        $file    = $request->file('import_file');
+        $handle  = fopen($file->getRealPath(), 'r');
+        
+        if (!$handle) {
+            return response()->json(['message' => 'Could not open the uploaded file.'], 500);
+        }
+
+        $headers = null;
+        $success = 0;
+        $failed  = [];
+        $rowNum  = 0;
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            $rowNum++;
+
+            // First row = headers
+            if ($headers === null) {
+                $headers = array_map('trim', $row);
+                continue;
+            }
+
+            // Skip completely blank rows
+            if (empty(array_filter($row))) {
+                continue;
+            }
+
+            // 3. Prevent array_combine fatal errors if a row has extra/missing commas
+            if (count($headers) !== count($row)) {
+                $failed[] = [
+                    'row' => $rowNum, 
+                    'reason' => 'Column mismatch. Expected ' . count($headers) . ' columns, but found ' . count($row) . '.'
+                ];
+                continue;
+            }
+
+            $data = array_combine($headers, array_map('trim', $row));
+
+            // Validate required fields
+            if (empty($data['last_name']) || empty($data['first_name'])) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Missing first or last name.'];
+                continue;
+            }
+
+            DB::beginTransaction();
+            try {
+                $employee = Employee::create([
+                    'employee_id'       => $data['employee_id']      ?? null,
+                    'employee_status'   => '1',
+                    'employee_Lname'    => $data['last_name'],
+                    'employee_Fname'    => $data['first_name'],
+                    'employee_Mname'    => $data['middle_name']      ?? null,
+                    'gender'            => $data['gender']           ?? null,
+                    'status'            => $data['status']           ?? null,
+                    'date_hired'        => !empty($data['date_hired']) ? $data['date_hired'] : null,
+                    'birth_day'         => !empty($data['birth_date']) ? $data['birth_date'] : null,
+                    'department'        => $data['department']       ?? null,
+                    'position'          => $data['position']         ?? null,
+                    'address'           => $data['address']          ?? null,
+                    'email'             => !empty($data['email'])    ? $data['email']        : null,
+                    'sss_number'        => $data['sss_number']       ?? null,
+                    'tin_number'        => $data['tin_number']       ?? null,
+                    'hdmf_number'       => $data['hdmf_number']      ?? null,
+                    'philhealth_number' => $data['philhealth_number'] ?? null,
+                    'ucpb_number'       => $data['ucpb_number']      ?? null,
+                    'basic_pay'         => $data['basic_pay']        ?? 0,
+                    'cola'              => $data['cola']             ?? 0,
+                    'other_nt_pay'      => $data['other_nt_pay']     ?? 0,
+                    'payroll_type'      => '1',
+                    'pagibig_amount'    => '100',
+                    'pag_ibig_contribution' => '1',
+                    'phic_status'       => '1',
+                    'sss_status'        => '1',
+                    'tax_status'        => '1',
+                ]);
+
+                // Auto-create user account if email is provided
+                if (!empty($data['email'])) {
+                    \SGpayroll\User::firstOrCreate(
+                        ['email' => $data['email']],
+                        [
+                            'name'        => trim($data['first_name'] . ' ' . $data['last_name']), // Safer fallback if accessor fails
+                            'password'    => bcrypt('testPass'),
+                            'user_type'   => 2,
+                            'employee_id' => $employee->id,
+                        ]
+                    );
+                }
+
+                DB::commit();
+                $success++;
+            } catch (\Throwable $e) { // Catch \Throwable to trap fatal PHP 7+ errors as well as Exceptions
+                DB::rollBack();
+                $failed[] = [
+                    'row'    => $rowNum,
+                    'reason' => $e->getMessage(),
+                ];
+            }
+        }
+
+        fclose($handle);
+
+        return response()->json([
+            'success' => $success,
+            'failed'  => $failed,
+            'message' => "{$success} employee(s) imported successfully."
+                . (count($failed) ? ' ' . count($failed) . ' row(s) failed.' : ''),
+        ]);
     }
 
 

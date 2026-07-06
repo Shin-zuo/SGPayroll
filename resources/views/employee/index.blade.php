@@ -66,9 +66,15 @@
 <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden mb-6">
     <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-white">
         <h2 class="text-base font-semibold text-slate-800">Employee Directory</h2>
-        <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
-            <i class="fa fa-plus mr-1.5"></i> Add Employee
-        </button>
+        <div class="flex items-center gap-2">
+            <button type="button" id="btn-import-employee-csv"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5">
+                <i class="fa fa-file-csv"></i> Import CSV
+            </button>
+            <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
+                <i class="fa fa-plus mr-1.5"></i> Add Employee
+            </button>
+        </div>
     </div>
     <div class="overflow-x-auto p-4">
         <table id="emptable" class="w-full text-left border-collapse">
@@ -291,10 +297,152 @@
     </div>
 </div>
 @endsection
+
+<!-- CSV Import Modal (Task 5) -->
+<div class="modal fade" id="importCsvModal" tabindex="-1" role="dialog" aria-labelledby="importCsvModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title text-center" id="importCsvModalLabel">Import Employees from CSV</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Format Guide -->
+                <div id="import-step-1">
+                    <p class="mb-4 text-slate-600">Please format your CSV file exactly as shown below. The headers must match exactly in order to insert appropriate data. Note that an email will automatically create a portal user account with the password <strong>"testPass"</strong>.</p>
+                    
+                    <div style="max-height: 250px; overflow-y: auto;" class="border rounded mb-4">
+                        <table class="table table-bordered table-striped text-xs mb-0">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th>Column Name</th>
+                                    <th>Required</th>
+                                    <th>Accepted Value Example / Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>employee_id</strong></td><td>No</td><td>EMP-001 (Unique Code)</td></tr>
+                                <tr><td><strong>last_name</strong></td><td><span class="text-red-600">Yes</span></td><td>Smith</td></tr>
+                                <tr><td><strong>first_name</strong></td><td><span class="text-red-600">Yes</span></td><td>John</td></tr>
+                                <tr><td><strong>middle_name</strong></td><td>No</td><td>Doe</td></tr>
+                                <tr><td><strong>gender</strong></td><td>No</td><td>Male / Female</td></tr>
+                                <tr><td><strong>status</strong></td><td>No</td><td>Single / Married</td></tr>
+                                <tr><td><strong>date_hired</strong></td><td>No</td><td>YYYY-MM-DD (e.g. 2026-07-03)</td></tr>
+                                <tr><td><strong>birth_date</strong></td><td>No</td><td>YYYY-MM-DD</td></tr>
+                                <tr><td><strong>department</strong></td><td>No</td><td>Department Name</td></tr>
+                                <tr><td><strong>position</strong></td><td>No</td><td>Position/Job Title</td></tr>
+                                <tr><td><strong>address</strong></td><td>No</td><td>Street Address</td></tr>
+                                <tr><td><strong>email</strong></td><td>No</td><td>john@example.com (Creates user account)</td></tr>
+                                <tr><td><strong>sss_number</strong></td><td>No</td><td>Numbers only</td></tr>
+                                <tr><td><strong>tin_number</strong></td><td>No</td><td>Numbers only</td></tr>
+                                <tr><td><strong>hdmf_number</strong></td><td>No</td><td>Numbers only (Pag-IBIG)</td></tr>
+                                <tr><td><strong>philhealth_number</strong></td><td>No</td><td>Numbers only</td></tr>
+                                <tr><td><strong>ucpb_number</strong></td><td>No</td><td>Numbers only</td></tr>
+                                <tr><td><strong>basic_pay</strong></td><td>No</td><td>Decimal/Float (e.g. 25000)</td></tr>
+                                <tr><td><strong>cola</strong></td><td>No</td><td>Decimal/Float</td></tr>
+                                <tr><td><strong>other_nt_pay</strong></td><td>No</td><td>Decimal/Float</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" id="btn-proceed-upload" class="btn btn-primary">Proceed to Upload</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Upload Input -->
+                <div id="import-step-2" style="display: none;">
+                    <form id="employeeImportForm" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label for="import_file" class="control-label">Select CSV File :</label>
+                            <input type="file" id="import_file" name="import_file" class="form-control" accept=".csv,text/csv,text/plain" required>
+                        </div>
+                        <div id="import-results" style="display:none;" class="alert mb-4"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" id="btn-back-step-1" class="btn btn-secondary mr-2">Back</button>
+                            <button type="submit" id="btn-submit-import" class="btn btn-success">Import Now</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="/js/employee/employee.js?v={{ time() }}"></script>
 <script>
     $(document).ready(function() {
         $('#emptable').DataTable();
-    } );
+
+        $('#btn-import-employee-csv').on('click', function() {
+            // Reset to Step 1 when modal is opened
+            $('#import-step-1').show();
+            $('#import-step-2').hide();
+            $('#import_file').val('');
+            $('#import-results').hide().empty();
+            $('#importCsvModal').modal('show');
+        });
+
+        $('#btn-proceed-upload').on('click', function() {
+            $('#import-step-1').hide();
+            $('#import-step-2').show();
+        });
+
+        $('#btn-back-step-1').on('click', function() {
+            $('#import-step-2').hide();
+            $('#import-step-1').show();
+        });
+
+        $('#employeeImportForm').on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $('#btn-submit-import').prop('disabled', true).text('Importing...');
+            $('#import-results').hide().removeClass('alert-success alert-danger alert-warning').empty();
+
+            $.ajax({
+                url: '/employee/batch-import',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'Accept': 'application/json' // Forces Laravel to send JSON validation errors instead of redirects
+                },
+                success: function(response) {
+                    $('#btn-submit-import').prop('disabled', false).text('Import Now');
+                    
+                    var alertClass = 'alert-success';
+                    var html = '<strong>' + response.message + '</strong>';
+
+                    if (response.failed && response.failed.length > 0) {
+                        alertClass = 'alert-warning';
+                        html += '<hr><p class="mb-1 font-bold">Failed rows:</p><ul class="pl-4 mb-0 text-xs">';
+                        response.failed.forEach(function(item) {
+                            html += '<li>Row ' + item.row + ': ' + item.reason + '</li>';
+                        });
+                        html += '</ul>';
+                    }
+
+                    $('#import-results').addClass(alertClass).html(html).show();
+                    
+                    // Reload table if anything succeeded
+                    if (response.success > 0) {
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function(xhr) {
+                    $('#btn-submit-import').prop('disabled', false).text('Import Now');
+                    var errorMsg = 'An error occurred during import.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    $('#import-results').addClass('alert-danger').html('<strong>' + errorMsg + '</strong>').show();
+                }
+            });
+        });
+    });
 </script>

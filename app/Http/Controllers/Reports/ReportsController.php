@@ -579,4 +579,123 @@ class ReportsController extends Controller
             return $pdf->stream('employeeInformation.pdf');
         }
     }
+
+    /**
+     * Batch import payroll data from a 59-column CSV file.
+     * Each row is upserted into employee_payrolls using the composite key:
+     * (employee_code, department, payroll_number, monthly_record, year).
+     *
+     * All 59 CSV columns map directly to employee_payrolls fields and cover
+     * every column consumed by all report types in viewReport().
+     */
+    public function batchImportPayrollCsv(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|file|max:10240',
+        ]);
+
+        $file    = $request->file('import_file');
+        $handle  = fopen($file->getRealPath(), 'r');
+        $headers = null;
+        $success = 0;
+        $failed  = [];
+        $rowNum  = 0;
+
+        // All 59 fillable columns for employee_payrolls
+        $allowedColumns = [
+            'employee_code', 'department', 'payroll_number', 'monthly_record', 'year',
+            'date_from', 'date_to',
+            'work_days', 'work_days_amount',
+            'overtime', 'overtime_amount',
+            'ext_reg_hrs', 'ext_reg_hrs_ammount',
+            'night_diff', 'night_diff_amount',
+            'night_diff_restday', 'night_diff_restday_amount',
+            'rest_special', 'rest_special_amount',
+            'regular_holiday', 'regular_holiday_amount',
+            'regular_holiday_day', 'regular_holiday_day_amount',
+            'regular_holiday_day_minimum', 'regular_holiday_day_minimum_amount',
+            'special_holiday_day', 'special_holiday_day_amount',
+            'special_holiday_day_minimum', 'special_holiday_day_minimum_amount',
+            'absent', 'absent_amount',
+            'late', 'late_amount',
+            'sick_leave', 'sick_leave_amount',
+            'vacation_leave', 'vacation_leave_amount',
+            'service_leave', 'service_leave_amount',
+            'total_basic_pay',
+            'cola', 'cola_amount',
+            'thirteen_month',
+            'non_tax_other', 'total_other_pay',
+            'gross_pay',
+            'witholding_tax',
+            'sss_contribution',
+            'phic_contribution',
+            'hdmf_contribution',
+            'provident_fund',
+            'sss_loan', 'sss_calamity_loan',
+            'hdmf_loan', 'hdmf_calamity_loan',
+            'company_loan', 'other_loan',
+            'total_deduction',
+            'net_pay',
+        ];
+
+        while (($row = fgetcsv($handle, 2000, ',')) !== false) {
+            $rowNum++;
+
+            if ($headers === null) {
+                $headers = array_map('trim', $row);
+                continue;
+            }
+
+            if (empty(array_filter($row))) {
+                continue;
+            }
+
+            $data = array_combine($headers, array_map('trim', $row));
+
+            // Validate minimum required fields
+            if (empty($data['employee_code']) || empty($data['year']) || empty($data['monthly_record'])) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Missing employee_code, year, or monthly_record.'];
+                continue;
+            }
+
+            // Filter to only allowed columns
+            $insertData = array_intersect_key($data, array_flip($allowedColumns));
+
+            // Replace empty strings with null for numeric columns
+            foreach ($insertData as $key => $value) {
+                if ($value === '') {
+                    $insertData[$key] = null;
+                }
+            }
+
+            try {
+                \SGpayroll\Employee_Payrolls::updateOrCreate(
+                    [
+                        'employee_code'  => $data['employee_code'],
+                        'department'     => $data['department']     ?? null,
+                        'payroll_number' => $data['payroll_number'] ?? null,
+                        'monthly_record' => $data['monthly_record'],
+                        'year'           => $data['year'],
+                    ],
+                    $insertData
+                );
+                $success++;
+            } catch (\Exception $e) {
+                $failed[] = [
+                    'row'    => $rowNum,
+                    'reason' => $e->getMessage(),
+                ];
+            }
+        }
+
+        fclose($handle);
+
+        return response()->json([
+            'success' => $success,
+            'failed'  => $failed,
+            'message' => "{$success} payroll record(s) imported successfully."
+                . (count($failed) ? ' ' . count($failed) . ' row(s) failed.' : ''),
+        ]);
+    }
 }
+
