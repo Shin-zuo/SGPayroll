@@ -590,8 +590,9 @@ class ReportsController extends Controller
      */
     public function batchImportPayrollCsv(Request $request)
     {
-        $request->validate([
-            'import_file' => 'required|file|max:10240',
+        // 1. Laravel 5 (<= 5.4) Compatible Validation
+        $this->validate($request, [
+            'import_file' => 'required',
         ]);
 
         $file    = $request->file('import_file');
@@ -642,6 +643,8 @@ class ReportsController extends Controller
             $rowNum++;
 
             if ($headers === null) {
+                // Strip BOM (Byte Order Mark) from the first column if it exists
+                $row[0] = ltrim($row[0], "\xEF\xBB\xBF");
                 $headers = array_map('trim', $row);
                 continue;
             }
@@ -669,11 +672,13 @@ class ReportsController extends Controller
             }
 
             try {
-                \SGpayroll\Employee_Payrolls::updateOrCreate(
+                // 2. Usedisset() instead of ?? for PHP < 7 compatibility
+                // 3. Used Employee_Payrolls alias since it is declared at the top of your controller
+                Employee_Payrolls::updateOrCreate(
                     [
                         'employee_code'  => $data['employee_code'],
-                        'department'     => $data['department']     ?? null,
-                        'payroll_number' => $data['payroll_number'] ?? null,
+                        'department'     => isset($data['department']) ? $data['department'] : null,
+                        'payroll_number' => isset($data['payroll_number']) ? $data['payroll_number'] : null,
                         'monthly_record' => $data['monthly_record'],
                         'year'           => $data['year'],
                     ],

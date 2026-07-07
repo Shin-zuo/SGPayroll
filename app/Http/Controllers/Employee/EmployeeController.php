@@ -85,6 +85,7 @@ class EmployeeController extends Controller
 
         return response()->json(['success' => true]);
     }
+
     public function accountEmployee($id)
     {
         $department    = Department::orderBy('department_name', 'ASC')->get();
@@ -92,13 +93,15 @@ class EmployeeController extends Controller
         $currentYear   = Carbon::now()->year;
         $leaveWindowOpen = LeaveWindowSetting::isOpen();
 
-        // Check if leave credit is already locked for this employee this year
-        $vacationLedger = LeaveCreditLedger::where('employee_id', $id)
+        // 1. Force a raw DB query to check the ledger
+        $vacationLedger = DB::table('leave_credit_ledgers')
+            ->where('employee_id', $id)
             ->where('leave_type', 'vacation')
             ->where('year', $currentYear)
             ->first();
 
-        $sickLedger = LeaveCreditLedger::where('employee_id', $id)
+        $sickLedger = DB::table('leave_credit_ledgers')
+            ->where('employee_id', $id)
             ->where('leave_type', 'sick')
             ->where('year', $currentYear)
             ->first();
@@ -107,8 +110,13 @@ class EmployeeController extends Controller
         $leaveAlreadySet = ($vacationLedger && $vacationLedger->locked_at)
                         || ($sickLedger && $sickLedger->locked_at);
 
-        $vacationBalance = $vacationLedger ? max(0, $vacationLedger->credit_limit - $vacationLedger->used_days) : 0;
-        $sickBalance     = $sickLedger     ? max(0, $sickLedger->credit_limit - $sickLedger->used_days)         : 0;
+        $vacationBalance = $vacationLedger ? max(0, $vacationLedger->credit_limit - $vacationLedger->used_days) : ($employee->leave ?: 0);
+        $sickBalance     = $sickLedger     ? max(0, $sickLedger->credit_limit - $sickLedger->used_days)         : ($employee->sick_leave ?: 0);
+
+        $dateHired = Carbon::parse($employee->date_hired);
+        $isOneYearMilestone = ($dateHired->diffInYears(Carbon::now()) == 1);
+
+        $canEditLeave = ($isOneYearMilestone || $leaveWindowOpen) && !$leaveAlreadySet;
 
         $data = [
             'department'       => $department,
@@ -118,10 +126,12 @@ class EmployeeController extends Controller
             'vacationBalance'  => $vacationBalance,
             'sickBalance'      => $sickBalance,
             'currentYear'      => $currentYear,
+            'canEditLeave'     => $canEditLeave,
         ];
 
         return view('employee.account')->with($data);
     }
+
     public function updateAccount(Request $request)
     {
        Employee::find($request['id'])->update([
@@ -178,63 +188,124 @@ class EmployeeController extends Controller
         ];
             return view('employee.attendance')->with($data);
     }
+
+
+
     public function updateSalary(Request $request)
     {
         $year = Carbon::now()->year;
+        $employeeId = $request['employee_id'];
+        $employee = Employee::find($employeeId);
 
-        // --- Leave window & lock guard ---
-        if (!LeaveWindowSetting::isOpen()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Leave credits are not editable at this time. The window opens Dec 14–31 or when opened by the Super Admin.'
-            ], 403);
-        }
+        $dateHired = Carbon::parse($employee->date_hired);
+        $isOneYearMilestone = ($dateHired->diffInYears(Carbon::now()) == 1);
+        $leaveWindowOpen = LeaveWindowSetting::isOpen();
 
-        // Check if already locked for this year
-        $vacationLocked = LeaveCreditLedger::where('employee_id', $request['employee_id'])
+        // Force a raw DB query to verify if already locked
+        $vacationLocked = DB::table('leave_credit_ledgers')
+            ->where('employee_id', $employeeId)
             ->where('leave_type', 'vacation')
             ->where('year', $year)
             ->whereNotNull('locked_at')
             ->exists();
 
-        $sickLocked = LeaveCreditLedger::where('employee_id', $request['employee_id'])
+        $sickLocked = DB::table('leave_credit_ledgers')
+            ->where('employee_id', $employeeId)
             ->where('leave_type', 'sick')
             ->where('year', $year)
             ->whereNotNull('locked_at')
             ->exists();
 
-        if ($vacationLocked || $sickLocked) {
-            return response()->json([
-                'success' => false,
-                'message' => "Leave credits for {$year} have already been set and are locked. Contact the Super Admin to reset."
-            ], 403);
-        }
-        // --- End guard ---
+        $leaveAlreadySet = $vacationLocked || $sickLocked;
+        $canEditLeave = ($isOneYearMilestone || $leaveWindowOpen) && !$leaveAlreadySet;
 
-        Employee::find($request['employee_id'])->update([
+        $updateData = [
             'basic_pay'    => $request['basic_pay'],
             'other_nt_pay' => $request['other_nt_pay'],
             'cola'         => $request['cola'],
             'payroll_type' => $request['payroll_type'],
-            'leave'        => $request['leave'],
-            'sick_leave'   => $request['sick'],
+        ];
+
+        if ($canEditLeave) {
+            $updateData['leave']      = $request['leave'];
+            $updateData['sick_leave'] = $request['sick'];
+            $employee->update($updateData);
+
+            $lockTime = Carbon::now();
+
+            // Raw Database Insert/Update (Bypasses all model restrictions)
+            
+            // VACATION LEAVE
+            $vCount = DB::table('leave_credit_ledgers')
+                ->where('employee_id', $employeeId)
+                ->where('leave_type', 'vacation')
+                ->where('year', $year)
+                ->count();
+
+            if ($vCount > 0) {
+                DB::table('leave_credit_ledgers')
+                    ->where('employee_id', $employeeId)
+                    ->where('leave_type', 'vacation')
+                    ->where('year', $year)
+                    ->update([
+                        'credit_limit' => $request['leave'] ?: 0,
+                        'used_days' => 0,
+                        'locked_at' => $lockTime
+                    ]);
+            } else {
+                DB::table('leave_credit_ledgers')->insert([
+                    'employee_id' => $employeeId,
+                    'leave_type' => 'vacation',
+                    'year' => $year,
+                    'credit_limit' => $request['leave'] ?: 0,
+                    'used_days' => 0,
+                    'locked_at' => $lockTime
+                ]);
+            }
+
+            // SICK LEAVE
+            $sCount = DB::table('leave_credit_ledgers')
+                ->where('employee_id', $employeeId)
+                ->where('leave_type', 'sick')
+                ->where('year', $year)
+                ->count();
+
+            if ($sCount > 0) {
+                DB::table('leave_credit_ledgers')
+                    ->where('employee_id', $employeeId)
+                    ->where('leave_type', 'sick')
+                    ->where('year', $year)
+                    ->update([
+                        'credit_limit' => $request['sick'] ?: 0,
+                        'used_days' => 0,
+                        'locked_at' => $lockTime
+                    ]);
+            } else {
+                DB::table('leave_credit_ledgers')->insert([
+                    'employee_id' => $employeeId,
+                    'leave_type' => 'sick',
+                    'year' => $year,
+                    'credit_limit' => $request['sick'] ?: 0,
+                    'used_days' => 0,
+                    'locked_at' => $lockTime
+                ]);
+            }
+
+            return response()->json([
+                'success' => true, 
+                'message' => 'Salary and Leave Credits updated successfully!'
+            ]);
+        }
+
+        $employee->update($updateData);
+        
+        return response()->json([
+            'success' => true, 
+            'message' => 'Salary updated! (Leave management is currently closed)'
         ]);
-
-        // Write leave credit ledger and lock it immediately
-        $lockTime = now();
-
-        LeaveCreditLedger::updateOrCreate(
-            ['employee_id' => $request['employee_id'], 'leave_type' => 'vacation', 'year' => $year],
-            ['credit_limit' => $request['leave'] ?: 0, 'locked_at' => $lockTime]
-        );
-
-        LeaveCreditLedger::updateOrCreate(
-            ['employee_id' => $request['employee_id'], 'leave_type' => 'sick', 'year' => $year],
-            ['credit_limit' => $request['sick'] ?: 0, 'locked_at' => $lockTime]
-        );
-
-        return response()->json(['success' => true, 'message' => 'Salary and leave credits updated successfully.']);
     }
+
+    
     public function deductionEmployee(Request $request)
     {
 //        dd($request);

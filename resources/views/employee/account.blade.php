@@ -21,28 +21,11 @@
         </div>
         <div class="flex items-center space-x-2">
             @if(auth()->user()->user_type == 1)
-            @if($leaveWindowOpen && !$leaveAlreadySet)
-            {{-- Window open and not yet saved: fully active --}}
             <button type="button" id="btn-open-rates"
                 class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                 data-toggle="modal" data-target="#salaryModal">
                 <i class="fa fa-plus mr-1.5"></i> Rates
             </button>
-            @elseif($leaveWindowOpen && $leaveAlreadySet)
-            {{-- Window open but already saved this year: locked --}}
-            <button type="button" disabled
-                title="Leave credits already set for {{ $currentYear }}. Contact Super Admin to reset."
-                class="inline-flex items-center bg-gray-400 cursor-not-allowed text-white px-3 py-1.5 rounded-md text-xs font-medium">
-                <i class="fa fa-lock mr-1.5"></i> Credits Set {{ $currentYear }} ✓
-            </button>
-            @else
-            {{-- Window closed --}}
-            <button type="button" disabled
-                title="Leave credits are only editable Dec 14–31 or when opened by the Super Admin."
-                class="inline-flex items-center bg-gray-300 cursor-not-allowed text-gray-500 px-3 py-1.5 rounded-md text-xs font-medium">
-                <i class="fa fa-calendar-times mr-1.5"></i> Rates (Locked)
-            </button>
-            @endif
             @endif
             <button type="button" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors" data-toggle="modal" data-target="#deductionModal">
                 <i class="fa fa-cut mr-1.5"></i> Deduction
@@ -295,14 +278,31 @@
                             <input type="number" class="form-control w-full" id="cola" name="cola" value="{{$employee->cola}}">
                         </div>
                         <div class="form-group">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Vacation Leave <span class="text-blue-500">(days/year)</span></label>
-                            <input type="number" class="form-control w-full" id="leave" name="leave" value="{{$employee->leave}}">
-                            <p class="text-xs text-slate-400 mt-1">Remaining this year: <strong class="text-slate-700">{{ $vacationBalance }} days</strong></p>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                                Vacation Leave <span class="text-blue-500">(days/year)</span>
+                            </label>
+                            @if($canEditLeave)
+                                <input type="number" class="form-control w-full" id="leave" name="leave" value="{{ $vacationBalance }}">
+                            @else
+                                <div class="bg-slate-100 text-slate-500 text-sm font-medium py-2 px-3 rounded border border-slate-200 cursor-not-allowed">
+                                    <i class="fa fa-lock mr-1"></i> Locked ({{ $vacationBalance }} remaining)
+                                </div>
+                                <input type="hidden" id="leave" name="leave" value="{{ $vacationBalance }}">
+                            @endif
                         </div>
+                        
                         <div class="form-group">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sick Leave <span class="text-blue-500">(days/year)</span></label>
-                            <input type="number" class="form-control w-full" id="sick" name="sick" value="{{$employee->sick_leave}}">
-                            <p class="text-xs text-slate-400 mt-1">Remaining this year: <strong class="text-slate-700">{{ $sickBalance }} days</strong></p>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                                Sick Leave <span class="text-blue-500">(days/year)</span>
+                            </label>
+                            @if($canEditLeave)
+                                <input type="number" class="form-control w-full" id="sick" name="sick" value="{{ $sickBalance }}">
+                            @else
+                                <div class="bg-slate-100 text-slate-500 text-sm font-medium py-2 px-3 rounded border border-slate-200 cursor-not-allowed">
+                                    <i class="fa fa-lock mr-1"></i> Locked ({{ $sickBalance }} remaining)
+                                </div>
+                                <input type="hidden" id="sick" name="sick" value="{{ $sickBalance }}">
+                            @endif
                         </div>
                     </div>
                 </form>

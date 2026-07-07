@@ -30,6 +30,11 @@ class HomeController extends Controller
             return redirect('/portal');
         }
 
+        // Super Admin (user_type 0) should go to the leave window settings
+        if (auth()->user()->user_type == 0) {
+            return redirect('/superadmin/leave-window');
+        }
+
         // Admin/HR (user_type 1) see the employee list
         $department = Department::orderBy('department_name','ASC')->get();
         $employee = Employee::orderBy('employee_Lname','ASC')->get();

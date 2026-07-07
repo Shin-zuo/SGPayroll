@@ -57,5 +57,7 @@ class Kernel extends HttpKernel
         'guest' => \SGpayroll\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'superadmin' => \SGpayroll\Http\Middleware\SuperAdminMiddleware::class,
+        'admin_hr' => \SGpayroll\Http\Middleware\AdminHRMiddleware::class,
+        'employee_portal' => \SGpayroll\Http\Middleware\EmployeeMiddleware::class,
     ];
 }

@@ -1,9 +1,9 @@
 #!/bin/sh
-set -e
+# Remove the 'set -e' so a failed migration doesn't kill the container
 
-# Run migrations first
-echo "Running migrations..."
-php artisan migrate --force
+echo "Running migrations against TiDB Cloud..."
+# The '|| true' prevents the script from exiting if the migration fails
+php artisan migrate --force || echo "MIGRATION FAILED - Check your TiDB connection, credentials, or SSL setup."
 
-# Then start your web server (Apache/Nginx)
+# Start the web server anyway so you can read logs or test the site
 exec "$@"

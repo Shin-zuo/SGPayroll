@@ -1,10 +1,12 @@
 FROM php:7.4-apache
 
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Strip out Windows carriage returns and make the script executable
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# This sets your script to run before the command
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Use the absolute path to be perfectly safe
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Your existing start command (e.g., apache2-foreground)
 CMD ["apache2-foreground"]
@@ -44,8 +46,8 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Create a startup script to dynamically bind Apache to Render's $PORT
 RUN echo '#!/bin/bash\n\
-sed -i "s/80/${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
-apache2-foreground' > /usr/local/bin/start.sh \
+    sed -i "s/80/${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
+    apache2-foreground' > /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
 # Render will provide the PORT environment variable

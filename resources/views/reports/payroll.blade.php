@@ -237,7 +237,7 @@
                 <td><strong>{{ number_format($payroll_report->sum('provident_fund'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('phic_contribution'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('hdmf_contribution'), 2) }}</strong></td>
-                @if ($payroll_reports->endMonth == 'true')
+                @if ($payroll_report->first()->endMonth == 'true')
                     <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
                 @else
                     <td>{{ number_format($grossEr * 0.1, 2) }}</td>
@@ -412,7 +412,7 @@
                             </td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_contribution'), 2) }}</strong>
                             </td>
-                            @if ($payroll_report_admin->endMonth == 'true')
+                            @if ($payroll_report_admins->first()->endMonth == 'true')
                                 <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
                             @else
                                 <td>{{ number_format($payroll_report_admins->sum('gross_pay') * 0.1, 2) }}</td>
@@ -591,13 +591,13 @@
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong>
                             </td>
 
-                            @if ($payroll_report_cost->endMonth == 'true' AND $payroll_report_cost->employee->sss_status == 1)
-                                <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
-                            @elseif ($payroll_report_cost->employee->sss_status == 0)
-                                <td>0.00</td>
-                            @else
-                                <td>{{ number_format($payroll_report_costs->sum('gross_pay') * 0.1, 2) }}</td>
-                            @endif
+                             @if ($payroll_report_costs->first()->endMonth == 'true' AND $payroll_report_costs->first()->employee->sss_status == 1)
+                                 <td><strong>{{ number_format($total_sss, 2) }}</strong> </td>
+                             @elseif ($payroll_report_costs->first()->employee->sss_status == 0)
+                                 <td>0.00</td>
+                             @else
+                                 <td>{{ number_format($payroll_report_costs->sum('gross_pay') * 0.1, 2) }}</td>
+                             @endif
                             <td><strong>{{ number_format((($payroll_report_costs->sum('provident_fund')/0.05)* 0.1), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('phic_contribution'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong></td>

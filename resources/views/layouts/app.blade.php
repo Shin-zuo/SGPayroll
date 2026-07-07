@@ -70,7 +70,9 @@
             <!-- Sidebar Links -->
             <div class="flex-1 overflow-y-auto py-4">
                 @if(auth()->check())
-                    @if(auth()->user()->user_type == 2)
+                    @if(auth()->user()->user_type == 0)
+                        @include('superadmin.sidebar')
+                    @elseif(auth()->user()->user_type == 2)
                         @include('portal.sidebar')
                     @else
                         @include('admin.sidebar')

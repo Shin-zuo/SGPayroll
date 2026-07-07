@@ -29,6 +29,8 @@ class LoginController extends Controller
             return '/portal';
         }else if(auth()->user()->user_type == 1){
             return '/employee';
+        }else if(auth()->user()->user_type == 0){
+            return '/superadmin/leave-window';
         }
     }
 

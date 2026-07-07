@@ -100,21 +100,24 @@ $(document).ready(function(){
         };
         var type = "GET";
         var my_url = url_updateSalary;
-        console.log(formData);
 
         $.ajax({
-
             type: type,
             url: my_url,
             data: formData,
             dataType: 'json',
             success: function (data) {
-                $('#salaryModal').remove();
-                location.reload();
+                $('#salaryModal').modal('hide');
+                alertify.success(data.message || 'Rates updated successfully.');
+                setTimeout(function() { location.reload(); }, 1500);
             },
-            error: function (data) {
+            error: function (xhr) {
+                var msg = 'An error occurred while saving.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                alertify.error(msg);
             }
-
         });
     });
 

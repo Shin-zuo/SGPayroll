@@ -24,7 +24,7 @@ class LeaveWindowController extends Controller
         $setting->update([
             'is_open'   => 1,
             'opened_by' => auth()->id(),
-            'opened_at' => now(),
+            'opened_at' => \Carbon\Carbon::now(),
         ]);
 
         return back()->with('success', 'Leave credit window has been manually OPENED.');
@@ -39,7 +39,7 @@ class LeaveWindowController extends Controller
         $setting->update([
             'is_open'   => 0,
             'closed_by' => auth()->id(),
-            'closed_at' => now(),
+            'closed_at' => \Carbon\Carbon::now(),
         ]);
 
         return back()->with('success', 'Leave credit window has been manually CLOSED.');
@@ -69,9 +69,9 @@ class LeaveWindowController extends Controller
     public function index()
     {
         $setting      = LeaveWindowSetting::current();
-        $isAutoOpen   = (now()->month === 12 && now()->day >= 14);
+        $isAutoOpen   = (\Carbon\Carbon::now()->month === 12 && \Carbon\Carbon::now()->day >= 14);
         $isManualOpen = (bool) $setting->is_open;
-        $currentYear  = now()->year;
+        $currentYear  = \Carbon\Carbon::now()->year;
 
         // Load all employees with their leave lock status for the current year
         $employees = Employee::orderBy('employee_Lname')

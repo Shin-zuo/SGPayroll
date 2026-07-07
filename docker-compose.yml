@@ -6,8 +6,6 @@ services:
     build: .
     ports:
       - "8080:10000"
-    depends_on:
-      - db
     env_file:
       - .env
 
