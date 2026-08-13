@@ -45,6 +45,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        if (env('APP_ENV') !== 'local' || strpos(env('APP_URL'), 'https') === 0) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         if (env('DB_CONNECTION') === 'pgsql') {
             $grammar = DB::connection()->getSchemaGrammar();
 
