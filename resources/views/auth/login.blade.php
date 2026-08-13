@@ -30,7 +30,7 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white mb-4 shadow-lg shadow-blue-200">
             <i class="fa fa-fingerprint text-3xl"></i>
         </div>
-        <h2 class="text-2xl font-bold text-slate-800">SG Payroll 101</h2>
+        <h2 class="text-2xl font-bold text-slate-800">SG Payroll</h2>
         <p class="text-slate-500 text-sm mt-1">Please sign in to your account</p>
     </div>
 
