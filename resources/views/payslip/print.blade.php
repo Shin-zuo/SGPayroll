@@ -8,116 +8,106 @@
 	<title>Payroll Report</title>
 
     <style>
+    @page {
+        margin: 12px 24px;
+    }
     body {
-        padding: 0rem 2rem;
-        font-size: 11px;
-        font-family: Raleway,sans-serif;
-        color: #333;
+        padding: 0;
+        margin: 0;
+        font-size: 9.5px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #222;
+        line-height: 1.15;
     }
     .payslip {
-        margin-top: 2px;
-        margin-bottom: 15px;
+        margin: 0;
+        padding: 0;
+    }
+    .dept-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 12.5px;
+        margin: 0 0 1px 0;
+        padding: 0;
+        line-height: 1.2;
+    }
+    .dept-sub {
+        font-size: 8.5px;
+        text-align: center;
+        margin: 0 0 5px 0;
+        padding: 0;
+        line-height: 1.25;
+        color: #444;
     }
     .pull-right {
         text-align: right;
-        /*float:left;*/
     }
     .employee {
         width: 100%;
+        border-collapse: collapse;
+    }
+    .employee td, .employee th {
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 0;
+        padding-right: 0;
     }
     .text-muted {
         color: #6c757d !important;
     }
-    .pl-1 {
-        padding-left: 30px;
+    td.pl-1, th.pl-1, .employee td.pl-1, .employee th.pl-1, .pl-1 {
+        padding-left: 15px !important;
         border-left: 1px solid #dee2e6; 
     }
-    .pl-0 {
-        padding-left: 60px;
+    td.pl-0, th.pl-0, .employee td.pl-0, .employee th.pl-0, .pl-0 {
+        text-align: center;
     }
-    .pr-1 {
-        padding-right: 30px !important;
+    td.pr-1, th.pr-1, .employee td.pr-1, .employee th.pr-1, .pr-1 {
+        text-align: right;
+        padding-right: 25px !important;
     }
-    .bt-1 {
+    td.bt-1, th.bt-1, .employee td.bt-1, .employee th.bt-1, .bt-1 {
         border-top: 1px solid #dee2e6 !important;
-        padding-top: 5px;
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
     }
-    .bt-2 {
-        border-top: 2px solid #dee2e6 !important;
-        padding-top: 5px;
+    td.bt-2, th.bt-2, .employee td.bt-2, .employee th.bt-2, .bt-2 {
+        border-top: 1.5px solid #dee2e6 !important;
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
     }
     .slip-table {
         border-top: .5px solid #dee2e6 !important;
-        padding: 10px 0px;
     }
     .th-border {
         border-top: .5px solid #dee2e6 !important;
+        border-bottom: .5px solid #dee2e6 !important;
     }
     th {
-        padding: 5px 0px;
+        padding: 3px 0px;
+        font-size: 9.5px;
     }
     td {
         overflow-wrap: break-word;
+        font-size: 9.5px;
     }
-    @page {
-      margin: 10px;
-  }
+    .page-break {
+        page-break-after: always;
+        clear: both;
+    }
+    .divider {
+        border-top: 1px dashed #777;
+        margin: 10px 0 8px 0;
+        clear: both;
+    }
 </style>
-    <!-- <style>
-    table {
-      display: table;
-      border-collapse: separate;
-      border-spacing: 2px;
-      border-color: grey;
-  }
-
-  body {
-      font-family: Raleway,sans-serif;
-      font-size: 12px;
-      line-height: 1.3;
-  }
-  p {
-      text-align: center;
-      font-size: 12px;
-      margin: 0 0 0px;
-  }
-  table {
-      border-collapse: collapse;
-      font-size: 11px;
-      width: 100%;
-
-  }
-  td, th {
-      border: 1px solid;
-      text-align: center;
-      padding: 0;
-      display: table-cell;
-      vertical-align: inherit;
-  }
-  th {
-      padding-left: 10px;
-      padding-right: 10px;
-  }
-  /**, :after, :before {*/
-      /*box-sizing: border-box;*/
-      /*}*/
-      .employee {
-          width: 100%;
-      }
-      .employee td {
-          border: none;
-          text-align: left;
-      }
-
-    }
-</style> -->
 </head>
 <body>
 @foreach($payslip as $payslips)
     <div class="payslip">
         <div style="width: 100%;">
-            <p style="text-align: center;">{{$payslips->departments->department_name}}</p>
-            <p style="font-size: 11px; text-align: center;">
+            <p class="dept-title">{{$payslips->departments->department_name}}</p>
+            <p class="dept-sub">
                 {{$payslips->departments->department_address}}
                 <br>
                 Payroll for the period from: {{ \Carbon\Carbon::parse($payslips->date_from)->format('jS \\of F Y')}} to {{ \Carbon\Carbon::parse($payslips->date_to)->format('jS \\of F Y')}}
@@ -133,11 +123,18 @@
                 </tr>
             </table>
             <table class="employee">
+                <colgroup>
+                    <col style="width: 25%;">
+                    <col style="width: 10%;">
+                    <col style="width: 18%;">
+                    <col style="width: 32%;">
+                    <col style="width: 15%;">
+                </colgroup>
                 <thead class="th-border">
                     <tr>
-                        <th>Basic Pay</th>
-                        <th class="pl-0">Days/Hrs</th>
-                        <th class="pull-right pr-1">Amount</th>
+                        <th style="text-align: left;">Basic Pay</th>
+                        <th style="text-align: center;">Days/Hrs</th>
+                        <th class="pr-1">Amount</th>
                         <th class="pl-1">Deductions</th>
                         <th class="pull-right">Amount</th>
                     </tr>
@@ -262,7 +259,8 @@
                         @else
                             <td class="pull-right pr-1">0.00</td>
                         @endif
-                       
+                        <td class="pl-1"></td>
+                        <td class="pull-right"></td>
                     </tr>
                     <tr>
                         <td>Night Diff Restday</td>
@@ -399,13 +397,13 @@
 
             </table>
 
-            <table class="employee">
+            <table class="employee" style="margin-top: 3px;">
                 <tr>
-                    <td rowspan="3">Paid By:</td>
-                    <td>ATM</td>
-                    <td>____</td>
+                    <td rowspan="3" style="width: 10%; vertical-align: top;">Paid By:</td>
+                    <td style="width: 8%;">ATM</td>
+                    <td style="width: 10%;">____</td>
                     <td></td>
-                    <td class="pull-right">Received By: (Signature)</td>
+                    <td class="pull-right" style="vertical-align: top;">Received By: (Signature)</td>
                 </tr>
                 <tr>
                     <td>CASH</td>
@@ -416,7 +414,7 @@
                     <td>CHK</td>
                     <td>____</td>
                     <td></td>
-                    <td class="pull-right"><u>{{$payslips->employee->full_name}}.</u></td>
+                    <td class="pull-right" style="vertical-align: bottom; padding-top: 10px;"><u>{{$payslips->employee->full_name}}</u></td>
                 </tr>
                 <tr>
                     <td colspan="4"></td>
@@ -426,7 +424,11 @@
         </div>
     </div>
 
-
+    @if($loop->iteration % 2 == 1 && !$loop->last)
+        <div class="divider"></div>
+    @elseif($loop->iteration % 2 == 0 && !$loop->last)
+        <div class="page-break"></div>
+    @endif
 @endforeach
 </body>
 

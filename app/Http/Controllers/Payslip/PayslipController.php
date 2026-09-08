@@ -58,7 +58,13 @@ class PayslipController extends Controller
             'payslip' => $payslip
         ];
         $pdf = PDF::loadView('payslip.print', $data);
-        return $pdf->stream('payslip.pdf');
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="payslip.pdf"',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
         return view('payslip.print');
     }
     public function showDataPayslip(Request $request)
