@@ -125,7 +125,7 @@
 
 @endsection
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+@section('scripts')
 <script>
     $(document).ready(function() {
         if ($.fn.DataTable) {
@@ -133,3 +133,4 @@
         }
     });
 </script>
+@endsection

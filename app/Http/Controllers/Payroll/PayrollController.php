@@ -184,25 +184,8 @@ class PayrollController extends Controller
                 {
                     $hdmf_calamity_loan = 0;
                 }
-                if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->count() > 0 && $status_company[0]== 'true')
-                {
-
-                    $deduction_date_company= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('deduction_date');
-                    $remaining_term = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('remaining_term');
-                    if($remaining_term[0] > 0 && Carbon::parse($deduction_date_company[0]) <= Carbon::now())
-                    {
-                        $company_loan = $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('deduction');
-                        $company_loan = $company_loan[0];
-                    }
-                    else
-                    {
-                        $company_loan = 0;
-                    }
-                }
-                else
-                {
-                    $company_loan = 0;
-                }
+                // ADVANCEMENT LOAN REMOVED
+                $company_loan = 0;
         if($employee->find($request['employee_id'])->employee_loans->where('loan_type','=','5')->count() > 0 && $status_other[0]== 'true')
         {
             $deduction_date_other= $employee->find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('deduction_date');
@@ -627,7 +610,7 @@ class PayrollController extends Controller
             'sss_calamity_loan' => round($request['sss_calamity_loan'],2),
             'hdmf_loan'=> round($request['pagibig_loan'],2),
             'hdmf_calamity_loan' => round($request['pagibig_calamity_loan'],2),
-            'company_loan'=> round($request['company_loan'],2),
+            'company_loan'=> 0,
             'other_loan'=>  round($request['other_loan'],2),
             'sss_emergency_loan' => round($request['sss_emergency_loan'] ?? 0, 2),
             'total_deduction'=> "0",
@@ -643,8 +626,6 @@ class PayrollController extends Controller
         $remaining_balance_hdmf = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','3')->pluck('balance');
         $remaining_term_hdmf_calamity=  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('remaining_term');
         $remaining_balance_hdmf_calamity = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','8')->pluck('balance');
-        $remaining_term_advancement =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('remaining_term');
-        $remaining_balance_advancement = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','4')->pluck('balance');
         $remaining_term_coop =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('remaining_term');
         $remaining_balance_coop = Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','5')->pluck('balance');
         $remaining_term_insurance =  Employee::find($request['employee_id'])->employee_loans->where('loan_type','=','6')->pluck('remaining_term');
@@ -682,15 +663,7 @@ class PayrollController extends Controller
             ]);
         
         }
-        //ADVANCEMENT
-        if ($request['company_loan'] != 0 && $remaining_term_advancement[0] > 0)
-        {
-            Employee_Loan::where('employee_id','=',$request['employee_id'])->where('loan_type','=','4')->update([
-                "remaining_term" => $remaining_term_advancement[0]-1,
-                "balance" => $remaining_balance_advancement[0] - $request['company_loan']
-            ]);
-        }
-        //COOP LOAN
+        //COOP / PAG-IBIG SAFE LOAN
         if ($request['other_loan'] != 0 && $remaining_term_coop[0] > 0)
         {
 

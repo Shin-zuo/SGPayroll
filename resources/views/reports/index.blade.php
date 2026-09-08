@@ -29,6 +29,7 @@
                         <option value="SSS LOANS">SSS LOANS</option>
                         <option value="Pag-IBIG LOANS">Pag-IBIG LOANS</option>
                         <option value="Pag-IBIG CALAMITY LOANS">Pag-IBIG CALAMITY LOANS</option>
+                        <option value="Pag-IBIG SAFE LOANS">Pag-IBIG SAFE LOANS</option>
                         <option value="13 MONTH">THIRTEEN MONTH</option>
                         <option value="ALPHA LIST">ALPHA LIST</option>
                         <option value="ALPHA LIST (MONTHLY)">ALPHA LIST (MONTHLY)</option>
@@ -203,8 +204,9 @@
 </div>
 
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/js/report/report.js"></script>
+
+@section('scripts')
+<script type="text/javascript" src="{{ asset('js/report/report.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('#btn-import-payroll-csv').on('click', function() {
@@ -272,3 +274,4 @@
         });
     });
 </script>
+@endsection

@@ -92,8 +92,7 @@
                             <option value="2">SSS CALAMITY LOAN</option>
                             <option value="3">PAG-IBIG LOAN</option>
                             <option value="8">PAG-IBIG CALAMITY LOAN</option>
-                            <option value="4">ADVANCEMENT LOAN</option>
-                            <option value="5">COOP LOAN</option>
+                            <option value="5">PAG-IBIG SAFE LOAN</option>
                             <option value="6">INSURANCE LOAN</option>
                             <option value="7">SSS EMERGENCY LOAN</option>
                         </select>
@@ -270,5 +269,6 @@
 </div>
 @endsection
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/js/loan/loans.js"></script>
+@section('scripts')
+<script type="text/javascript" src="{{ asset('js/loan/loans.js') }}"></script>
+@endsection

@@ -72,15 +72,18 @@
     </style>
 </head>
 <body>
+@php
+    $headerRecord = $sss_loan_report->first() ?? $sss_calamity_loan_report->first() ?? $sss_emergency_loan_report->first();
+@endphp
+@if($headerRecord)
 <h4 style="text-align: center; font-weight: normal;">
-    @if($sss_loan_report->first())
-        <strong>{{$sss_loan_report->first()->departments->department_name}}</strong>
-        <br>
-        {{$sss_loan_report->first()->departments->department_address}}
+    <strong>{{$headerRecord->departments->department_name}}</strong>
+    <br>
+    {{$headerRecord->departments->department_address}}
 </h4>
-<h3 style="text-align: center">Social Security System (SALARY LOAN)</h3>
 <p class="text-center">For the month of {{ \Carbon\Carbon::parse($month)->format('F Y')}}  </p>
 @endif
+<h3 style="text-align: center">Social Security System (SALARY LOAN)</h3>
 <table class="employee">
     <thead>
     <tr>
@@ -156,6 +159,43 @@
         <td><strong>{{number_format($total_sss_calamity_loan,2)}}</strong></td>
 
 
+    </tr>
+    </tbody>
+</table>
+<h3 style="text-align: center">Social Security System (EMERGENCY LOAN)</h3>
+<table class="employee">
+    <thead>
+    <tr>
+        <th>SSS Number</th>
+        <th>Employee Name</th>
+        <th>Loan Type</th>
+        <th>Loan Amount</th>
+        <th>Penalty Amount</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($sss_emergency_loan_report as $sss_emergency_loan_reports)
+    @if($sss_emergency_loan_reports->total_sss_emergency_loan > 0)
+        <tr>
+            <td>{{$sss_emergency_loan_reports->employee->sss_number}}</td>
+            <td>{{$sss_emergency_loan_reports->employee->full_name}}</td>
+            <td>E</td>
+            <td>{{number_format($sss_emergency_loan_reports->total_sss_emergency_loan,2)}}</td>
+            <td>0.00</td>
+            <td>{{number_format($sss_emergency_loan_reports->total_sss_emergency_loan,2)}}</td>
+        </tr>
+    @endif
+    @endforeach
+    </tbody>
+    <tbody class="total-border">
+    <tr>
+        <td><strong>TOTAL NUMBER OF RECORD:</strong></td>
+        <td><strong>{{$sss_emergency_loan_report->count()}}</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>TOTAL</strong></td>
+        <td><strong>{{number_format($total_sss_emergency_loan,2)}}</strong></td>
     </tr>
     </tbody>
 </table>

@@ -119,7 +119,7 @@ $(document).ready(function () {
                         sss_calamity_loan :  $(this).find('[name=calamity_loan]').text(),
                         pagibig_loan: $(this).find('[name=hdmf_loan]').text(),
                         pagibig_calamity_loan: $(this).find('[name=hdmf_calamity_loan]').text(),
-                        company_loan: $(this).find('[name=company_loan]').text(),
+                        company_loan: $(this).find('[name=company_loan]').length ? $(this).find('[name=company_loan]').text() : 0,
                         other_loan: $(this).find('[name=other_loan]').text(),
                         sss_emergency_loan: $(this).find('[name=sss_emergency_loan]').text(),
                         net_pay:$(this).find('[name=net_pay]').text(),

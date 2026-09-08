@@ -80,12 +80,14 @@
     </div>
 </div>
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+@section('scripts')
 <script>
     $(document).ready(function() {
         $('#leavetable').DataTable({
             order: [[0, 'desc']],
             dom: '<"flex flex-col sm:flex-row justify-between items-center mb-4"<"flex-1"l><"flex-1 text-right"f>>rt<"flex flex-col sm:flex-row justify-between items-center mt-4"<"flex-1"i><"flex-1 text-right"p>>',
         });
-    } );
+    });
 </script>
+@endsection

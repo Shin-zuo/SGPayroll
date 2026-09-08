@@ -92,6 +92,7 @@ class Employee_Payrolls extends Model
         'hdmf_loan',
         'company_loan',
         'other_loan',
+        'sss_emergency_loan',
         'rent',
         'total_deduction',
         'net_pay',

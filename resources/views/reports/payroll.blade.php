@@ -124,12 +124,10 @@
                 <th colspan="4">Employer</th>
                 <th rowspan="2">SSS (salary)</th>
                 <th rowspan="2">SSS (calamity)</th>
+                <th rowspan="2">SSS (emergency)</th>
                 <th rowspan="2">Pag-IBIG</th>
                 <th rowspan="2">HDMF (calamity)</th>
-                <th rowspan="2">Advance</th>
-                <th rowspan="2">Coop</th>
-
-                {{--<th rowspan="2">Coop</th>--}}
+                <th rowspan="2">Pag-IBIG Safe</th>
 
             </tr>
             <tr>
@@ -212,9 +210,9 @@
                     <td>{{ number_format($payroll_reports->insurance, 2) }}</td>
                     <td>{{ number_format($payroll_reports->sss_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->sss_calamity_loan, 2) }}</td>
+                    <td>{{ number_format($payroll_reports->sss_emergency_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->hdmf_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->hdmf_calamity_loan,2) }}</td>
-                    <td>{{ number_format($payroll_reports->company_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->other_loan, 2) }}</td>
                     <td>{{ number_format($payroll_reports->net_pay, 2) }}</td>
                 </tr>
@@ -248,9 +246,9 @@
                 <td><strong>{{ number_format($payroll_report->sum('insurance'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('sss_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('sss_calamity_loan'), 2) }}</strong></td>
+                <td><strong>{{ number_format($payroll_report->sum('sss_emergency_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('hdmf_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('hdmf_calamity_loan'), 2) }}</strong></td>
-                <td><strong>{{ number_format($payroll_report->sum('company_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('other_loan'), 2) }}</strong></td>
                 <td><strong>{{ number_format($payroll_report->sum('net_pay'), 2) }}</strong></td>
             </tr>
@@ -295,12 +293,10 @@
                 <th colspan="4">Employer</th>
                 <th rowspan="2">SSS (salary)</th>
                 <th rowspan="2">SSS (calamity)</th>
+                <th rowspan="2">SSS (emergency)</th>
                 <th rowspan="2">Pag-IBIG</th>
                 <th rowspan="2">HDMF (calamity)</th>
-                <th rowspan="2">Advance</th>
-                <th rowspan="2">Coop</th>
-
-                {{--<th rowspan="2">Coop</th>--}}
+                <th rowspan="2">Pag-IBIG Safe</th>
 
             </tr>
             <tr>
@@ -377,10 +373,10 @@
                             <td>{{ number_format($payroll_report_admin->insurance, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->sss_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->sss_calamity_loan, 2) }}</td>
+                            <td>{{ number_format($payroll_report_admin->sss_emergency_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->hdmf_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->hdmf_calamity_loan, 2) }}</td>
-                            <td>{{ number_format($payroll_report_admin->company_loan, 2) }}</td>
-                            <td>{{ number_format($payroll_report_admin->rent, 2) }}</td>
+                            <td>{{ number_format($payroll_report_admin->other_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_admin->net_pay, 2) }}</td>
                         </tr>
 
@@ -425,12 +421,10 @@
                             <td><strong>{{ number_format($payroll_report_admins->sum('insurance'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('sss_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('sss_calamity_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_admins->sum('sss_emergency_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('hdmf_calamity_loan'), 2) }}</strong></td>
-                            <td><strong>{{ number_format($payroll_report_admins->sum('company_loan'), 2) }}</strong>
-                            </td>
-
-                            <td><strong>{{ number_format($payroll_report_admins->sum('other_loan')) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_admins->sum('other_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_admins->sum('net_pay'), 2) }}</strong></td>
                         </tr>
                     @endif
@@ -476,12 +470,10 @@
                 <th colspan="4">Employer</th>
                 <th rowspan="2">SSS (salary)</th>
                 <th rowspan="2">SSS (calamity)</th>
+                <th rowspan="2">SSS (emergency)</th>
                 <th rowspan="2">Pag-IBIG</th>
                 <th rowspan="2">HDMF (calamity)</th>
-                <th rowspan="2">Advance</th>
-                <th rowspan="2">Coop</th>
-
-                {{--<th rowspan="2">Coop</th>--}}
+                <th rowspan="2">Pag-IBIG Safe</th>
             </tr>
 
             <tr>
@@ -559,9 +551,9 @@
                             <td>{{ number_format($payroll_report_cost->insurance, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->sss_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->sss_calamity_loan, 2) }}</td>
+                            <td>{{ number_format($payroll_report_cost->sss_emergency_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->hdmf_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->hdmf_calamity_loan, 2) }}</td>
-                            <td>{{ number_format($payroll_report_cost->company_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->other_loan, 2) }}</td>
                             <td>{{ number_format($payroll_report_cost->net_pay, 2) }}</td>
                         </tr>
@@ -603,11 +595,11 @@
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_contribution'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('insurance'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('sss_loan'), 2) }}</strong></td>
-                            <td><strong>{{ number_format($payroll_report_costs->sum('sss_company_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('sss_calamity_loan'), 2) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('sss_emergency_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('hdmf_calamity_loan'), 2) }}</strong></td>
-                            <td><strong>{{ number_format($payroll_report_costs->sum('company_loan'), 2) }}</strong></td>
-                            <td><strong>{{ number_format($payroll_report_costs->sum('other_loan')) }}</strong></td>
+                            <td><strong>{{ number_format($payroll_report_costs->sum('other_loan'), 2) }}</strong></td>
                             <td><strong>{{ number_format($payroll_report_costs->sum('net_pay'), 2) }}</strong></td>
                         </tr>
                     @endif

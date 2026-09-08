@@ -355,18 +355,8 @@
                     </tr>
                     <tr>
                         <td></td>
-                            <td colspan="2" class="pull-right pr-1"></td>
-                        <td class="pl-1">Advance</td>
-                        @if($payslips->company_loan)
-                            <td class="pull-right">{{number_format($payslips->company_loan,2)}}</td>
-                        @else
-                            <td class="pull-right">0.00</td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td></td>
                         <td colspan="2" class="pull-right pr-1"></td>
-                        <td class="pl-1">Coop</td>
+                        <td class="pl-1">Pag-IBIG Safe</td>
                         @if($payslips->other_loan)
                             <td class="pull-right">{{number_format($payslips->other_loan,2)}}</td>
                         @else
@@ -393,7 +383,7 @@
                             <strong> Total Deductions</strong>
                         </td>
                         <td class="pull-right bt-1">
-                            <strong> {{number_format($payslips->company_loan + $payslips->hdmf_loan + $payslips->hdmf_calamity_loan + $payslips->sss_loan + $payslips->other_loan + $payslips->sss_contribution + $payslips->phic_contribution + $payslips->hdmf_contribution + $payslips->insurance + $payslips->sss_emergency_loan + $payslips->witholding_tax,2)}}</strong>
+                            <strong> {{number_format($payslips->hdmf_loan + $payslips->hdmf_calamity_loan + $payslips->sss_loan + $payslips->other_loan + $payslips->sss_contribution + $payslips->phic_contribution + $payslips->hdmf_contribution + $payslips->insurance + $payslips->sss_emergency_loan + $payslips->witholding_tax,2)}}</strong>
                         </td>
 
                     </tr>

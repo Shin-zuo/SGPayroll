@@ -49,6 +49,14 @@ $(document).ready(function(){
             $('#month').show();
             $('#quarter').hide();
         }
+        if($( "#report_type option:selected" ).val() == 'Pag-IBIG SAFE LOANS')
+        {
+            $('#payroll_number').prop('disabled',true);
+            $('#payroll_no').show();
+            $('#dateTo').hide();
+            $('#month').show();
+            $('#quarter').hide();
+        }
         if($( "#report_type option:selected" ).val() == '13 MONTH')
         {
             $('#quarter').show();

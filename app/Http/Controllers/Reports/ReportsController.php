@@ -204,6 +204,17 @@ class ReportsController extends Controller
                 ->get();
             $total_sss_loan = 0;
             $total_sss_calamity_loan = 0;
+            $total_sss_emergency_loan = 0;
+
+            $sss_emergency_loan_report = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
+                ->orderBy('employees.employee_Lname')
+                ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
+                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
+                ->where('employee_payrolls.sss_emergency_loan','>',0)
+                ->where('employee_payrolls.department', $request['department'])
+                ->select('employee_code', DB::raw('SUM(employee_payrolls.sss_emergency_loan) as total_sss_emergency_loan,employee_payrolls.department'))
+                ->groupBy('employee_code', 'employee_payrolls.department')
+                ->get();
 
             foreach ($sss_loan_report as $sss_loan_reports) {
                 $total_sss_loan += $sss_loan_reports->total_sss_loan;
@@ -211,11 +222,16 @@ class ReportsController extends Controller
             foreach ($sss_calamity_loan_report as $sss_calamity_loan_reports) {
                 $total_sss_calamity_loan += $sss_calamity_loan_reports->total_sss_calamity_loan;
             }
+            foreach ($sss_emergency_loan_report as $sss_emergency_loan_reports) {
+                $total_sss_emergency_loan += $sss_emergency_loan_reports->total_sss_emergency_loan;
+            }
             $data = [
                 'sss_loan_report' => $sss_loan_report->where('total_sss_loan', '>', 0),
                 'sss_calamity_loan_report' => $sss_calamity_loan_report->where('total_sss_calamity_loan', '>', 0),
+                'sss_emergency_loan_report' => $sss_emergency_loan_report->where('total_sss_emergency_loan', '>', 0),
                 'total_sss_loan' => $total_sss_loan,
                 'total_sss_calamity_loan' => $total_sss_calamity_loan,
+                'total_sss_emergency_loan' => $total_sss_emergency_loan,
                 'month' => $request['monthRep']
             ];
             $pdf = PDF::loadView('reports.loan', $data)->setPaper('Legal', 'landscape');
@@ -267,6 +283,30 @@ class ReportsController extends Controller
             ];
             $pdf = PDF::loadView('reports.pag-ibig-calamity', $data)->setPaper('Legal', 'landscape');
             return $pdf->stream('pag-ibig-calamity-reports.pdf');
+        }
+
+        if ($request['report_type'] == 'Pag-IBIG SAFE LOANS') {
+            $pagibig_safe_loan_report = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
+                ->orderBy('employees.employee_Lname')
+                ->where('employee_payrolls.monthly_record', Carbon::parse($request['monthRep'])->month)
+                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
+                ->where('employee_payrolls.department', $request['department'])
+                ->select('employee_code', DB::raw('SUM(employee_payrolls.other_loan) as total_other_loan,employee_payrolls.department'))
+                ->groupBy('employee_code', 'employee_payrolls.department')
+                ->get();
+
+            $total_pagibig_safe_loan = 0;      
+            foreach ($pagibig_safe_loan_report as $pagibig_safe_loan_reports) {
+                $total_pagibig_safe_loan += $pagibig_safe_loan_reports->total_other_loan;
+            }
+            
+            $data = [
+                'pagibig_safe_loan_report' => $pagibig_safe_loan_report->where('total_other_loan', '>', 0),
+                'total_pagibig_safe_loan' => $total_pagibig_safe_loan,
+                'month' => $request['monthRep']
+            ];
+            $pdf = PDF::loadView('reports.pag-ibig-safe', $data)->setPaper('Legal', 'landscape');
+            return $pdf->stream('pag-ibig-safe-loan-reports.pdf');
         }
             
 

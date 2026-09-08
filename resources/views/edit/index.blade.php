@@ -193,7 +193,7 @@
                                 <input type="number" class="w-full px-1.5 py-1 text-xs border border-slate-300 rounded shadow-sm" id="inputHDMF_loan" name="inputHDMF_loan" placeholder="Amount">
                             </div>
                             <div class="flex flex-col">
-                                <label class="text-[10px] uppercase font-bold text-slate-500 mb-0.5">Coop Loan</label>
+                                <label class="text-[10px] uppercase font-bold text-slate-500 mb-0.5">Pag-IBIG Safe Loan</label>
                                 <input type="number" class="w-full px-1.5 py-1 text-xs border border-slate-300 rounded shadow-sm" id="inputCoop_loan" name="inputCoop_loan" placeholder="Amount">
                             </div>
                             <div class="flex flex-col col-span-2">
@@ -225,5 +225,7 @@
     </div>
 </div>
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/js/edit/edit.js"></script>
+
+@section('scripts')
+<script type="text/javascript" src="{{ asset('js/edit/edit.js') }}"></script>
+@endsection

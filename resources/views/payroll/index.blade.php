@@ -187,8 +187,7 @@
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Calamity</th>
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG</th>
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Cal(HDMF)</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Advance</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Coop</th>
+                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG Safe</th>
                         <th class="px-1 py-1.5 bg-teal-50 text-teal-600 text-center">SSS Emerg.</th>
                     </tr>
                 </thead>
@@ -203,7 +202,6 @@
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="calamity_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_calamity_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="company_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="other_loan">0.00</td>
                         <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_emergency_loan">0.00</td>
                         <td class="p-2 border-l border-slate-200 bg-green-50 text-center text-sm font-bold text-green-700" name="net_pay">0.00</td>
@@ -257,5 +255,7 @@
 @endforeach
 
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/js/payroll/payrollComputation.js"></script>
+
+@section('scripts')
+<script type="text/javascript" src="{{ asset('js/payroll/payrollComputation.js') }}"></script>
+@endsection

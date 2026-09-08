@@ -1,113 +1,121 @@
 @extends('layouts.app')
 @section('content')
-<div class="mb-6 flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-slate-800">Admin Dashboard</h1>
-    <nav class="text-sm font-medium text-slate-500" aria-label="Breadcrumb">
-        <ol class="flex space-x-2">
-            <li><a href="#" class="hover:text-slate-800 transition-colors">Home</a></li>
-            <li><span>/</span></li>
-            <li class="text-slate-800">Employees</li>
+<!-- Page Header -->
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">Employee Directory</h1>
+        <p class="text-xs md:text-sm text-slate-500 mt-0.5">Manage employee accounts, groups, status, and records.</p>
+    </div>
+    <nav class="text-xs font-medium text-slate-400" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-1.5">
+            <li><a href="#" class="hover:text-slate-700 transition-colors">Home</a></li>
+            <li><i class="fa fa-chevron-right text-[10px] text-slate-300"></i></li>
+            <li class="text-slate-800 font-semibold">Employees</li>
         </ol>
     </nav>
 </div>
 
 <!-- Stat Cards (Top Row) -->
+@php
+    $totalEmp = count($employee);
+    $activeEmp = collect($employee)->where('status', '!=', 'Inactive')->count();
+@endphp
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    @php
-        $totalEmp = count($employee);
-        $activeEmp = collect($employee)->where('status', '!=', 'Inactive')->count();
-    @endphp
-    <!-- Total Users -->
-    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
-        <div class="absolute top-4 left-4 text-blue-500">
+    <!-- Total Employees -->
+    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Employees</p>
+            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalEmp }}</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
             <i class="fa fa-users text-lg"></i>
         </div>
-        <div class="ml-10">
-            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Total Employees</h3>
-            <p class="text-2xl font-bold text-slate-800">{{ $totalEmp }}</p>
-        </div>
     </div>
 
-    <!-- Active Users -->
-    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
-        <div class="absolute top-4 left-4 text-green-500">
+    <!-- Active Employees -->
+    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Active Employees</p>
+            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $activeEmp }}</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <i class="fa fa-user-check text-lg"></i>
         </div>
-        <div class="ml-10">
-            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Active Employees</h3>
-            <p class="text-2xl font-bold text-slate-800">{{ $activeEmp }}</p>
+    </div>
+
+    <!-- Inactive Employees -->
+    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Inactive Employees</p>
+            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalEmp - $activeEmp }}</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+            <i class="fa fa-user-slash text-lg"></i>
         </div>
     </div>
 
-    <!-- Pending Leaves (Placeholder) -->
-    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
-        <div class="absolute top-4 left-4 text-yellow-500">
-            <i class="fa fa-calendar-alt text-lg"></i>
+    <!-- Groups Count -->
+    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Groups</p>
+            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ count($department) }}</p>
         </div>
-        <div class="ml-10">
-            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Pending Leaves</h3>
-            <p class="text-2xl font-bold text-slate-800">0</p>
-        </div>
-    </div>
-
-    <!-- Departments (Placeholder) -->
-    <div class="bg-white rounded-lg border border-slate-100 shadow-sm p-4 relative">
-        <div class="absolute top-4 left-4 text-purple-500">
+        <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
             <i class="fa fa-sitemap text-lg"></i>
-        </div>
-        <div class="ml-10">
-            <h3 class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-0.5">Departments</h3>
-            <p class="text-2xl font-bold text-slate-800">4</p>
         </div>
     </div>
 </div>
 
 <!-- Data Table Section -->
-<div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden mb-6">
-    <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-white">
-        <h2 class="text-base font-semibold text-slate-800">Employee Directory</h2>
-        <div class="flex items-center gap-2">
+<div class="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden mb-8">
+    <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-white">
+        <div>
+            <h2 class="text-base font-bold text-slate-900">All Employees</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Filter, search, or add employee records</p>
+        </div>
+        <div class="flex items-center gap-2.5">
             <button type="button" id="btn-import-employee-csv"
-                class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5">
-                <i class="fa fa-file-csv"></i> Import CSV
+                class="btn btn-secondary text-xs font-medium flex items-center gap-2">
+                <i class="fa fa-file-csv text-emerald-600"></i> Import CSV
             </button>
-            <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
-                <i class="fa fa-plus mr-1.5"></i> Add Employee
+            <button type="button" class="btn btn-primary text-xs font-medium flex items-center gap-2" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
+                <i class="fa fa-plus text-xs"></i> Add Employee
             </button>
         </div>
     </div>
-    <div class="overflow-x-auto p-4">
+    
+    <div class="p-5">
         <table id="emptable" class="w-full text-left border-collapse">
             <thead>
-                <tr class="bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    <th class="px-4 py-2 border-b border-slate-200">ID</th>
-                    <th class="px-4 py-2 border-b border-slate-200">Name</th>
-                    <th class="px-4 py-2 border-b border-slate-200">Department</th>
-                    <th class="px-4 py-2 border-b border-slate-200">Position</th>
-                    <th class="px-4 py-2 border-b border-slate-200">Status</th>
-                    <th class="px-4 py-2 border-b border-slate-200 text-right">Action</th>
+                <tr class="bg-slate-50/80 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                    <th class="px-4 py-3 border-b border-slate-200/80 rounded-l-lg">ID</th>
+                    <th class="px-4 py-3 border-b border-slate-200/80">Full Name</th>
+                    <th class="px-4 py-3 border-b border-slate-200/80">Group</th>
+                    <th class="px-4 py-3 border-b border-slate-200/80">Position</th>
+                    <th class="px-4 py-3 border-b border-slate-200/80">Status</th>
+                    <th class="px-4 py-3 border-b border-slate-200/80 text-right rounded-r-lg">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @foreach($employee as $employees)
-                <tr class="hover:bg-slate-50 transition-colors bg-white">
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$employees->id}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-800">{{strtoupper($employees->full_name)}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{strtoupper($employees->department)}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$employees->position}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm">
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-slate-500">{{ $employees->id }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-800">{{ strtoupper($employees->full_name) }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-600 font-medium">{{ strtoupper($employees->department) }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-500">{{ $employees->position ?: '—' }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-xs">
                         @if($employees->status == 'Inactive')
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60">Inactive</span>
                         @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Active</span>
                         @endif
                     </td>
-                    <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="/employee/account/{{$employees->id}}" class="text-blue-600 hover:text-blue-900 mr-3" target="_blank" title="View Account">
-                            <i class="fa fa-user-edit"></i>
+                    <td class="px-4 py-3 whitespace-nowrap text-right text-xs font-medium space-x-1">
+                        <a href="/employee/account/{{$employees->id}}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" target="_blank" title="View Account">
+                            <i class="fa fa-user-edit text-xs"></i>
                         </a>
-                        <a href="#" data-toggle="modal" data-id="{{$employees->id}}" data-target=".bd-example-modal-sm" class="text-red-600 hover:text-red-900" title="Set Inactive">
-                            <i class="fa fa-user-times"></i>
+                        <a href="#" data-toggle="modal" data-id="{{$employees->id}}" data-target=".bd-example-modal-sm" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Set Inactive">
+                            <i class="fa fa-user-times text-xs"></i>
                         </a>
                     </td>
                 </tr>
@@ -116,237 +124,253 @@
         </table>
     </div>
 </div>
-<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
-     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+
+<!-- Deactivate Confirmation Modal -->
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deactivateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-            </div>
-            <div class="modal-body">
-                <form>
-                    <p>Turn this employee to Inactive ?</p>
+        <div class="modal-content text-center p-2">
+            <div class="modal-body pt-6 pb-2">
+                <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4 border border-rose-100">
+                    <i class="fa fa-exclamation-triangle text-lg"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-900 mb-1">Deactivate Employee</h4>
+                <p class="text-xs text-slate-500 max-w-xs mx-auto mb-4">Are you sure you want to mark this employee as inactive? They will be moved to the inactive list.</p>
+                <form id="deactivateForm">
                     <input type="hidden" name="id" id="id">
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary"  id="btnYes">Yes</button>
-                <button type="button"  class="btn btn-secondary" data-dismiss="modal">No</button>
+            <div class="modal-footer justify-center border-t-0 bg-transparent pt-0 pb-4 gap-2">
+                <button type="button" class="btn btn-secondary flex-1" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger flex-1" id="btnYes">Deactivate</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<!-- Add Employee Modal (Modern Minimalist 2-Column Grid) -->
+<div class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title text-center" id="myModalLabel">Add Employee</h4>
+                <div>
+                    <h4 class="modal-title font-bold text-slate-900 text-lg" id="addEmployeeLabel">Add New Employee</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Fill in the employee's personal and statutory details.</p>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <form id="frmTasks" name="frmTasks" class="form-horizontal" novalidate="">
-                            <div class="form-group error">
-                                <label for="inputSSS" class="col-sm-4 control-label">Employee ID :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="employee_id" name="employee_id" >
-                                </div>
+            <form id="frmTasks" name="frmTasks" novalidate="">
+                <div class="modal-body space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left Column: Personal & Employment Information -->
+                        <div class="space-y-4">
+                            <div class="border-b border-slate-100 pb-2">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                                    <i class="fa fa-id-card text-blue-600"></i> General Information
+                                </h5>
                             </div>
-                            <div class="form-group error">
-                                <label for="inputLastName" class="col-sm-4 control-label">Last Name :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="last_name" name="last_name" required>
+
+                            <div class="form-group">
+                                <label for="employee_id">Employee ID <span class="text-rose-500">*</span></label>
+                                <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="e.g. EMP-001" required>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="last_name">Last Name <span class="text-rose-500">*</span></label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="first_name">First Name <span class="text-rose-500">*</span></label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required>
                                 </div>
                             </div>
 
-                            <div class="form-group error">
-                                <label for="inputFirstName" class="col-sm-4 control-label">First Name :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="first_name" name="first_name" required>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="mid_name">Middle Name</label>
+                                    <input type="text" class="form-control" id="mid_name" name="mid_name" placeholder="Middle Name">
                                 </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputMidName" class="col-sm-4 control-label">Middle Name :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="mid_name" name="mid_name"  >
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputGender" class="col-sm-4 control-label" >Gender :</label>
-                                <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="gender">Gender <span class="text-rose-500">*</span></label>
                                     <select id="gender" class="form-control" name="gender" required>
-                                        <option value="" selected>Select Category</option>
+                                        <option value="" selected disabled>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group error">
-                                <label for="inputStatus" class="col-sm-4 control-label">Status :</label>
-                                <div class="col-sm-8">
-                                    <select id="status" class="form-control" name="status" required>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="status">Civil Status</label>
+                                    <select id="status" class="form-control" name="status">
                                         <option value="" selected>Select Status</option>
-                                        <option value="Single" >Single</option>
-                                        <option value="Married" >Married</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputDateHired" class="col-sm-4 control-label" >Date Hired :</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control has-error" id="date_hired" name="date_hired"  value="" required>
+                                <div class="form-group">
+                                    <label for="birth_date">Date of Birth <span class="text-rose-500">*</span></label>
+                                    <input type="date" class="form-control" id="birth_date" name="birth_date" required>
                                 </div>
                             </div>
-                            <div class="form-group error">
-                                <label for="inputBirthDate" class="col-sm-4 control-label" >Date of Birth :</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control has-error" id="birth_date" name="birth_date"  value="" required>
-                                </div>
-                            </div>
+
                             <div class="form-group">
-                                <label for="inputDepartment" class="col-sm-4 control-label">Group :</label>
-                                <div class="col-sm-8">
+                                <label for="date_hired">Date Hired <span class="text-rose-500">*</span></label>
+                                <input type="date" class="form-control" id="date_hired" name="date_hired" required>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="department">Group <span class="text-rose-500">*</span></label>
                                     <select id="department" class="form-control" name="department" required>
-                                        <option value="" selected disabled>Select Department</option>
+                                        <option value="" selected disabled>Select Group</option>
                                         @foreach($department as $departments)
                                         <option value="{{$departments->id}}">{{$departments->department_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputSubDepartment" class="col-sm-4 control-label" >SubGroup :</label>
-                                <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="sub_department">SubGroup <span class="text-rose-500">*</span></label>
                                     <select id="sub_department" class="form-control" name="sub_department" required>
-                                        <option value="" selected disabled>Select Sub Department</option>
+                                        <option value="" selected disabled>Select SubGroup</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group error">
-                                <label for="inputAddress" class="col-sm-4 control-label">Address :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="address" name="address" >
+
+                            <div class="form-group">
+                                <label for="address">Residential Address</label>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Complete Street Address">
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Statutory & Account Info -->
+                        <div class="space-y-4">
+                            <div class="border-b border-slate-100 pb-2">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                                    <i class="fa fa-shield-alt text-emerald-600"></i> Statutory &amp; Portal Account
+                                </h5>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="sss_no">SSS Number</label>
+                                    <input type="text" class="form-control" id="sss_no" name="sss_no" placeholder="00-0000000-0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phil_health">PhilHealth Number</label>
+                                    <input type="text" class="form-control" id="phil_health" name="phil_health" placeholder="00-000000000-0">
                                 </div>
                             </div>
-                            
-                        </form>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="tin">TIN Number</label>
+                                    <input type="text" class="form-control" id="tin" name="tin" placeholder="000-000-000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hdmf">Pag-IBIG (HDMF)</label>
+                                    <input type="text" class="form-control" id="hdmf" name="hdmf" placeholder="0000-0000-0000">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ucpb">Bank / UCPB Account No.</label>
+                                <input type="text" class="form-control" id="ucpb" name="ucpb" placeholder="Bank Account Number">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emp_email">Login Email Address</label>
+                                <input type="email" class="form-control" id="emp_email" name="emp_email" placeholder="employee@company.com">
+                                <p class="text-[11px] text-slate-400 mt-1">Default employee portal password: <code class="text-slate-600 font-mono bg-slate-100 px-1 py-0.5 rounded">testPass</code></p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="passport_no">Passport Number</label>
+                                    <input type="text" class="form-control" id="passport_no" name="passport_no" placeholder="Passport No.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passport_exp">Passport Expiry</label>
+                                    <input type="date" class="form-control" id="passport_exp" name="passport_exp">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <form id="frmTasks" name="frmTasks" class="form-horizontal" novalidate="">
-
-
-                            <div class="form-group error">
-                                <label for="inputSSS" class="col-sm-4 control-label">SSS no. :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="sss_no" name="sss_no" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputPhilhealth" class="col-sm-4 control-label">Phil. Health :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="phil_health" name="phil_health" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputTin" class="col-sm-4 control-label">TIN no. :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="tin" name="tin" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputTin" class="col-sm-4 control-label">Pag-IBIG no. :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="hdmf" name="hdmf" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputTin" class="col-sm-4 control-label">UCPB no. :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="ucpb" name="ucpb" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputEmail" class="col-sm-4 control-label">Email :</label>
-                                <div class="col-sm-8">
-                                    <input type="email" class="form-control has-error" id="emp_email" name="emp_email" >
-                                    <small class="text-muted">This will be the employee's login email. Default password: testPass</small>
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputTin" class="col-sm-4 control-label">Passport no. :</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control  has-error" id="passport_no" name="passport_no" >
-                                </div>
-                            </div>
-                            <div class="form-group error">
-                                <label for="inputTin" class="col-sm-4 control-label">Passport exp :</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control  has-error" id="passport_exp" name="passport_exp" >
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary" id="btn-submit" >Submit</button>
-                                <button type="button" class="btn btn-danger" id="btn-danger" >Clear Fields</button>
-                            </div>
-                        </form>
-                    </div>    
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="btn-danger">Clear Fields</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit">
+                        <i class="fa fa-check mr-1.5"></i> Save Employee
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@endsection
 
 <!-- CSV Import Modal (Task 5) -->
 <div class="modal fade" id="importCsvModal" tabindex="-1" role="dialog" aria-labelledby="importCsvModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title text-center" id="importCsvModalLabel">Import Employees from CSV</h4>
+                <div>
+                    <h4 class="modal-title font-bold text-slate-900" id="importCsvModalLabel">Import Employees from CSV</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Bulk onboarding via spreadsheet</p>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <!-- Step 1: Format Guide -->
                 <div id="import-step-1">
-                    <p class="mb-4 text-slate-600">Please format your CSV file exactly as shown below. The headers must match exactly in order to insert appropriate data. Note that an email will automatically create a portal user account with the password <strong>"testPass"</strong>.</p>
+                    <div class="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl mb-4 text-xs text-blue-900 leading-relaxed">
+                        <i class="fa fa-info-circle text-blue-600 mr-1.5"></i>
+                        Please format your CSV file exactly as shown below. Headers must match precisely. Providing an email will automatically create a portal user account with the password <strong>"testPass"</strong>.
+                    </div>
                     
-                    <div style="max-height: 250px; overflow-y: auto;" class="border rounded mb-4">
-                        <table class="table table-bordered table-striped text-xs mb-0">
+                    <div class="max-h-64 overflow-y-auto rounded-xl border border-slate-200 mb-5">
+                        <table class="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr class="bg-slate-50">
-                                    <th>Column Name</th>
-                                    <th>Required</th>
-                                    <th>Accepted Value Example / Description</th>
+                                <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider sticky top-0">
+                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Column Name</th>
+                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Required</th>
+                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Example / Description</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr><td><strong>employee_id</strong></td><td>No</td><td>EMP-001 (Unique Code)</td></tr>
-                                <tr><td><strong>last_name</strong></td><td><span class="text-red-600">Yes</span></td><td>Smith</td></tr>
-                                <tr><td><strong>first_name</strong></td><td><span class="text-red-600">Yes</span></td><td>John</td></tr>
-                                <tr><td><strong>middle_name</strong></td><td>No</td><td>Doe</td></tr>
-                                <tr><td><strong>gender</strong></td><td>No</td><td>Male / Female</td></tr>
-                                <tr><td><strong>status</strong></td><td>No</td><td>Single / Married</td></tr>
-                                <tr><td><strong>date_hired</strong></td><td>No</td><td>YYYY-MM-DD (e.g. 2026-07-03)</td></tr>
-                                <tr><td><strong>birth_date</strong></td><td>No</td><td>YYYY-MM-DD</td></tr>
-                                <tr><td><strong>department</strong></td><td>No</td><td>Department Name</td></tr>
-                                <tr><td><strong>position</strong></td><td>No</td><td>Position/Job Title</td></tr>
-                                <tr><td><strong>address</strong></td><td>No</td><td>Street Address</td></tr>
-                                <tr><td><strong>email</strong></td><td>No</td><td>john@example.com (Creates user account)</td></tr>
-                                <tr><td><strong>sss_number</strong></td><td>No</td><td>Numbers only</td></tr>
-                                <tr><td><strong>tin_number</strong></td><td>No</td><td>Numbers only</td></tr>
-                                <tr><td><strong>hdmf_number</strong></td><td>No</td><td>Numbers only (Pag-IBIG)</td></tr>
-                                <tr><td><strong>philhealth_number</strong></td><td>No</td><td>Numbers only</td></tr>
-                                <tr><td><strong>ucpb_number</strong></td><td>No</td><td>Numbers only</td></tr>
-                                <tr><td><strong>basic_pay</strong></td><td>No</td><td>Decimal/Float (e.g. 25000)</td></tr>
-                                <tr><td><strong>cola</strong></td><td>No</td><td>Decimal/Float</td></tr>
-                                <tr><td><strong>other_nt_pay</strong></td><td>No</td><td>Decimal/Float</td></tr>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">employee_id</td><td>No</td><td class="text-slate-500">EMP-001 (Unique Code)</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">last_name</td><td><span class="text-rose-600 font-semibold">Yes</span></td><td class="text-slate-500">Smith</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">first_name</td><td><span class="text-rose-600 font-semibold">Yes</span></td><td class="text-slate-500">John</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">middle_name</td><td>No</td><td class="text-slate-500">Doe</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">gender</td><td>No</td><td class="text-slate-500">Male / Female</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">status</td><td>No</td><td class="text-slate-500">Single / Married</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">date_hired</td><td>No</td><td class="text-slate-500">YYYY-MM-DD (e.g. 2026-07-03)</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">birth_date</td><td>No</td><td class="text-slate-500">YYYY-MM-DD</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">department</td><td>No</td><td class="text-slate-500">Department / Group Name</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">position</td><td>No</td><td class="text-slate-500">Position / Job Title</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">address</td><td>No</td><td class="text-slate-500">Street Address</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">email</td><td>No</td><td class="text-slate-500">john@example.com (Creates user account)</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">sss_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">tin_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">hdmf_number</td><td>No</td><td class="text-slate-500">Numbers only (Pag-IBIG)</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">philhealth_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">ucpb_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">basic_pay</td><td>No</td><td class="text-slate-500">Decimal/Float (e.g. 25000)</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">cola</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">other_nt_pay</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="text-right">
-                        <button type="button" id="btn-proceed-upload" class="btn btn-primary">Proceed to Upload</button>
+                        <button type="button" id="btn-proceed-upload" class="btn btn-primary">
+                            Proceed to Upload <i class="fa fa-arrow-right ml-1.5 text-xs"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -354,14 +378,19 @@
                 <div id="import-step-2" style="display: none;">
                     <form id="employeeImportForm" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <div class="form-group">
-                            <label for="import_file" class="control-label">Select CSV File :</label>
+                        <div class="form-group mb-5">
+                            <label for="import_file">Select CSV File</label>
                             <input type="file" id="import_file" name="import_file" class="form-control" accept=".csv,text/csv,text/plain" required>
+                            <p class="text-xs text-slate-400 mt-1">Accepted format: .csv up to 10MB</p>
                         </div>
                         <div id="import-results" style="display:none;" class="alert mb-4"></div>
-                        <div class="text-center mt-4">
-                            <button type="button" id="btn-back-step-1" class="btn btn-secondary mr-2">Back</button>
-                            <button type="submit" id="btn-submit-import" class="btn btn-success">Import Now</button>
+                        <div class="flex items-center justify-end gap-2.5 pt-2">
+                            <button type="button" id="btn-back-step-1" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left mr-1.5 text-xs"></i> Back to Guide
+                            </button>
+                            <button type="submit" id="btn-submit-import" class="btn btn-success">
+                                <i class="fa fa-upload mr-1.5 text-xs"></i> Import Now
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -369,12 +398,17 @@
         </div>
     </div>
 </div>
+@endsection
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/js/employee/employee.js?v={{ time() }}"></script>
+@section('scripts')
+<script type="text/javascript" src="{{ asset('js/employee/employee.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('#emptable').DataTable();
+
+        $('#btn-danger').on('click', function() {
+            $('#frmTasks')[0].reset();
+        });
 
         $('#btn-import-employee-csv').on('click', function() {
             // Reset to Step 1 when modal is opened
@@ -446,3 +480,4 @@
         });
     });
 </script>
+@endsection
