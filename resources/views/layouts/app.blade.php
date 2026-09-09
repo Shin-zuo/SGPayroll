@@ -95,12 +95,12 @@
                     </button>
                     
                     <!-- Global Search -->
-                    <div class="hidden sm:block relative">
+                    <!-- <div class="hidden sm:block relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
                             <i class="fa fa-search text-xs"></i>
                         </span>
                         <input type="text" class="h-9 w-64 md:w-80 pl-8 pr-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all" placeholder="Quick search records, employees...">
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- User Actions -->
