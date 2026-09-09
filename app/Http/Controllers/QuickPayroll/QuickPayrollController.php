@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Excel;
 use SGpayroll\Employee;
+use SGpayroll\AppNotification;
 use SGpayroll\Http\Controllers\Controller;
 
 class QuickPayrollController extends Controller
@@ -317,6 +318,23 @@ class QuickPayrollController extends Controller
                     $data['year'] = Carbon::parse($sheet->getCell('H7')->getValue())->year;
                     if(!empty($data)) {
                         DB::table('employee_payrolls')->insert($data);
+
+                        if (!empty($row['employee_id'])) {
+                            try {
+                                $dateFromVal = $sheet->getCell('H7')->getValue();
+                                $dateToVal = $sheet->getCell('J7')->getValue();
+                                $period = Carbon::parse($dateFromVal)->format('M d') . ' - ' . Carbon::parse($dateToVal)->format('M d, Y');
+                                AppNotification::notifyEmployee(
+                                    $row['employee_id'],
+                                    'New Payslip Available',
+                                    'Your payslip for period ' . $period . ' is now available for viewing.',
+                                    'new_payslip',
+                                    '/portal/payslips'
+                                );
+                            } catch (\Exception $e) {
+                                // Silent fallback if date parsing fails
+                            }
+                        }
                     }
 
                 }

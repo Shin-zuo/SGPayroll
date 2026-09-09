@@ -7,6 +7,7 @@ use SGpayroll\Http\Controllers\Controller;
 use SGpayroll\LeaveCreditLedger;
 use SGpayroll\LeaveApplication;
 use SGpayroll\Employee_Payrolls;
+use SGpayroll\AppNotification;
 use PDF;
 use Carbon\Carbon;
 
@@ -88,6 +89,15 @@ class PortalController extends Controller
             'reason' => $request->reason,
             'status' => 'pending'
         ]);
+
+        $empName = auth()->user()->employee ? auth()->user()->employee->full_name : auth()->user()->name;
+        $leaveType = ucfirst($request->leave_type);
+        AppNotification::notifyAdmins(
+            'New Leave Application',
+            $empName . ' submitted a new ' . $leaveType . ' application (' . $days . ' day' . ($days > 1 ? 's' : '') . ').',
+            'leave_application',
+            '/leave-applications'
+        );
 
         return back()->with('success', 'Leave application submitted successfully.');
     }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use SGpayroll\Department;
 use SGpayroll\Employee;
 use SGpayroll\Employee_Payrolls;
+use SGpayroll\AppNotification;
 use SGpayroll\Http\Controllers\Controller;
 use SGpayroll\Sss_Table;
 
@@ -738,6 +739,7 @@ class ReportsController extends Controller
                     $insertData
                 );
                 $success++;
+                $importedEmployeeCodes[] = $data['employee_code'];
             } catch (\Exception $e) {
                 $failed[] = [
                     'row'    => $rowNum,
@@ -747,6 +749,18 @@ class ReportsController extends Controller
         }
 
         fclose($handle);
+
+        if (!empty($importedEmployeeCodes)) {
+            foreach (array_unique($importedEmployeeCodes) as $empCode) {
+                AppNotification::notifyEmployee(
+                    $empCode,
+                    'New Payslip Available',
+                    'A new payslip from batch import is now available for viewing.',
+                    'new_payslip',
+                    '/portal/payslips'
+                );
+            }
+        }
 
         return response()->json([
             'success' => $success,

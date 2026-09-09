@@ -105,10 +105,159 @@
 
                 <!-- User Actions -->
                 <div class="flex items-center space-x-3">
-                    <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors relative">
-                        <i class="fa fa-bell text-sm"></i>
-                        <span class="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
-                    </button>
+                    @if(auth()->check())
+                    <!-- Notification Bell Dropdown -->
+                    <div class="relative" x-data="notificationDropdown()" x-init="init()">
+                        <button 
+                            @click="toggleDropdown()" 
+                            type="button"
+                            class="relative w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none"
+                            :class="{ 'bg-slate-100 text-slate-600': isOpen }"
+                            aria-label="Notifications"
+                        >
+                            <i class="fa fa-bell text-sm"></i>
+                            <template x-if="unreadCount > 0">
+                                <span 
+                                    class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white shadow-sm"
+                                    x-text="unreadCount > 99 ? '99+' : unreadCount"
+                                ></span>
+                            </template>
+                        </button>
+
+                        <!-- Notification Dropdown Menu -->
+                        <div 
+                            x-show="isOpen" 
+                            @click.away="isOpen = false"
+                            x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                            x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                            x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden flex flex-col max-h-[480px]"
+                            style="display: none;"
+                        >
+                            <!-- Header -->
+                            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+                                <div class="flex items-center space-x-2">
+                                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Notifications</h3>
+                                    <template x-if="unreadCount > 0">
+                                        <span class="px-2 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700 rounded-full" x-text="unreadCount + ' new'"></span>
+                                    </template>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <template x-if="unreadCount > 0">
+                                        <button 
+                                            @click.stop="markAllAsRead()" 
+                                            type="button"
+                                            class="text-blue-600 hover:text-blue-700 text-[11px] font-medium transition-colors hover:underline"
+                                        >
+                                            Mark all read
+                                        </button>
+                                    </template>
+                                    <template x-if="notifications.length > 0">
+                                        <button 
+                                            @click.stop="clearAll()" 
+                                            type="button"
+                                            class="text-slate-400 hover:text-rose-600 text-[11px] font-medium transition-colors hover:underline flex items-center"
+                                            title="Clear all notifications"
+                                        >
+                                            <i class="fa fa-trash-can mr-1 text-[10px]"></i> Clear all
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Notification Items List -->
+                            <div class="overflow-y-auto flex-1 divide-y divide-slate-100/80">
+                                <!-- Loading State -->
+                                <template x-if="loading && notifications.length === 0">
+                                    <div class="p-8 text-center text-slate-400">
+                                        <i class="fa fa-spinner fa-spin text-xl mb-2 text-blue-500"></i>
+                                        <p class="text-xs">Loading notifications...</p>
+                                    </div>
+                                </template>
+
+                                <!-- Empty State -->
+                                <template x-if="!loading && notifications.length === 0">
+                                    <div class="p-8 text-center">
+                                        <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                                            <i class="fa fa-bell-slash text-base"></i>
+                                        </div>
+                                        <p class="text-xs font-semibold text-slate-700">No notifications yet</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">You're all caught up!</p>
+                                    </div>
+                                </template>
+
+                                <!-- Items -->
+                                <template x-for="item in notifications" :key="item.id">
+                                    <div 
+                                        @click="clickNotification(item)" 
+                                        class="group relative p-3.5 flex items-start space-x-3 transition-colors cursor-pointer hover:bg-slate-50/90"
+                                        :class="item.is_read ? 'bg-white' : 'bg-blue-50/50'"
+                                    >
+                                        <!-- Type Icon -->
+                                        <div class="shrink-0 mt-0.5">
+                                            <template x-if="item.type === 'leave_application'">
+                                                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xs shadow-xs">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </div>
+                                            </template>
+                                            <template x-if="item.type === 'leave_status'">
+                                                <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs shadow-xs">
+                                                    <i class="fa fa-clipboard-check"></i>
+                                                </div>
+                                            </template>
+                                            <template x-if="item.type === 'new_payslip'">
+                                                <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xs shadow-xs">
+                                                    <i class="fa fa-file-invoice-dollar"></i>
+                                                </div>
+                                            </template>
+                                            <template x-if="!['leave_application', 'leave_status', 'new_payslip'].includes(item.type)">
+                                                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs shadow-xs">
+                                                    <i class="fa fa-bell"></i>
+                                                </div>
+                                            </template>
+                                        </div>
+
+                                        <!-- Text Details -->
+                                        <div class="flex-1 min-w-0 pr-1">
+                                            <div class="flex items-center space-x-1.5">
+                                                <h4 class="text-xs font-semibold text-slate-900 truncate" x-text="item.title"></h4>
+                                                <template x-if="!item.is_read">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                                                </template>
+                                            </div>
+                                            <p class="text-[11px] text-slate-600 leading-snug mt-0.5 line-clamp-2" x-text="item.message"></p>
+                                            <div class="flex items-center space-x-1 text-[10px] text-slate-400 mt-1.5">
+                                                <i class="fa fa-clock text-[9px]"></i>
+                                                <span x-text="item.time_ago"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Delete Button -->
+                                        <button 
+                                            @click.stop="deleteNotification(item.id)" 
+                                            type="button" 
+                                            class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-70 group-hover:opacity-100 focus:opacity-100"
+                                            title="Delete notification"
+                                            aria-label="Delete notification"
+                                        >
+                                            <i class="fa fa-trash-alt text-xs"></i>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Footer -->
+                            <template x-if="notifications.length > 0">
+                                <div class="px-4 py-2 border-t border-slate-100 bg-slate-50/40 text-center">
+                                    <p class="text-[10px] text-slate-400">Click a notification to view details</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    @endif
 
                     @if(auth()->check())
                     <div class="relative">
@@ -176,6 +325,165 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/sidebar.js') }}"></script>
+    @if(auth()->check())
+    <script>
+        function notificationDropdown() {
+            return {
+                isOpen: false,
+                notifications: [],
+                unreadCount: 0,
+                loading: false,
+
+                init() {
+                    this.fetchNotifications();
+                    setInterval(() => {
+                        this.fetchNotifications(true);
+                    }, 45000);
+                },
+
+                toggleDropdown() {
+                    this.isOpen = !this.isOpen;
+                    if (this.isOpen && this.notifications.length === 0) {
+                        this.fetchNotifications();
+                    }
+                },
+
+                fetchNotifications(silent = false) {
+                    if (!silent) this.loading = true;
+                    fetch('/notifications', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Network response error');
+                        return res.json();
+                    })
+                    .then(data => {
+                        this.unreadCount = data.unread_count || 0;
+                        if (!this.isOpen || this.notifications.length === 0) {
+                            this.notifications = data.notifications || [];
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error fetching notifications:', err);
+                    })
+                    .finally(() => {
+                        if (!silent) this.loading = false;
+                    });
+                },
+
+                clickNotification(item) {
+                    if (!item.is_read) {
+                        item.is_read = true;
+                        if (this.unreadCount > 0) this.unreadCount--;
+                        this.markAsRead(item.id);
+                    }
+                    if (item.link) {
+                        window.location.href = item.link;
+                    }
+                },
+
+                markAsRead(id) {
+                    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    fetch(`/notifications/${id}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && typeof data.unread_count !== 'undefined') {
+                            this.unreadCount = data.unread_count;
+                        }
+                    })
+                    .catch(err => console.error('Error marking notification as read:', err));
+                },
+
+                markAllAsRead() {
+                    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    this.notifications.forEach(n => n.is_read = true);
+                    this.unreadCount = 0;
+
+                    fetch('/notifications/read-all', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.unreadCount = 0;
+                    })
+                    .catch(err => console.error('Error marking all as read:', err));
+                },
+
+                deleteNotification(id) {
+                    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    const target = this.notifications.find(n => n.id === id);
+                    if (target && !target.is_read && this.unreadCount > 0) {
+                        this.unreadCount--;
+                    }
+                    this.notifications = this.notifications.filter(n => n.id !== id);
+
+                    fetch(`/notifications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && typeof data.unread_count !== 'undefined') {
+                            this.unreadCount = data.unread_count;
+                        }
+                    })
+                    .catch(err => console.error('Error deleting notification:', err));
+                },
+
+                clearAll() {
+                    if (!confirm('Are you sure you want to clear all notifications?')) return;
+                    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    this.notifications = [];
+                    this.unreadCount = 0;
+
+                    fetch('/notifications/clear-all', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.unreadCount = 0;
+                        this.notifications = [];
+                    })
+                    .catch(err => console.error('Error clearing notifications:', err));
+                }
+            };
+        }
+        window.notificationDropdown = notificationDropdown;
+        document.addEventListener('alpine:init', () => {
+            if (window.Alpine) {
+                window.Alpine.data('notificationDropdown', notificationDropdown);
+            }
+        });
+    </script>
+    @endif
     @yield('scripts')
     @stack('scripts')
 </body>

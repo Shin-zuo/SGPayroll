@@ -28,6 +28,13 @@ Route::middleware(['auth'])->group(function () {
     // Admin Settings (accessible by Super Admin and HR/Admin)
     Route::get('/admin/settings', 'Admin\AdminSettingsController@index');
     Route::post('/admin/settings', 'Admin\AdminSettingsController@update');
+
+    // Notifications (Shared between Admin & Employee Portal)
+    Route::get('/notifications', 'Notification\NotificationController@index');
+    Route::post('/notifications/{id}/read', 'Notification\NotificationController@markAsRead');
+    Route::post('/notifications/read-all', 'Notification\NotificationController@markAllAsRead');
+    Route::delete('/notifications/{id}', 'Notification\NotificationController@destroy');
+    Route::delete('/notifications/clear-all', 'Notification\NotificationController@clearAll');
 });
 
 // Admin & HR Portal Routes

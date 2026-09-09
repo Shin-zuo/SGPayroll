@@ -16,6 +16,7 @@ use SGpayroll\Phil_Table;
 use SGpayroll\Sss_Table;
 use SGpayroll\Sub_Department;
 use SGpayroll\User;
+use SGpayroll\AppNotification;
 
 class PayrollController extends Controller
 {
@@ -693,6 +694,15 @@ class PayrollController extends Controller
                 "balance" => $remaining_balance_sss_emergency[0] - $request['sss_emergency_loan']
             ]);
         }
+
+        $period = Carbon::parse($request['date_from'])->format('M d') . ' - ' . Carbon::parse($request['date_to'])->format('M d, Y');
+        AppNotification::notifyEmployee(
+            $request['employee_id'],
+            'New Payslip Available',
+            'Your payslip for period ' . $period . ' is now available for viewing.',
+            'new_payslip',
+            '/portal/payslips'
+        );
 
         return [
             'employee' => Employee::find($request['employee_id'])->getFullNameAttribute()

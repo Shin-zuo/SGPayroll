@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use SGpayroll\Http\Controllers\Controller;
 use SGpayroll\LeaveApplication;
 use SGpayroll\LeaveCreditLedger;
+use SGpayroll\AppNotification;
 
 class LeaveApplicationController extends Controller
 {
@@ -71,6 +72,16 @@ class LeaveApplicationController extends Controller
         $ledger->used_days += $app->total_days;
         $ledger->save();
 
+        $leaveType = ucfirst($app->leave_type);
+        $dateStr = \Carbon\Carbon::parse($app->date_from)->format('M d, Y');
+        AppNotification::notifyEmployee(
+            $app->employee_id,
+            'Leave Application Approved',
+            'Your ' . $leaveType . ' application for ' . $dateStr . ' has been approved.',
+            'leave_status',
+            '/portal/leave-balance'
+        );
+
         return back()->with('success', 'Leave application approved successfully.');
     }
 
@@ -86,6 +97,16 @@ class LeaveApplicationController extends Controller
         $app->approved_by = auth()->id();
         $app->admin_remarks = 'Rejected by admin';
         $app->save();
+
+        $leaveType = ucfirst($app->leave_type);
+        $dateStr = \Carbon\Carbon::parse($app->date_from)->format('M d, Y');
+        AppNotification::notifyEmployee(
+            $app->employee_id,
+            'Leave Application Rejected',
+            'Your ' . $leaveType . ' application for ' . $dateStr . ' was rejected.',
+            'leave_status',
+            '/portal/leave-balance'
+        );
 
         return back()->with('success', 'Leave application rejected.');
     }
