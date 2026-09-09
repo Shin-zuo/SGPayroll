@@ -1,7 +1,11 @@
 FROM php:7.4-apache
 
-# Cleaned up APT configuration with libonig-dev added and expired release check bypass
-RUN apt-get -o Acquire::Check-Valid-Until=false update -y && apt-get install -y \
+# Configure Debian archive repositories and install system packages
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list \
+    && sed -i '/security/d' /etc/apt/sources.list \
+    && sed -i '/updates/d' /etc/apt/sources.list \
+    && apt-get -o Acquire::Check-Valid-Until=false update -y \
+    && apt-get install -y \
     libmcrypt-dev \
     libxml2-dev \
     zlib1g-dev \
