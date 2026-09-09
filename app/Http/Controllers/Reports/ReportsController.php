@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Http\Request;
 use SGpayroll\Department;
+use SGpayroll\Employee;
 use SGpayroll\Employee_Payrolls;
 use SGpayroll\Http\Controllers\Controller;
 use SGpayroll\Sss_Table;
@@ -19,7 +20,10 @@ class ReportsController extends Controller
     }
     public function index()
     {
-        $department = Employee_Payrolls::select('department')->orderBy('department')->get()->pluck('department')->unique();
+        $deptFromPayroll = Employee_Payrolls::select('department')->pluck('department');
+        $deptFromEmployees = Employee::select('department')->pluck('department');
+        $deptFromDepartments = Department::select('department_name')->pluck('department_name');
+        $department = $deptFromDepartments->concat($deptFromEmployees)->concat($deptFromPayroll)->filter()->unique()->sort()->values();
         return view('reports.index', compact('department'));
     }
     // View Report
@@ -593,27 +597,36 @@ class ReportsController extends Controller
         }
         // Employee Information Reports
         if ($request['report_type'] == 'EMPLOYEE INFORMATION') {
-            $employee_info = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
-                ->orderBy('employees.employee_Lname')
-                ->where('employees.employee_status', 1)
-                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
-                ->where('employee_payrolls.department', $request['department'])
-                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.sick_leave_amount) as sick_leave_total,SUM(employee_payrolls.thirteen_month) as annual_thirteen,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,employee_payrolls.department'))
-                ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen')
+            $departmentName = $request['department'];
+            $dept = Department::where('department_name', $departmentName)->first();
+
+            $employee_info = Employee::where('employee_status', 1)
+                ->where(function ($query) use ($departmentName, $dept) {
+                    $query->where('department', $departmentName);
+                    if ($dept) {
+                        $query->orWhere('department', $dept->id)
+                              ->orWhere('department', $dept->department_code);
+                    }
+                })
+                ->orderBy('employee_Lname', 'ASC')
                 ->get();
 
-            $inactive_employee = Employee_Payrolls::join('employees', 'employee_payrolls.employee_code', 'employees.id')
-                ->orderBy('employees.employee_Lname')
-                ->where('employees.employee_status', 2)
-                ->where('employee_payrolls.year', Carbon::parse($request['monthRep'])->year)
-                ->where('employee_payrolls.department', $request['department'])
-                ->select('employee_code', 'employees.tin_number', 'employees.custom_thirteen', DB::raw('SUM(employee_payrolls.work_days_amount) as basic_pay,SUM(employee_payrolls.ext_reg_hrs_ammount) as extra_regular_hrs,SUM(employee_payrolls.sick_leave_amount) as sick_leave_total,SUM(employee_payrolls.thirteen_month) as annual_thirteen,SUM(employee_payrolls.cola_amount) as cola,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,SUM(employee_payrolls.sss_contribution) as annual_sss,SUM(employee_payrolls.phic_contribution) as annual_phic,SUM(employee_payrolls.non_tax_other) as annual_non_tax_other,SUM(employee_payrolls.cola_amount) as annual_cola_amount,SUM(employee_payrolls.gross_pay) as annual_work_days_amount,SUM(employee_payrolls.witholding_tax) as annual_witholding_tax,SUM(employee_payrolls.hdmf_contribution) as annual_hdmf,SUM(employee_payrolls.rest_special) as rest_special_hours,SUM(employee_payrolls.non_tax_other) as non_tax,SUM(employee_payrolls.sick_leave_amount) as leave_amount,employee_payrolls.department'))
-                ->groupBy('employee_code', 'employees.tin_number', 'employee_payrolls.department', 'employees.custom_thirteen')
+            $inactive_employee = Employee::where('employee_status', 2)
+                ->where(function ($query) use ($departmentName, $dept) {
+                    $query->where('department', $departmentName);
+                    if ($dept) {
+                        $query->orWhere('department', $dept->id)
+                              ->orWhere('department', $dept->department_code);
+                    }
+                })
+                ->orderBy('employee_Lname', 'ASC')
                 ->get();
 
             $data = [
                 'employee_information' => $employee_info,
-                'inactive_employees' => $inactive_employee
+                'inactive_employees' => $inactive_employee,
+                'department' => $dept,
+                'departmentName' => $departmentName,
             ];
             $pdf = PDF::loadView('reports.employeeInformation', $data)->setPaper('Legal', 'Landscape');
             return $pdf->stream('employeeInformation.pdf');

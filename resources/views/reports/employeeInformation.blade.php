@@ -57,14 +57,22 @@
 </head>
 <body>
 <h4 style="text-align: center; font-weight: normal;">
-    @if($employee_information->first())
+    @if(isset($department) && $department)
+        <strong>{{$department->department_name}}</strong>
+        <br>
+        {{$department->department_address}}
+    @elseif(isset($departmentName) && $departmentName)
+        <strong>{{$departmentName}}</strong>
+    @elseif($employee_information->first() && $employee_information->first()->departments)
         <strong>{{$employee_information->first()->departments->department_name}}</strong>
         <br>
         {{$employee_information->first()->departments->department_address}}
+    @elseif($employee_information->first())
+        <strong>{{$employee_information->first()->department}}</strong>
+    @endif
 </h4>
 <h3 style="text-align: center">Employee Information Sheet</h3>
-{{--<p class="text-center">For the month of {{ \Carbon\Carbon::parse($month)->format('F Y')}} </p>--}}
-@endif
+
 <table class="employee">
     <thead>
     <tr>
@@ -82,20 +90,27 @@
 
     </thead>
     <tbody>
-    @foreach($employee_information as  $employee_info)
+    @forelse($employee_information as $employee_info)
+        @php
+            $emp = isset($employee_info->employee) ? $employee_info->employee : $employee_info;
+        @endphp
         <tr>
-            <td>{{strtoupper($employee_info->employee->full_name)}}</td>
-            <td>{{$employee_info->employee->date_hired ? \Carbon\Carbon::parse($employee_info->employee->date_hired)->format('m/d/Y') : '-'}}</td>
-            <td>{{\Carbon\Carbon::parse($employee_info->employee->birth_day)->format('m/d/Y')}}</td>
-            <td>{{$employee_info->employee->contactNo}}</td>
-            <td>{{$employee_info->employee->tin_number}}</td>
-            <td>{{$employee_info->employee->sss_number}}</td>
-            <td>{{$employee_info->employee->hdmf_number}}</td>
-            <td>{{$employee_info->employee->philhealth_number}}</td>
-            <td>{{$employee_info->employee->ucpb_number ?: '-'}}</td>
-            <td><strong>{{$employee_info->employee->address}}</strong></td>
+            <td>{{strtoupper($emp->full_name)}}</td>
+            <td>{{$emp->date_hired ? \Carbon\Carbon::parse($emp->date_hired)->format('m/d/Y') : '-'}}</td>
+            <td>{{$emp->birth_day ? \Carbon\Carbon::parse($emp->birth_day)->format('m/d/Y') : '-'}}</td>
+            <td>{{$emp->contactNo ?: '-'}}</td>
+            <td>{{$emp->tin_number ?: '-'}}</td>
+            <td>{{$emp->sss_number ?: '-'}}</td>
+            <td>{{$emp->hdmf_number ?: '-'}}</td>
+            <td>{{$emp->philhealth_number ?: '-'}}</td>
+            <td>{{$emp->ucpb_number ?: '-'}}</td>
+            <td><strong>{{$emp->address ?: '-'}}</strong></td>
         </tr>
-    @endforeach
+    @empty
+        <tr>
+            <td colspan="10" style="text-align: center; padding: 10px; color: #888;">No active employees found.</td>
+        </tr>
+    @endforelse
     </tbody>
 
 
@@ -120,20 +135,27 @@
 
         </thead>
         <tbody>
-        @foreach($inactive_employees as  $inactive_employee)
+        @forelse($inactive_employees as $inactive_employee)
+            @php
+                $inEmp = isset($inactive_employee->employee) ? $inactive_employee->employee : $inactive_employee;
+            @endphp
             <tr>
-                <td>{{strtoupper($inactive_employee->employee->full_name)}}</td>
-                <td>{{$inactive_employee->employee->date_hired ? \Carbon\Carbon::parse($inactive_employee->employee->date_hired)->format('m/d/Y') : '-'}}</td>
-                <td>{{\Carbon\Carbon::parse($inactive_employee->employee->birth_day)->format('m/d/Y')}}</td>
-                <td>{{$inactive_employee->employee->contactNo}}</td>
-                <td>{{$inactive_employee->employee->tin_number}}</td>
-                <td>{{$inactive_employee->employee->sss_number}}</td>
-                <td>{{$inactive_employee->employee->hdmf_number}}</td>
-                <td>{{$inactive_employee->employee->philhealth_number}}</td>
-                <td>{{$inactive_employee->employee->ucpb_number ?: '-'}}</td>
-                <td><strong>{{$inactive_employee->employee->address}}</strong></td>
+                <td>{{strtoupper($inEmp->full_name)}}</td>
+                <td>{{$inEmp->date_hired ? \Carbon\Carbon::parse($inEmp->date_hired)->format('m/d/Y') : '-'}}</td>
+                <td>{{$inEmp->birth_day ? \Carbon\Carbon::parse($inEmp->birth_day)->format('m/d/Y') : '-'}}</td>
+                <td>{{$inEmp->contactNo ?: '-'}}</td>
+                <td>{{$inEmp->tin_number ?: '-'}}</td>
+                <td>{{$inEmp->sss_number ?: '-'}}</td>
+                <td>{{$inEmp->hdmf_number ?: '-'}}</td>
+                <td>{{$inEmp->philhealth_number ?: '-'}}</td>
+                <td>{{$inEmp->ucpb_number ?: '-'}}</td>
+                <td><strong>{{$inEmp->address ?: '-'}}</strong></td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="10" style="text-align: center; padding: 10px; color: #888;">No inactive employees found.</td>
+            </tr>
+        @endforelse
         </tbody>
 
 
