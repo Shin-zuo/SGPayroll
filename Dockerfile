@@ -1,18 +1,7 @@
 FROM php:7.4-apache
 
-COPY docker-entrypoint.sh /usr/local/bin/
-# Strip out Windows carriage returns and make the script executable
-RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Use the absolute path to be perfectly safe
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-# Your existing start command (e.g., apache2-foreground)
-CMD ["apache2-foreground"]
-
-# Cleaned up APT configuration with libonig-dev added
-RUN apt-get update -y && apt-get install -y \
+# Cleaned up APT configuration with libonig-dev added and expired release check bypass
+RUN apt-get -o Acquire::Check-Valid-Until=false update -y && apt-get install -y \
     libmcrypt-dev \
     libxml2-dev \
     zlib1g-dev \
@@ -24,10 +13,16 @@ RUN apt-get update -y && apt-get install -y \
     zip \
     unzip \
     && docker-php-ext-install pdo_mysql pdo_pgsql pgsql xml zip mbstring gd \
-    && a2enmod rewrite
+    && a2enmod rewrite \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set working directory
 WORKDIR /var/www/html
@@ -55,5 +50,5 @@ ENV PORT=10000
 
 COPY cacert.pem /var/www/html/cacert.pem
 
-# Start the startup script
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["/usr/local/bin/start.sh"]
