@@ -24,11 +24,30 @@
     <link rel="stylesheet" href="{{ asset('css/datatables.min.css') }}"/>
 
     <!-- Compiled Tailwind CSS -->
-    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tailwind.css') }}?v={{ file_exists(public_path('css/tailwind.css')) ? filemtime(public_path('css/tailwind.css')) : time() }}" rel="stylesheet">
 
     <!-- Core Scripts (jQuery, Bootstrap plugins, DataTables, Alertify) -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/datatables.min.js') }}"></script>
+    <script>
+        if (window.jQuery && $.fn.DataTable) {
+            $.extend(true, $.fn.dataTable.defaults, {
+                dom: '<"flex flex-col sm:flex-row justify-between items-center mb-4"<"flex-1"l><"flex-1 text-right"f>>rt<"flex flex-col sm:flex-row justify-between items-center mt-4"<"flex-1"i><"flex-1 text-right"p>>',
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search records...",
+                    lengthMenu: "Show _MENU_ records",
+                    info: "Showing _START_ to _END_ of _TOTAL_ records",
+                    infoEmpty: "Showing 0 to 0 of 0 records",
+                    infoFiltered: "(filtered from _MAX_ total records)",
+                    paginate: {
+                        previous: '<i class="fa fa-chevron-left text-[10px] mr-1"></i> Prev',
+                        next: 'Next <i class="fa fa-chevron-right text-[10px] ml-1"></i>'
+                    }
+                }
+            });
+        }
+    </script>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>

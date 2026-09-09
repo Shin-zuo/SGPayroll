@@ -67,13 +67,21 @@
 </div>
 
 <!-- Data Table Section -->
-<div class="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden mb-8">
-    <div class="px-5 py-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-white">
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h2 class="text-base font-bold text-slate-900">All Employees</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Filter, search, or add employee records</p>
+            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="fas fa-users"></i>
+                </span>
+                Active Employee Directory
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Filter, search, or add employee records and statutory configurations.</p>
         </div>
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+                {{ $activeEmp }} active employees
+            </span>
             <button type="button" id="btn-import-employee-csv"
                 class="btn btn-secondary text-xs font-medium flex items-center gap-2">
                 <i class="fa fa-file-csv text-emerald-600"></i> Import CSV
@@ -84,39 +92,47 @@
         </div>
     </div>
     
-    <div class="p-5">
-        <table id="emptable" class="w-full text-left border-collapse">
+    <div class="p-5 overflow-x-auto">
+        <table id="emptable" class="w-full text-left border-collapse" style="font-size: 12px;">
             <thead>
-                <tr class="bg-slate-50/80 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                    <th class="px-4 py-3 border-b border-slate-200/80 rounded-l-lg">ID</th>
-                    <th class="px-4 py-3 border-b border-slate-200/80">Full Name</th>
-                    <th class="px-4 py-3 border-b border-slate-200/80">Group</th>
-                    <th class="px-4 py-3 border-b border-slate-200/80">Position</th>
-                    <th class="px-4 py-3 border-b border-slate-200/80">Status</th>
-                    <th class="px-4 py-3 border-b border-slate-200/80 text-right rounded-r-lg">Action</th>
+                <tr class="bg-slate-100/75 font-semibold text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
+                    <th class="py-2.5 px-3" style="width: 55px;">Ref #</th>
+                    <th class="py-2.5 px-3">Full Name</th>
+                    <th class="py-2.5 px-3">Group</th>
+                    <th class="py-2.5 px-3">Position</th>
+                    <th class="py-2.5 px-3 text-center">Status</th>
+                    <th class="py-2.5 px-3 text-center" style="width: 108px;">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @foreach($employee as $employees)
-                <tr class="hover:bg-slate-50/70 transition-colors">
-                    <td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-slate-500">{{ $employees->id }}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-800">{{ strtoupper($employees->full_name) }}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-600 font-medium">{{ strtoupper($employees->department) }}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-500">{{ $employees->position ?: '—' }}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-xs">
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="py-2.5 px-3 font-mono text-slate-500" style="font-size: 11px;">#{{ $employees->id }}</td>
+                    <td class="py-2.5 px-3">
+                        <div class="font-semibold text-slate-800" style="font-size: 12px;">{{ strtoupper($employees->full_name) }}</div>
+                        <div class="text-slate-400 font-mono" style="font-size: 10px;">{{ $employees->employee_id }}</div>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-700 font-medium" style="font-size: 11px;">{{ strtoupper($employees->department) }}</td>
+                    <td class="py-2.5 px-3 text-slate-500" style="font-size: 11px;">{{ $employees->position ?: '—' }}</td>
+                    <td class="py-2.5 px-3 text-center">
                         @if($employees->status == 'Inactive')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60">Inactive</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">Inactive</span>
                         @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Active</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-right text-xs font-medium space-x-1">
-                        <a href="/employee/account/{{$employees->id}}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" target="_blank" title="View Account">
-                            <i class="fa fa-user-edit text-xs"></i>
-                        </a>
-                        <a href="#" data-toggle="modal" data-id="{{$employees->id}}" data-target=".bd-example-modal-sm" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Set Inactive">
-                            <i class="fa fa-user-times text-xs"></i>
-                        </a>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="admin-action-btn-group">
+                            <a href="/employee/account/{{$employees->id}}" class="admin-btn-action admin-btn-action-edit" target="_blank" title="View & Edit Account">
+                                <i class="fa fa-user-edit"></i>
+                            </a>
+                            <a href="/employee/account/{{$employees->id}}/loans" class="admin-btn-action admin-btn-action-view" target="_blank" title="Manage Loans">
+                                <i class="fa fa-receipt"></i>
+                            </a>
+                            <button type="button" data-toggle="modal" data-id="{{$employees->id}}" data-target=".bd-example-modal-sm" class="admin-btn-action admin-btn-action-danger" title="Set Inactive">
+                                <i class="fa fa-user-times"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -125,21 +141,21 @@
     </div>
 </div>
 
-<!-- Deactivate Confirmation Modal -->
+<!-- Deactivate Confirmation Modal (Minimalist) -->
 <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deactivateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
-        <div class="modal-content text-center p-2">
-            <div class="modal-body pt-6 pb-2">
-                <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4 border border-rose-100">
-                    <i class="fa fa-exclamation-triangle text-lg"></i>
+        <div class="modal-content text-center">
+            <div class="modal-body p-6">
+                <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-3 border border-rose-100 text-lg">
+                    <i class="fa fa-exclamation-triangle"></i>
                 </div>
-                <h4 class="text-base font-bold text-slate-900 mb-1">Deactivate Employee</h4>
-                <p class="text-xs text-slate-500 max-w-xs mx-auto mb-4">Are you sure you want to mark this employee as inactive? They will be moved to the inactive list.</p>
+                <h4 class="text-base font-bold text-slate-900 mb-1" id="deactivateModalLabel">Deactivate Employee</h4>
+                <p class="text-xs text-slate-500 max-w-xs mx-auto mb-2 leading-relaxed">Are you sure you want to mark this employee as inactive? They will be moved to the inactive directory.</p>
                 <form id="deactivateForm">
                     <input type="hidden" name="id" id="id">
                 </form>
             </div>
-            <div class="modal-footer justify-center border-t-0 bg-transparent pt-0 pb-4 gap-2">
+            <div class="modal-footer justify-center bg-slate-50 border-t border-slate-100 p-4 gap-2.5">
                 <button type="button" class="btn btn-secondary flex-1" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger flex-1" id="btnYes">Deactivate</button>
             </div>
@@ -151,10 +167,10 @@
 <div class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="admin-modal-hero">
                 <div>
-                    <h4 class="modal-title font-bold text-slate-900 text-lg" id="addEmployeeLabel">Add New Employee</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Fill in the employee's personal and statutory details.</p>
+                    <h4 class="modal-title" id="addEmployeeLabel">Add New Employee</h4>
+                    <p class="modal-subtitle">Fill in personal credentials and statutory registration details.</p>
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -244,6 +260,11 @@
                                 <label for="address">Residential Address</label>
                                 <input type="text" class="form-control" id="address" name="address" placeholder="Complete Street Address">
                             </div>
+
+                            <div class="form-group">
+                                <label for="contact_no">Contact Number</label>
+                                <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="09XX-XXX-XXXX">
+                            </div>
                         </div>
 
                         <!-- Right Column: Statutory & Account Info -->
@@ -277,25 +298,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="ucpb">Bank / UCPB Account No.</label>
-                                <input type="text" class="form-control" id="ucpb" name="ucpb" placeholder="Bank Account Number">
+                                <label for="ucpb">UB Account No.</label>
+                                <input type="text" class="form-control" id="ucpb" name="ucpb" placeholder="UB Account Number">
                             </div>
 
                             <div class="form-group">
                                 <label for="emp_email">Login Email Address</label>
                                 <input type="email" class="form-control" id="emp_email" name="emp_email" placeholder="employee@company.com">
                                 <p class="text-[11px] text-slate-400 mt-1">Default employee portal password: <code class="text-slate-600 font-mono bg-slate-100 px-1 py-0.5 rounded">testPass</code></p>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="form-group">
-                                    <label for="passport_no">Passport Number</label>
-                                    <input type="text" class="form-control" id="passport_no" name="passport_no" placeholder="Passport No.">
-                                </div>
-                                <div class="form-group">
-                                    <label for="passport_exp">Passport Expiry</label>
-                                    <input type="date" class="form-control" id="passport_exp" name="passport_exp">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -316,10 +326,10 @@
 <div class="modal fade" id="importCsvModal" tabindex="-1" role="dialog" aria-labelledby="importCsvModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="admin-modal-hero">
                 <div>
-                    <h4 class="modal-title font-bold text-slate-900" id="importCsvModalLabel">Import Employees from CSV</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Bulk onboarding via spreadsheet</p>
+                    <h4 class="modal-title" id="importCsvModalLabel">Import Employees from CSV</h4>
+                    <p class="modal-subtitle">Bulk onboarding via spreadsheet</p>
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -359,7 +369,7 @@
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">tin_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">hdmf_number</td><td>No</td><td class="text-slate-500">Numbers only (Pag-IBIG)</td></tr>
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">philhealth_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">ucpb_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
+                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">ucpb_number / ub_number</td><td>No</td><td class="text-slate-500">UB Account Number (Numbers only)</td></tr>
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">basic_pay</td><td>No</td><td class="text-slate-500">Decimal/Float (e.g. 25000)</td></tr>
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">cola</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>
                                 <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">other_nt_pay</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>

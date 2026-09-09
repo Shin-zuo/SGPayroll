@@ -52,6 +52,20 @@
             @endif
             <p class="text-xs text-slate-500 max-w-sm">Use this manual switch to allow admins to edit, update, or assign leave credits outside the December 14–31 date window for emergency corrections.</p>
         </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <span class="text-xs font-bold text-slate-700 block">Annual Leave Reload (11 Credits: 6 VL / 5 SL)</span>
+                <span class="text-xs text-slate-500">Resets all active employees to 6 Vacation & 5 Sick leaves. Automatically runs every 2nd week of December (Dec 14+).</span>
+            </div>
+            <form action="{{ route('superadmin.leave-window.reload-credits') }}" method="POST" onsubmit="return confirm('Reload annual leave credits to 11 (6 VL, 5 SL) for all active employees?');">
+                {{ csrf_field() }}
+                <input type="hidden" name="year" value="{{ $currentYear }}">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors shadow-sm text-xs flex items-center gap-1.5 shrink-0">
+                    <i class="fas fa-sync-alt"></i> Run Annual Leave Reload
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -62,19 +76,27 @@
 @endif
 
 <!-- Employee Locks Table -->
-<div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden mb-6">
-    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-        <div>
-            <h2 class="text-base font-semibold text-slate-800">Employee Leave Locks (Year: {{ $currentYear }})</h2>
-            <p class="text-xs text-slate-500">Manage individual lock bypasses. Resetting a lock allows the admin to edit this employee's leave credits again once.</p>
+<div class="admin-table-card mb-8">
+    <div class="admin-table-header">
+        <div class="flex items-center gap-3">
+            <div class="admin-table-icon">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-base font-bold text-slate-800">Employee Leave Locks</h2>
+                    <span class="admin-table-badge">{{ count($employees) }} employees</span>
+                </div>
+                <p class="text-xs text-slate-400">Manage individual lock bypasses for leave credit editing (Year: {{ $currentYear }})</p>
+            </div>
         </div>
     </div>
 
-    <div class="overflow-x-auto p-4">
-        <table id="locksTable" class="table table-bordered table-striped w-full text-left border-collapse text-sm">
+    <div class="p-4">
+        <table id="locksTable" class="admin-table w-full text-left">
             <thead>
-                <tr class="bg-slate-100 font-medium text-slate-600 uppercase text-xs">
-                    <th>ID</th>
+                <tr>
+                    <th class="w-16">ID</th>
                     <th>Name</th>
                     <th>Department</th>
                     <th>VL Locked</th>
@@ -85,35 +107,48 @@
             <tbody>
                 @foreach($employees as $emp)
                 <tr>
-                    <td>{{ $emp->id }}</td>
-                    <td class="font-semibold">{{ strtoupper($emp->full_name) }}</td>
-                    <td>{{ strtoupper($emp->department) }}</td>
+                    <td class="font-mono text-xs text-slate-500">#{{ $emp->id }}</td>
+                    <td class="font-semibold text-slate-800">{{ strtoupper($emp->full_name) }}</td>
+                    <td class="text-slate-600">{{ strtoupper($emp->department) }}</td>
                     <td>
                         @if($emp->vacation_locked)
-                            <span class="label label-danger">Locked</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                <span>Locked</span>
+                            </span>
                         @else
-                            <span class="label label-success">Unlocked / Empty</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Unlocked</span>
+                            </span>
                         @endif
                     </td>
                     <td>
                         @if($emp->sick_locked)
-                            <span class="label label-danger">Locked</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                <span>Locked</span>
+                            </span>
                         @else
-                            <span class="label label-success">Unlocked / Empty</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Unlocked</span>
+                            </span>
                         @endif
                     </td>
-                    <td class="text-right">
+                    <td class="admin-table-actions whitespace-nowrap text-right">
                         @if($emp->leave_set)
                             <form action="{{ route('superadmin.leave-window.reset-lock') }}" method="POST" class="inline">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="employee_id" value="{{ $emp->id }}">
                                 <input type="hidden" name="year" value="{{ $currentYear }}">
-                                <button type="submit" class="btn btn-xs btn-warning" onclick="return confirm('Bypass once-per-year lock for {{ $emp->full_name }}?')">
-                                    <i class="fas fa-history"></i> Reset Lock
+                                <button type="submit" class="admin-btn-action admin-btn-action-view" onclick="return confirm('Bypass once-per-year lock for {{ $emp->full_name }}?')">
+                                    <i class="fa fa-history"></i>
+                                    <span>Reset Lock</span>
                                 </button>
                             </form>
                         @else
-                            <button class="btn btn-xs btn-default" disabled>No Locked Records</button>
+                            <span class="text-xs text-slate-400 italic">No Locked Records</span>
                         @endif
                     </td>
                 </tr>

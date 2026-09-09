@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <!-- Compiled Tailwind CSS -->
-    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tailwind.css') }}?v={{ file_exists(public_path('css/tailwind.css')) ? filemtime(public_path('css/tailwind.css')) : time() }}" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Fontawesome -->
@@ -74,11 +74,6 @@
                     Sign In <i class="fa fa-arrow-right text-xs"></i>
                 </button>
             </form>
-        </div>
-        <div class="bg-slate-50 px-8 py-4 border-t border-slate-100 text-center">
-            <p class="text-sm text-slate-500">
-                Don't have an account? <a href="#" class="font-medium text-blue-600 hover:text-blue-700 transition-colors">Sign up</a>
-            </p>
         </div>
     </div>
 

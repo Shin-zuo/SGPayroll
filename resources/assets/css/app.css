@@ -353,3 +353,310 @@
     background-color: #ffffff !important;
     border-color: #f1f5f9 !important;
 }
+
+/* ==========================================================================
+   Admin/HR Global Table Layout (Standardized to Payslip Directory)
+   ========================================================================== */
+
+.admin-table-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.admin-table-header {
+    background-color: rgba(248, 250, 252, 0.8);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .admin-table-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.admin-table-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.admin-table-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: rgba(226, 232, 240, 0.7);
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.admin-table-filter {
+    padding: 1rem;
+    background-color: rgba(248, 250, 252, 0.7);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.admin-table thead tr {
+    background-color: rgba(241, 245, 249, 0.75);
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table thead th {
+    padding: 0.625rem 0.75rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.admin-table tbody tr {
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-table tbody tr:hover {
+    background-color: rgba(248, 250, 252, 0.8);
+}
+
+.admin-table tbody td {
+    padding: 0.625rem 0.75rem;
+}
+
+/* Standardized Action Button Group */
+.admin-action-btn-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+}
+
+.admin-btn-action {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    text-decoration: none !important;
+}
+
+/* Labeled Action Buttons (Automatically expands to accommodate icon + text) */
+.admin-btn-action-labeled,
+.admin-btn-action:has(span) {
+    width: auto !important;
+    min-width: auto !important;
+    height: 1.875rem !important;
+    padding: 0 0.625rem !important;
+    gap: 0.375rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+}
+
+.admin-btn-action-labeled span,
+.admin-btn-action:has(span) span {
+    display: inline-block;
+    line-height: 1;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.admin-btn-action-labeled i,
+.admin-btn-action:has(span) i {
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.admin-action-btn-group,
+div.admin-table-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+}
+
+td.admin-table-actions {
+    display: table-cell !important;
+    white-space: nowrap;
+}
+
+.admin-btn-action-view,
+.admin-btn-action-edit {
+    color: #0284c7;
+    background-color: #f0f9ff;
+    border-color: #bae6fd;
+}
+.admin-btn-action-view:hover,
+.admin-btn-action-edit:hover {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.admin-btn-action-print {
+    color: #2563eb;
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+.admin-btn-action-print:hover {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.admin-btn-action-delete,
+.admin-btn-action-danger {
+    color: #e11d48;
+    background-color: #fff1f2;
+    border-color: #fecdd3;
+}
+.admin-btn-action-delete:hover,
+.admin-btn-action-danger:hover {
+    background-color: #ffe4e6;
+    color: #be123c;
+}
+
+.admin-btn-action-success {
+    color: #059669;
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+}
+.admin-btn-action-success:hover {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+/* Modern Minimalist Modal Enhancements */
+.admin-modal-hero {
+    background-color: #ffffff;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.admin-modal-hero .modal-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+.admin-modal-hero .modal-subtitle {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.125rem;
+    font-weight: 400;
+}
+
+/* Standalone Leave-Style Pagination for Laravel Paginators */
+.admin-pagination-container {
+    padding: 1rem 1.5rem;
+    background-color: rgba(248, 250, 252, 0.5);
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+@media (min-width: 640px) {
+    .admin-pagination-container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.admin-pagination-info {
+    font-size: 0.8125rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.admin-pagination-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-pagination-links li {
+    display: inline-block;
+}
+
+.admin-pagination-links .paginate_button,
+.admin-pagination-links a,
+.admin-pagination-links span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #475569 !important;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+}
+
+.admin-pagination-links a:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+.admin-pagination-links .active span,
+.admin-pagination-links .paginate_button.current {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.2);
+}
+
+.admin-pagination-links .disabled span,
+.admin-pagination-links .paginate_button.disabled {
+    cursor: not-allowed;
+    color: #cbd5e1 !important;
+    background-color: #ffffff !important;
+    border-color: #f1f5f9 !important;
+}
+

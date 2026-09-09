@@ -1,82 +1,117 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6">
-    <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-[#192965] flex items-center gap-2">
-            <i class="fa fa-calendar-check"></i> Leave Applications
-        </h1>
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Leave Applications</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Review, approve, or reject employee leave requests and track leave balances.</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100 shadow-sm">
+            <i class="fas fa-calendar-check"></i> {{ $applications->count() }} Total Requests
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100 shadow-sm">
+            <i class="fas fa-clock"></i> {{ $applications->where('status', 'pending')->count() }} Pending
+        </span>
+    </div>
+</div>
+
+@if(session()->has('success'))
+    <div class="mb-4 rounded-lg bg-emerald-50 p-4 border border-emerald-200 flex items-start gap-3 relative">
+        <i class="fa fa-check-circle text-emerald-500 mt-0.5"></i>
+        <div class="text-emerald-700 flex-1 text-sm font-medium">{{ session()->get('success') }}</div>
+        <button type="button" class="text-emerald-500 hover:text-emerald-700 absolute right-4 top-4" onclick="this.parentElement.style.display='none'">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+@endif
+@if(session()->has('error'))
+    <div class="mb-4 rounded-lg bg-rose-50 p-4 border border-rose-200 flex items-start gap-3 relative">
+        <i class="fa fa-exclamation-circle text-rose-500 mt-0.5"></i>
+        <div class="text-rose-700 flex-1 text-sm font-medium">{{ session()->get('error') }}</div>
+        <button type="button" class="text-rose-500 hover:text-rose-700 absolute right-4 top-4" onclick="this.parentElement.style.display='none'">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+@endif
+
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+                Leave Applications Directory
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Sorted newest at top. Search by employee, type, or date range.</p>
+        </div>
+        <div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+                {{ $applications->count() }} records
+            </span>
+        </div>
     </div>
 
-    @if(session()->has('success'))
-        <div class="mb-4 rounded-lg bg-green-50 p-4 border border-green-200 flex items-start gap-3 relative">
-            <i class="fa fa-check-circle text-green-500 mt-0.5"></i>
-            <div class="text-green-700 flex-1">{{ session()->get('success') }}</div>
-            <button type="button" class="text-green-500 hover:text-green-700 absolute right-4 top-4" onclick="this.parentElement.style.display='none'">
-                <i class="fa fa-times"></i>
-            </button>
-        </div>
-    @endif
-    @if(session()->has('error'))
-        <div class="mb-4 rounded-lg bg-red-50 p-4 border border-red-200 flex items-start gap-3 relative">
-            <i class="fa fa-exclamation-circle text-red-500 mt-0.5"></i>
-            <div class="text-red-700 flex-1">{{ session()->get('error') }}</div>
-            <button type="button" class="text-red-500 hover:text-red-700 absolute right-4 top-4" onclick="this.parentElement.style.display='none'">
-                <i class="fa fa-times"></i>
-            </button>
-        </div>
-    @endif
-
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6 overflow-x-auto">
-            <table id="leavetable" class="w-full text-sm text-left">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
-                    <tr>
-                        <th class="px-4 py-3 font-semibold">ID</th>
-                        <th class="px-4 py-3 font-semibold">Employee</th>
-                        <th class="px-4 py-3 font-semibold">Type</th>
-                        <th class="px-4 py-3 font-semibold">Dates</th>
-                        <th class="px-4 py-3 font-semibold text-center">Total Days</th>
-                        <th class="px-4 py-3 font-semibold">Reason</th>
-                        <th class="px-4 py-3 font-semibold text-center">Status</th>
-                        <th class="px-4 py-3 font-semibold text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @foreach($applications as $app)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-3 text-gray-600">{{$app->id}}</td>
-                        <td class="px-4 py-3 font-medium text-gray-900">{{$app->employee ? strtoupper($app->employee->full_name) : 'UNKNOWN'}}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ ucfirst($app->leave_type) }} Leave</td>
-                        <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $app->date_from }} to {{ $app->date_to }}</td>
-                        <td class="px-4 py-3 text-center text-gray-600">{{ $app->total_days }}</td>
-                        <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ $app->reason }}">{{ $app->reason }}</td>
-                        <td class="px-4 py-3 text-center">
-                            @if($app->status === 'pending')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>
-                            @elseif($app->status === 'approved')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Approved</span>
-                            @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            @if($app->status === 'pending')
-                                <div class="flex items-center justify-center gap-2">
-                                    <a href="/leave-applications/approve/{{$app->id}}" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-md {{ $app->can_approve ? 'text-white bg-green-600 hover:bg-green-700' : 'text-gray-400 bg-gray-100 cursor-not-allowed' }} transition-colors" {!! $app->can_approve ? '' : 'disabled onclick="return false;"' !!} title="{{ $app->can_approve ? 'Approve' : 'Insufficient leave credits (Remaining: '.$app->remaining.')' }}" {!! $app->can_approve ? 'onclick="return confirm(\'Are you sure you want to approve this application?\')"' : '' !!}>
-                                        <i class="fa fa-check mr-1"></i> Approve
-                                    </a>
-                                    <a href="/leave-applications/reject/{{$app->id}}" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors" onclick="return confirm('Are you sure you want to reject this application?')">
-                                        <i class="fa fa-times mr-1"></i> Reject
-                                    </a>
-                                </div>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <div class="p-5 overflow-x-auto">
+        <table id="leavetable" class="w-full text-left border-collapse" style="font-size: 12px;">
+            <thead>
+                <tr class="bg-slate-100/75 font-semibold text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
+                    <th class="py-2.5 px-3" style="width: 55px;">Ref #</th>
+                    <th class="py-2.5 px-3">Employee</th>
+                    <th class="py-2.5 px-3">Type</th>
+                    <th class="py-2.5 px-3">Period</th>
+                    <th class="py-2.5 px-3 text-center">Days</th>
+                    <th class="py-2.5 px-3">Reason</th>
+                    <th class="py-2.5 px-3 text-center">Status</th>
+                    <th class="py-2.5 px-3 text-center" style="width: 140px;">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach($applications as $app)
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="py-2.5 px-3 font-mono text-slate-500" style="font-size: 11px;">#{{$app->id}}</td>
+                    <td class="py-2.5 px-3">
+                        <div class="font-semibold text-slate-800" style="font-size: 12px;">{{$app->employee ? strtoupper($app->employee->full_name) : 'UNKNOWN'}}</div>
+                        <div class="text-slate-400 font-mono" style="font-size: 10px;">{{$app->employee ? $app->employee->employee_id : '—'}}</div>
+                    </td>
+                    <td class="py-2.5 px-3">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+                            {{ ucfirst($app->leave_type) }}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-700 font-medium whitespace-nowrap" style="font-size: 11px;">
+                        {{ $app->date_from }} to {{ $app->date_to }}
+                    </td>
+                    <td class="py-2.5 px-3 text-center font-bold text-slate-700" style="font-size: 12px;">{{ $app->total_days }}</td>
+                    <td class="py-2.5 px-3 text-slate-600 max-w-xs truncate" title="{{ $app->reason }}">{{ $app->reason }}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        @if($app->status === 'pending')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">Pending</span>
+                        @elseif($app->status === 'approved')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Approved</span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">Rejected</span>
+                        @endif
+                    </td>
+                    <td class="py-2.5 px-3 text-center">
+                        @if($app->status === 'pending')
+                            <div class="flex items-center justify-center gap-1.5">
+                                <a href="/leave-applications/approve/{{$app->id}}" class="inline-flex items-center justify-center px-2.5 py-1 text-xs font-semibold rounded-md {{ $app->can_approve ? 'text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs' : 'text-slate-400 bg-slate-100 cursor-not-allowed border border-slate-200' }} transition-colors" {!! $app->can_approve ? '' : 'disabled onclick="return false;"' !!} title="{{ $app->can_approve ? 'Approve' : 'Insufficient leave credits (Remaining: '.$app->remaining.')' }}" {!! $app->can_approve ? 'onclick="return confirm(\'Are you sure you want to approve this application?\')"' : '' !!}>
+                                    <i class="fa fa-check mr-1"></i> Approve
+                                </a>
+                                <a href="/leave-applications/reject/{{$app->id}}" class="inline-flex items-center justify-center px-2.5 py-1 text-xs font-semibold rounded-md text-white bg-rose-600 hover:bg-rose-700 shadow-xs transition-colors" onclick="return confirm('Are you sure you want to reject this application?')">
+                                    <i class="fa fa-times mr-1"></i> Reject
+                                </a>
+                            </div>
+                        @else
+                            <span class="text-slate-400 text-xs">—</span>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection

@@ -12,6 +12,7 @@ class Employee_Payrolls extends Model
 
     protected $fillable = [
         'employee_code',
+        'employee_id',
         'department',
         'work_days',
         'work_days_amount',

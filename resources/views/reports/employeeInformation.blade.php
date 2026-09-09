@@ -69,14 +69,15 @@
     <thead>
     <tr>
         <th>Employee Name</th>
+        <th>Date Hired</th>
         <th>Date of Birth</th>
         <th>Contact No.</th>
         <th>TIN ID</th>
         <th>SSS No.</th>
         <th>Pag-ibig No.</th>
         <th>Philhealth No.</th>
+        <th>UB Account No.</th>
         <th>Address</th>
-
     </tr>
 
     </thead>
@@ -84,14 +85,15 @@
     @foreach($employee_information as  $employee_info)
         <tr>
             <td>{{strtoupper($employee_info->employee->full_name)}}</td>
+            <td>{{$employee_info->employee->date_hired ? \Carbon\Carbon::parse($employee_info->employee->date_hired)->format('m/d/Y') : '-'}}</td>
             <td>{{\Carbon\Carbon::parse($employee_info->employee->birth_day)->format('m/d/Y')}}</td>
             <td>{{$employee_info->employee->contactNo}}</td>
             <td>{{$employee_info->employee->tin_number}}</td>
             <td>{{$employee_info->employee->sss_number}}</td>
             <td>{{$employee_info->employee->hdmf_number}}</td>
             <td>{{$employee_info->employee->philhealth_number}}</td>
+            <td>{{$employee_info->employee->ucpb_number ?: '-'}}</td>
             <td><strong>{{$employee_info->employee->address}}</strong></td>
-
         </tr>
     @endforeach
     </tbody>
@@ -105,14 +107,15 @@
         <thead>
         <tr>
             <th>Employee Name</th>
+            <th>Date Hired</th>
             <th>Date of Birth</th>
             <th>Contact No.</th>
             <th>TIN ID</th>
             <th>SSS No.</th>
             <th>Pag-ibig No.</th>
             <th>Philhealth No.</th>
+            <th>UB Account No.</th>
             <th>Address</th>
-
         </tr>
 
         </thead>
@@ -120,14 +123,15 @@
         @foreach($inactive_employees as  $inactive_employee)
             <tr>
                 <td>{{strtoupper($inactive_employee->employee->full_name)}}</td>
+                <td>{{$inactive_employee->employee->date_hired ? \Carbon\Carbon::parse($inactive_employee->employee->date_hired)->format('m/d/Y') : '-'}}</td>
                 <td>{{\Carbon\Carbon::parse($inactive_employee->employee->birth_day)->format('m/d/Y')}}</td>
                 <td>{{$inactive_employee->employee->contactNo}}</td>
                 <td>{{$inactive_employee->employee->tin_number}}</td>
                 <td>{{$inactive_employee->employee->sss_number}}</td>
                 <td>{{$inactive_employee->employee->hdmf_number}}</td>
                 <td>{{$inactive_employee->employee->philhealth_number}}</td>
+                <td>{{$inactive_employee->employee->ucpb_number ?: '-'}}</td>
                 <td><strong>{{$inactive_employee->employee->address}}</strong></td>
-
             </tr>
         @endforeach
         </tbody>

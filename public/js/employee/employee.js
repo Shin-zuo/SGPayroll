@@ -81,17 +81,62 @@ $(document).ready(function(){
         });
 
     });
+    window.leaveEditingEnabled = false;
+
+    window.toggleLeaveEditing = function(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        window.leaveEditingEnabled = !window.leaveEditingEnabled;
+        if (window.leaveEditingEnabled) {
+            $('#leave, #sick')
+                .prop('readonly', false)
+                .removeAttr('readonly')
+                .removeClass('bg-slate-100 text-slate-500 cursor-not-allowed')
+                .addClass('bg-white text-slate-800 border-blue-500 ring-1 ring-blue-500');
+            $('#leave_lock_icon').removeClass('fa-lock text-slate-400').addClass('fa-unlock text-emerald-600');
+            $('#leave_lock_text').text('Editing Active (Click to Lock)');
+            $('#btn_toggle_leave_edit').removeClass('bg-white text-slate-700 border-slate-300').addClass('bg-emerald-50 text-emerald-700 border-emerald-300');
+            $('#leave_status_badge, #sick_status_badge').html('<i class="fas fa-pen text-blue-500"></i>');
+        } else {
+            $('#leave, #sick')
+                .prop('readonly', true)
+                .attr('readonly', 'readonly')
+                .addClass('bg-slate-100 text-slate-500 cursor-not-allowed')
+                .removeClass('bg-white text-slate-800 border-blue-500 ring-1 ring-blue-500');
+            $('#leave_lock_icon').removeClass('fa-unlock text-emerald-600').addClass('fa-lock text-slate-400');
+            $('#leave_lock_text').text('Enable Leave Edit');
+            $('#btn_toggle_leave_edit').removeClass('bg-emerald-50 text-emerald-700 border-emerald-300').addClass('bg-white text-slate-700 border-slate-300');
+            $('#leave_status_badge, #sick_status_badge').html('<i class="fas fa-lock text-slate-400"></i>');
+        }
+    };
+
+    $(document).on('click', '#btn_toggle_leave_edit', function(e) {
+        window.toggleLeaveEditing(e);
+    });
+
+    $('#salaryModal').on('hidden.bs.modal', function () {
+        window.leaveEditingEnabled = false;
+        $('#leave, #sick')
+            .prop('readonly', true)
+            .attr('readonly', 'readonly')
+            .addClass('bg-slate-100 text-slate-500 cursor-not-allowed')
+            .removeClass('bg-white text-slate-800 border-blue-500 ring-1 ring-blue-500');
+        $('#leave_lock_icon').removeClass('fa-unlock text-emerald-600').addClass('fa-lock text-slate-400');
+        $('#leave_lock_text').text('Enable Leave Edit');
+        $('#btn_toggle_leave_edit').removeClass('bg-emerald-50 text-emerald-700 border-emerald-300').addClass('bg-white text-slate-700 border-slate-300');
+        $('#leave_status_badge, #sick_status_badge').html('<i class="fas fa-lock text-slate-400"></i>');
+    });
+
     var url_updateSalary = "/account/updateSalary";
     $("#btn_updateSalary").click(function (e) {
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') || $('meta[name="csrf-token"]').attr('content')
             }
         });
         e.preventDefault();
         var formData = {
             employee_id: $('#id').val(),
-           basic_pay: $('#basic_pay').val(),
+            basic_pay: $('#basic_pay').val(),
             other_nt_pay: $('#other_nt_pay').val(),
             cola: $('#cola').val(),
             payroll_type: $('#payroll_type').val(),
@@ -109,7 +154,7 @@ $(document).ready(function(){
             success: function (data) {
                 $('#salaryModal').modal('hide');
                 alertify.success(data.message || 'Rates updated successfully.');
-                setTimeout(function() { location.reload(); }, 1500);
+                setTimeout(function() { location.reload(); }, 1200);
             },
             error: function (xhr) {
                 var msg = 'An error occurred while saving.';
@@ -164,7 +209,7 @@ $(document).ready(function(){
             date_hired: $('#date_hired').val(),
             birth_date: $('#date_of_birth').val(),
             email: $('#email').val(),
-            contactName: $('#Contactname').val(),
+            contactName: $('#Contactname').val() || null,
             contactNo: $('#ContactNo').val(),
             employment_status: $('#employmentStatus :selected').text(),
             employment_date_from: $('#employment_date_from').val(),
@@ -178,8 +223,8 @@ $(document).ready(function(){
             hdmf: $('#hdmf').val(),
             philhealth: $('#phil_health').val(),
             ucpb: $('#ucpb').val(),
-            passport : $('#passport_no').val(),
-            passport_exp : $('#passport_exp').val(),
+            passport : null,
+            passport_exp : null,
         }
         console.log(formDataUpdate);
         var type = "GET";
@@ -220,13 +265,14 @@ $(document).ready(function(){
             sub_department: $('#sub_department').val() ? $("#sub_department :selected").text() : "",
             status: $('#status').val(),
             address: $('#address').val(),
+            contact_no: $('#contact_no').val(),
             sss: $('#sss_no').val(),
             tin: $('#tin').val(),
             hdmf: $('#hdmf').val(),
             philhealth: $('#phil_health').val(),
             ucpb: $('#ucpb').val(),
-            passport : $('#passport_no').val(),
-            passport_exp : $('#passport_exp').val(),
+            passport : null,
+            passport_exp : null,
             emp_email: $('#emp_email').val(),
         }
 

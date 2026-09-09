@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');
@@ -74,6 +74,10 @@ Route::middleware(['auth', 'admin_hr'])->group(function () {
     Route::get('/payslip','Payslip\PayslipController@index');
     Route::post('/payslip/view-payslip','Payslip\PayslipController@viewPayslip');
     Route::get('/payslip/requestDataPayslip', 'Payslip\PayslipController@showDataPayslip');
+    Route::get('/payslip/{id}/print', 'Payslip\PayslipController@printSinglePayslip')->name('payslip.print-single');
+    Route::get('/payslip/{id}/edit', 'Payslip\PayslipController@edit')->name('payslip.edit');
+    Route::put('/payslip/{id}', 'Payslip\PayslipController@update')->name('payslip.update');
+    Route::delete('/payslip/{id}', 'Payslip\PayslipController@destroy')->name('payslip.destroy');
 
     //Salary
     Route::get('/salary','Salary\SalaryController@index');
@@ -137,5 +141,6 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::post('/superadmin/leave-window/open', 'Admin\LeaveWindowController@open')->name('superadmin.leave-window.open');
     Route::post('/superadmin/leave-window/close', 'Admin\LeaveWindowController@close')->name('superadmin.leave-window.close');
     Route::post('/superadmin/leave-window/reset-lock', 'Admin\LeaveWindowController@resetEmployeeLock')->name('superadmin.leave-window.reset-lock');
+    Route::post('/superadmin/leave-window/reload-credits', 'Admin\LeaveWindowController@reloadCredits')->name('superadmin.leave-window.reload-credits');
 });
 

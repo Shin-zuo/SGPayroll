@@ -60,14 +60,15 @@ class EmployeeController extends Controller
                 'position' => $request['sub_department'],
                 'status' => $request['status'],
                 'address' => $request['address'],
+                'contactNo' => $request['contact_no'],
                 'email' => $request['emp_email'],
                 'sss_number'=> $request['sss'],
                 'tin_number' => $request['tin'],
                 'hdmf_number' => $request['hdmf'],
                 'philhealth_number' => $request['philhealth'],
                 'ucpb_number' => $request['ucpb'],
-                'passport_number' => $request['passport'],
-                'passport_exp' => $request['passport_exp'],
+                'passport_number' => null,
+                'passport_exp' => null,
             ]
         );
 
@@ -89,11 +90,10 @@ class EmployeeController extends Controller
     public function accountEmployee($id)
     {
         $department    = Department::orderBy('department_name', 'ASC')->get();
-        $employee      = Employee::find($id);
+        $employee      = Employee::findOrFail($id);
         $currentYear   = Carbon::now()->year;
         $leaveWindowOpen = LeaveWindowSetting::isOpen();
 
-        // 1. Force a raw DB query to check the ledger
         $vacationLedger = DB::table('leave_credit_ledgers')
             ->where('employee_id', $id)
             ->where('leave_type', 'vacation')
@@ -106,27 +106,24 @@ class EmployeeController extends Controller
             ->where('year', $currentYear)
             ->first();
 
-        // Already set = at least one ledger row is locked
-        $leaveAlreadySet = ($vacationLedger && $vacationLedger->locked_at)
-                        || ($sickLedger && $sickLedger->locked_at);
+        // 2nd week of December reload check (Dec 14+)
+        $isDecemberWindow = (Carbon::now()->month === 12 && Carbon::now()->day >= 14);
+        if ($isDecemberWindow && (!$vacationLedger || !$sickLedger)) {
+            LeaveCreditLedger::reloadAnnualCredits($currentYear);
+            $vacationLedger = DB::table('leave_credit_ledgers')->where('employee_id', $id)->where('leave_type', 'vacation')->where('year', $currentYear)->first();
+            $sickLedger = DB::table('leave_credit_ledgers')->where('employee_id', $id)->where('leave_type', 'sick')->where('year', $currentYear)->first();
+        }
 
-        $vacationBalance = $vacationLedger ? max(0, $vacationLedger->credit_limit - $vacationLedger->used_days) : ($employee->leave ?: 0);
-        $sickBalance     = $sickLedger     ? max(0, $sickLedger->credit_limit - $sickLedger->used_days)         : ($employee->sick_leave ?: 0);
-
-        $dateHired = Carbon::parse($employee->date_hired);
-        $isOneYearMilestone = ($dateHired->diffInYears(Carbon::now()) == 1);
-
-        $canEditLeave = ($isOneYearMilestone || $leaveWindowOpen) && !$leaveAlreadySet;
+        $vacationBalance = $vacationLedger ? max(0, $vacationLedger->credit_limit - $vacationLedger->used_days) : ($employee->leave ?: 6);
+        $sickBalance     = $sickLedger     ? max(0, $sickLedger->credit_limit - $sickLedger->used_days)         : ($employee->sick_leave ?: 5);
 
         $data = [
             'department'       => $department,
             'employee'         => $employee,
             'leaveWindowOpen'  => $leaveWindowOpen,
-            'leaveAlreadySet'  => $leaveAlreadySet,
             'vacationBalance'  => $vacationBalance,
             'sickBalance'      => $sickBalance,
             'currentYear'      => $currentYear,
-            'canEditLeave'     => $canEditLeave,
         ];
 
         return view('employee.account')->with($data);
@@ -158,9 +155,9 @@ class EmployeeController extends Controller
            'hdmf_number' => $request['hdmf'],
            'philhealth_number' => $request['philhealth'],
            'ucpb_number' => $request['ucpb'],
-           'passport_number' => $request['passport'],
+           'passport_number' => null,
            'salary_status' => $request['salary_status'],
-           'passport_exp' => $request['passport_exp'],
+           'passport_exp' => null,
        ]);
        return 0;
     }
@@ -195,29 +192,7 @@ class EmployeeController extends Controller
     {
         $year = Carbon::now()->year;
         $employeeId = $request['employee_id'];
-        $employee = Employee::find($employeeId);
-
-        $dateHired = Carbon::parse($employee->date_hired);
-        $isOneYearMilestone = ($dateHired->diffInYears(Carbon::now()) == 1);
-        $leaveWindowOpen = LeaveWindowSetting::isOpen();
-
-        // Force a raw DB query to verify if already locked
-        $vacationLocked = DB::table('leave_credit_ledgers')
-            ->where('employee_id', $employeeId)
-            ->where('leave_type', 'vacation')
-            ->where('year', $year)
-            ->whereNotNull('locked_at')
-            ->exists();
-
-        $sickLocked = DB::table('leave_credit_ledgers')
-            ->where('employee_id', $employeeId)
-            ->where('leave_type', 'sick')
-            ->where('year', $year)
-            ->whereNotNull('locked_at')
-            ->exists();
-
-        $leaveAlreadySet = $vacationLocked || $sickLocked;
-        $canEditLeave = ($isOneYearMilestone || $leaveWindowOpen) && !$leaveAlreadySet;
+        $employee = Employee::findOrFail($employeeId);
 
         $updateData = [
             'basic_pay'    => $request['basic_pay'],
@@ -226,82 +201,77 @@ class EmployeeController extends Controller
             'payroll_type' => $request['payroll_type'],
         ];
 
-        if ($canEditLeave) {
-            $updateData['leave']      = $request['leave'];
-            $updateData['sick_leave'] = $request['sick'];
-            $employee->update($updateData);
+        $leaveUpdated = false;
 
-            $lockTime = Carbon::now();
+        // Vacation Leave
+        if ($request->has('leave') && $request['leave'] !== null && $request['leave'] !== '') {
+            $vacationDays = floatval($request['leave']);
+            $updateData['leave'] = $vacationDays;
 
-            // Raw Database Insert/Update (Bypasses all model restrictions)
-            
-            // VACATION LEAVE
-            $vCount = DB::table('leave_credit_ledgers')
+            $vLedger = DB::table('leave_credit_ledgers')
                 ->where('employee_id', $employeeId)
                 ->where('leave_type', 'vacation')
                 ->where('year', $year)
-                ->count();
+                ->first();
 
-            if ($vCount > 0) {
+            if ($vLedger) {
                 DB::table('leave_credit_ledgers')
-                    ->where('employee_id', $employeeId)
-                    ->where('leave_type', 'vacation')
-                    ->where('year', $year)
+                    ->where('id', $vLedger->id)
                     ->update([
-                        'credit_limit' => $request['leave'] ?: 0,
-                        'used_days' => 0,
-                        'locked_at' => $lockTime
+                        'credit_limit' => $vacationDays,
+                        'updated_at'   => Carbon::now()
                     ]);
             } else {
                 DB::table('leave_credit_ledgers')->insert([
-                    'employee_id' => $employeeId,
-                    'leave_type' => 'vacation',
-                    'year' => $year,
-                    'credit_limit' => $request['leave'] ?: 0,
-                    'used_days' => 0,
-                    'locked_at' => $lockTime
+                    'employee_id'  => $employeeId,
+                    'leave_type'   => 'vacation',
+                    'year'         => $year,
+                    'credit_limit' => $vacationDays,
+                    'used_days'    => 0,
+                    'created_at'   => Carbon::now(),
+                    'updated_at'   => Carbon::now()
                 ]);
             }
+            $leaveUpdated = true;
+        }
 
-            // SICK LEAVE
-            $sCount = DB::table('leave_credit_ledgers')
+        // Sick Leave
+        if ($request->has('sick') && $request['sick'] !== null && $request['sick'] !== '') {
+            $sickDays = floatval($request['sick']);
+            $updateData['sick_leave'] = $sickDays;
+
+            $sLedger = DB::table('leave_credit_ledgers')
                 ->where('employee_id', $employeeId)
                 ->where('leave_type', 'sick')
                 ->where('year', $year)
-                ->count();
+                ->first();
 
-            if ($sCount > 0) {
+            if ($sLedger) {
                 DB::table('leave_credit_ledgers')
-                    ->where('employee_id', $employeeId)
-                    ->where('leave_type', 'sick')
-                    ->where('year', $year)
+                    ->where('id', $sLedger->id)
                     ->update([
-                        'credit_limit' => $request['sick'] ?: 0,
-                        'used_days' => 0,
-                        'locked_at' => $lockTime
+                        'credit_limit' => $sickDays,
+                        'updated_at'   => Carbon::now()
                     ]);
             } else {
                 DB::table('leave_credit_ledgers')->insert([
-                    'employee_id' => $employeeId,
-                    'leave_type' => 'sick',
-                    'year' => $year,
-                    'credit_limit' => $request['sick'] ?: 0,
-                    'used_days' => 0,
-                    'locked_at' => $lockTime
+                    'employee_id'  => $employeeId,
+                    'leave_type'   => 'sick',
+                    'year'         => $year,
+                    'credit_limit' => $sickDays,
+                    'used_days'    => 0,
+                    'created_at'   => Carbon::now(),
+                    'updated_at'   => Carbon::now()
                 ]);
             }
-
-            return response()->json([
-                'success' => true, 
-                'message' => 'Salary and Leave Credits updated successfully!'
-            ]);
+            $leaveUpdated = true;
         }
 
         $employee->update($updateData);
-        
+
         return response()->json([
             'success' => true, 
-            'message' => 'Salary updated! (Leave management is currently closed)'
+            'message' => $leaveUpdated ? 'Salary and leave credits updated successfully!' : 'Salary rates updated successfully!'
         ]);
     }
 
@@ -517,7 +487,7 @@ class EmployeeController extends Controller
                     'tin_number'        => $data['tin_number']       ?? null,
                     'hdmf_number'       => $data['hdmf_number']      ?? null,
                     'philhealth_number' => $data['philhealth_number'] ?? null,
-                    'ucpb_number'       => $data['ucpb_number']      ?? null,
+                    'ucpb_number'       => $data['ucpb_number'] ?? $data['ub_number'] ?? $data['ub_account_no'] ?? null,
                     'basic_pay'         => $data['basic_pay']        ?? 0,
                     'cola'              => $data['cola']             ?? 0,
                     'other_nt_pay'      => $data['other_nt_pay']     ?? 0,

@@ -95,14 +95,18 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="email">Email Address</label>
                         <input type="email" class="form-control w-full" id="email" value="{{$employee->email}}">
                     </div>
                     <div class="form-group">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="ContactNo">Contact Number</label>
+                        <input type="text" class="form-control w-full" id="ContactNo" value="{{$employee->contactNo}}" placeholder="09XX-XXX-XXXX">
+                    </div>
+                    <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="address">Residential Address</label>
-                        <textarea class="form-control w-full" id="address" rows="2">{{$employee->address}}</textarea>
+                        <textarea class="form-control w-full" id="address" rows="1">{{$employee->address}}</textarea>
                     </div>
                 </div>
             </div>
@@ -115,11 +119,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="Contactname">Contact Name</label>
-                        <input type="text" class="form-control w-full" id="Contactname" value="{{$employee->contactName}}">
-                    </div>
-                    <div class="form-group">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="ContactNo">Contact Number</label>
-                        <input type="text" class="form-control w-full" id="ContactNo" value="{{$employee->contactNo}}">
+                        <input type="text" class="form-control w-full" id="Contactname" value="{{$employee->contactName}}" placeholder="Emergency Contact Name">
                     </div>
                 </div>
             </div>
@@ -185,34 +185,26 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="sss_no">SSS Number</label>
-                        <input type="number" class="form-control w-full" id="sss_no" value="{{$employee->sss_number}}">
+                        <input type="text" class="form-control w-full" id="sss_no" value="{{$employee->sss_number}}">
                     </div>
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="phil_health">PhilHealth Number</label>
-                        <input type="number" class="form-control w-full" id="phil_health" value="{{$employee->philhealth_number}}">
+                        <input type="text" class="form-control w-full" id="phil_health" value="{{$employee->philhealth_number}}">
                     </div>
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="tin">TIN Number</label>
-                        <input type="number" class="form-control w-full" id="tin" value="{{$employee->tin_number}}">
+                        <input type="text" class="form-control w-full" id="tin" value="{{$employee->tin_number}}">
                     </div>
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="hdmf">Pag-IBIG Number</label>
-                        <input type="number" class="form-control w-full" id="hdmf" value="{{$employee->hdmf_number}}">
+                        <input type="text" class="form-control w-full" id="hdmf" value="{{$employee->hdmf_number}}">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                     <div class="form-group">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="ucpb">UCPB Number</label>
-                        <input type="number" class="form-control w-full" id="ucpb" value="{{$employee->ucpb_number}}">
-                    </div>
-                    <div class="form-group">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="passport_no">Passport Number</label>
-                        <input type="number" class="form-control w-full" id="passport_no" value="{{$employee->passport_number}}">
-                    </div>
-                    <div class="form-group">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="passport_exp">Passport Expiry</label>
-                        <input type="date" class="form-control w-full" id="passport_exp" value="{{$employee->passport_exp}}">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="ucpb">UB Account No.</label>
+                        <input type="text" class="form-control w-full" id="ucpb" value="{{$employee->ucpb_number}}" placeholder="UB Account Number">
                     </div>
                 </div>
             </div>
@@ -272,37 +264,50 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="form-group">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cola</label>
-                            <input type="number" class="form-control w-full" id="cola" name="cola" value="{{$employee->cola}}">
+                    <div class="form-group mb-4">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cola</label>
+                        <input type="number" class="form-control w-full" id="cola" name="cola" value="{{$employee->cola}}">
+                    </div>
+
+                    <!-- Annual Leave Credits Section with Accidental-Typing Toggle -->
+                    <div class="mt-4 pt-3 border-t border-slate-100">
+                        <div class="flex items-center justify-between mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block">Annual Leave Credits</span>
+                                <span class="text-[11px] text-slate-400">Locked by default to prevent accidental edits.</span>
+                            </div>
+                            <button type="button" id="btn_toggle_leave_edit" onclick="window.toggleLeaveEditing(event)" class="px-3 py-1.5 rounded-md text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-100 cursor-pointer">
+                                <i class="fas fa-lock text-slate-400" id="leave_lock_icon"></i>
+                                <span id="leave_lock_text">Enable Leave Edit</span>
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                                Vacation Leave <span class="text-blue-500">(days/year)</span>
-                            </label>
-                            @if($canEditLeave)
-                                <input type="number" class="form-control w-full" id="leave" name="leave" value="{{ $vacationBalance }}">
-                            @else
-                                <div class="bg-slate-100 text-slate-500 text-sm font-medium py-2 px-3 rounded border border-slate-200 cursor-not-allowed">
-                                    <i class="fa fa-lock mr-1"></i> Locked ({{ $vacationBalance }} remaining)
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                                    Vacation Leave <span class="text-blue-500 font-normal">(days/yr)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="number" step="0.5" class="form-control w-full bg-slate-100 text-slate-500 cursor-not-allowed transition-all" id="leave" name="leave" value="{{ $vacationBalance }}" readonly>
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400 text-xs" id="leave_status_badge">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
                                 </div>
-                                <input type="hidden" id="leave" name="leave" value="{{ $vacationBalance }}">
-                            @endif
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
-                                Sick Leave <span class="text-blue-500">(days/year)</span>
-                            </label>
-                            @if($canEditLeave)
-                                <input type="number" class="form-control w-full" id="sick" name="sick" value="{{ $sickBalance }}">
-                            @else
-                                <div class="bg-slate-100 text-slate-500 text-sm font-medium py-2 px-3 rounded border border-slate-200 cursor-not-allowed">
-                                    <i class="fa fa-lock mr-1"></i> Locked ({{ $sickBalance }} remaining)
+                                <span class="text-[11px] text-slate-400 mt-1 block">Current balance: {{ $vacationBalance }} days</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">
+                                    Sick Leave <span class="text-blue-500 font-normal">(days/yr)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="number" step="0.5" class="form-control w-full bg-slate-100 text-slate-500 cursor-not-allowed transition-all" id="sick" name="sick" value="{{ $sickBalance }}" readonly>
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400 text-xs" id="sick_status_badge">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
                                 </div>
-                                <input type="hidden" id="sick" name="sick" value="{{ $sickBalance }}">
-                            @endif
+                                <span class="text-[11px] text-slate-400 mt-1 block">Current balance: {{ $sickBalance }} days</span>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -368,5 +373,78 @@
 @endsection
 
 @section('scripts')
-<script type="text/javascript" src="{{ asset('js/employee/employee.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/employee/employee.js') }}?v={{ time() }}"></script>
+<script type="text/javascript">
+window.toggleLeaveEditing = function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    var l = document.getElementById('leave');
+    var s = document.getElementById('sick');
+    var icon = document.getElementById('leave_lock_icon');
+    var txt = document.getElementById('leave_lock_text');
+    var btn = document.getElementById('btn_toggle_leave_edit');
+    var bL = document.getElementById('leave_status_badge');
+    var bS = document.getElementById('sick_status_badge');
+
+    if (!l || !s) return;
+
+    if (l.hasAttribute('readonly')) {
+        l.removeAttribute('readonly');
+        s.removeAttribute('readonly');
+        l.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        s.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        l.classList.add('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+        s.classList.add('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+        if (icon) icon.className = 'fas fa-unlock text-emerald-600';
+        if (txt) txt.innerText = 'Editing Active (Click to Lock)';
+        if (btn) btn.className = 'px-3 py-1.5 rounded-md text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-xs bg-emerald-50 text-emerald-700 border-emerald-300 cursor-pointer';
+        if (bL) bL.innerHTML = '<i class="fas fa-pen text-blue-500"></i>';
+        if (bS) bS.innerHTML = '<i class="fas fa-pen text-blue-500"></i>';
+        l.focus();
+    } else {
+        l.setAttribute('readonly', 'readonly');
+        s.setAttribute('readonly', 'readonly');
+        l.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        s.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+        l.classList.remove('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+        s.classList.remove('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+        if (icon) icon.className = 'fas fa-lock text-slate-400';
+        if (txt) txt.innerText = 'Enable Leave Edit';
+        if (btn) btn.className = 'px-3 py-1.5 rounded-md text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-100 cursor-pointer';
+        if (bL) bL.innerHTML = '<i class="fas fa-lock text-slate-400"></i>';
+        if (bS) bS.innerHTML = '<i class="fas fa-lock text-slate-400"></i>';
+    }
+};
+
+$(document).ready(function() {
+    $('#btn_toggle_leave_edit').on('click', function(e) {
+        window.toggleLeaveEditing(e);
+    });
+
+    $('#salaryModal').on('hidden.bs.modal', function() {
+        var l = document.getElementById('leave');
+        var s = document.getElementById('sick');
+        var icon = document.getElementById('leave_lock_icon');
+        var txt = document.getElementById('leave_lock_text');
+        var btn = document.getElementById('btn_toggle_leave_edit');
+        var bL = document.getElementById('leave_status_badge');
+        var bS = document.getElementById('sick_status_badge');
+        if (l && s) {
+            l.setAttribute('readonly', 'readonly');
+            s.setAttribute('readonly', 'readonly');
+            l.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+            s.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+            l.classList.remove('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+            s.classList.remove('bg-white', 'text-slate-800', 'border-blue-500', 'ring-1', 'ring-blue-500');
+            if (icon) icon.className = 'fas fa-lock text-slate-400';
+            if (txt) txt.innerText = 'Enable Leave Edit';
+            if (btn) btn.className = 'px-3 py-1.5 rounded-md text-xs font-semibold border transition-all flex items-center gap-1.5 shadow-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-100 cursor-pointer';
+            if (bL) bL.innerHTML = '<i class="fas fa-lock text-slate-400"></i>';
+            if (bS) bS.innerHTML = '<i class="fas fa-lock text-slate-400"></i>';
+        }
+    });
+});
+</script>
 @endsection

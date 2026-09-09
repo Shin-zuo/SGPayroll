@@ -64,6 +64,17 @@ class LeaveWindowController extends Controller
     }
 
     /**
+     * Manually trigger the annual leave reload to 11 credits (6 VL, 5 SL).
+     */
+    public function reloadCredits(Request $request)
+    {
+        $year = $request->filled('year') ? (int) $request->input('year') : \Carbon\Carbon::now()->year;
+        $count = LeaveCreditLedger::reloadAnnualCredits($year);
+
+        return back()->with('success', "Annual leave credits successfully reloaded for {$count} active employee(s) to 11 credits (6 Vacation, 5 Sick) for year {$year}.");
+    }
+
+    /**
      * Super Admin dashboard: shows window status + employee lock states.
      */
     public function index()

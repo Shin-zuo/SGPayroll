@@ -92,94 +92,100 @@
 <!-- Payroll CSV Import Modal -->
 <div class="modal fade" id="importPayrollModal" tabindex="-1" role="dialog" aria-labelledby="importPayrollModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title text-center" id="importPayrollModalLabel">Import Payroll Records from CSV</h4>
+        <div class="modal-content overflow-hidden border-0 shadow-xl rounded-2xl">
+            <div class="modal-header admin-modal-hero">
+                <div>
+                    <h4 class="modal-title font-bold text-slate-800 text-lg" id="importPayrollModalLabel">Import Payroll Records from CSV</h4>
+                    <p class="text-xs text-slate-500 font-normal">Bulk upload pre-calculated payroll runs via CSV template</p>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-6">
                 <!-- Step 1: Format Guide -->
                 <div id="payroll-step-1">
-                    <p class="mb-4 text-slate-600">The CSV columns must match the headers listed below. This file contains 59 columns representing all indicators, calculations, and deductions necessary to compile correct payroll reports.</p>
+                    <p class="text-xs text-slate-600 mb-4">The CSV columns must match the headers listed below. This file contains 59 columns representing all indicators, calculations, and deductions necessary to compile correct payroll reports.</p>
                     
-                    <div style="max-height: 250px; overflow-y: auto;" class="border rounded mb-4">
-                        <table class="table table-bordered table-striped text-xs mb-0">
-                            <thead>
-                                <tr class="bg-slate-50">
-                                    <th>Header / Column Name</th>
-                                    <th>Type</th>
-                                    <th>Required</th>
-                                    <th>Description</th>
+                    <div style="max-height: 280px; overflow-y: auto;" class="border border-slate-200 rounded-xl mb-5 shadow-inner">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="sticky top-0 bg-slate-100/95 backdrop-blur-xs border-b border-slate-200">
+                                <tr>
+                                    <th class="px-3 py-2 font-semibold text-slate-600 uppercase text-[10px]">Header / Column Name</th>
+                                    <th class="px-3 py-2 font-semibold text-slate-600 uppercase text-[10px]">Type</th>
+                                    <th class="px-3 py-2 font-semibold text-slate-600 uppercase text-[10px]">Required</th>
+                                    <th class="px-3 py-2 font-semibold text-slate-600 uppercase text-[10px]">Description</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr><td><strong>employee_code</strong></td><td>Integer</td><td><span class="text-red-600">Yes</span></td><td>ID of employee from DB</td></tr>
-                                <tr><td><strong>department</strong></td><td>String</td><td>No</td><td>Department Name</td></tr>
-                                <tr><td><strong>payroll_number</strong></td><td>Integer</td><td>No</td><td>1 - 5</td></tr>
-                                <tr><td><strong>monthly_record</strong></td><td>Integer</td><td><span class="text-red-600">Yes</span></td><td>Month index (1 - 12)</td></tr>
-                                <tr><td><strong>year</strong></td><td>Integer</td><td><span class="text-red-600">Yes</span></td><td>Payroll Year (e.g. 2026)</td></tr>
-                                <tr><td><strong>date_from</strong></td><td>Date</td><td>No</td><td>YYYY-MM-DD</td></tr>
-                                <tr><td><strong>date_to</strong></td><td>Date</td><td>No</td><td>YYYY-MM-DD</td></tr>
-                                <tr><td colspan="4" class="font-bold bg-slate-100 text-slate-800 text-center">Earnings & Attendance (Numeric / Decimals)</td></tr>
-                                <tr><td><strong>work_days</strong></td><td>Numeric</td><td>No</td><td>Days worked</td></tr>
-                                <tr><td><strong>work_days_amount</strong></td><td>Numeric</td><td>No</td><td>Total base pay earned</td></tr>
-                                <tr><td><strong>overtime</strong></td><td>Numeric</td><td>No</td><td>OT Hours</td></tr>
-                                <tr><td><strong>overtime_amount</strong></td><td>Numeric</td><td>No</td><td>OT Pay</td></tr>
-                                <tr><td><strong>ext_reg_hrs</strong></td><td>Numeric</td><td>No</td><td>Extended Regular Hours</td></tr>
-                                <tr><td><strong>ext_reg_hrs_ammount</strong></td><td>Numeric</td><td>No</td><td>Extended Regular Amount</td></tr>
-                                <tr><td><strong>night_diff</strong></td><td>Numeric</td><td>No</td><td>Night differential hours</td></tr>
-                                <tr><td><strong>night_diff_amount</strong></td><td>Numeric</td><td>No</td><td>Night diff amount</td></tr>
-                                <tr><td><strong>night_diff_restday</strong></td><td>Numeric</td><td>No</td><td>Night diff restday hours</td></tr>
-                                <tr><td><strong>night_diff_restday_amount</strong></td><td>Numeric</td><td>No</td><td>Night diff restday amount</td></tr>
-                                <tr><td><strong>rest_special</strong></td><td>Numeric</td><td>No</td><td>Special holiday rest hours</td></tr>
-                                <tr><td><strong>rest_special_amount</strong></td><td>Numeric</td><td>No</td><td>Special holiday rest amount</td></tr>
-                                <tr><td><strong>regular_holiday</strong></td><td>Numeric</td><td>No</td><td>Regular holiday hours</td></tr>
-                                <tr><td><strong>regular_holiday_amount</strong></td><td>Numeric</td><td>No</td><td>Regular holiday amount</td></tr>
-                                <tr><td><strong>regular_holiday_day</strong></td><td>Numeric</td><td>No</td><td>Regular holiday day count</td></tr>
-                                <tr><td><strong>regular_holiday_day_amount</strong></td><td>Numeric</td><td>No</td><td>Regular holiday day amount</td></tr>
-                                <tr><td><strong>regular_holiday_day_minimum</strong></td><td>Numeric</td><td>No</td><td>Regular holiday day minimum</td></tr>
-                                <tr><td><strong>regular_holiday_day_minimum_amount</strong></td><td>Numeric</td><td>No</td><td>Regular holiday day min amount</td></tr>
-                                <tr><td><strong>special_holiday_day</strong></td><td>Numeric</td><td>No</td><td>Special holiday day count</td></tr>
-                                <tr><td><strong>special_holiday_day_amount</strong></td><td>Numeric</td><td>No</td><td>Special holiday day amount</td></tr>
-                                <tr><td><strong>special_holiday_day_minimum</strong></td><td>Numeric</td><td>No</td><td>Special holiday day minimum</td></tr>
-                                <tr><td><strong>special_holiday_day_minimum_amount</strong></td><td>Numeric</td><td>No</td><td>Special holiday day min amount</td></tr>
-                                <tr><td><strong>absent</strong></td><td>Numeric</td><td>No</td><td>Days absent</td></tr>
-                                <tr><td><strong>absent_amount</strong></td><td>Numeric</td><td>No</td><td>Deduction for absences</td></tr>
-                                <tr><td><strong>late</strong></td><td>Numeric</td><td>No</td><td>Hours late</td></tr>
-                                <tr><td><strong>late_amount</strong></td><td>Numeric</td><td>No</td><td>Deduction for lates</td></tr>
-                                <tr><td><strong>sick_leave</strong></td><td>Numeric</td><td>No</td><td>Sick leave days used</td></tr>
-                                <tr><td><strong>sick_leave_amount</strong></td><td>Numeric</td><td>No</td><td>Sick leave amount paid</td></tr>
-                                <tr><td><strong>vacation_leave</strong></td><td>Numeric</td><td>No</td><td>VL days used</td></tr>
-                                <tr><td><strong>vacation_leave_amount</strong></td><td>Numeric</td><td>No</td><td>VL amount paid</td></tr>
-                                <tr><td><strong>service_leave</strong></td><td>Numeric</td><td>No</td><td>Service leave days used</td></tr>
-                                <tr><td><strong>service_leave_amount</strong></td><td>Numeric</td><td>No</td><td>Service leave amount paid</td></tr>
-                                <tr><td><strong>total_basic_pay</strong></td><td>Numeric</td><td>No</td><td>Basic pay subtotal</td></tr>
-                                <tr><td><strong>cola</strong></td><td>Numeric</td><td>No</td><td>COLA count/hours</td></tr>
-                                <tr><td><strong>cola_amount</strong></td><td>Numeric</td><td>No</td><td>COLA amount</td></tr>
-                                <tr><td><strong>thirteen_month</strong></td><td>Numeric</td><td>No</td><td>Thirteen month pay amount</td></tr>
-                                <tr><td><strong>non_tax_other</strong></td><td>Numeric</td><td>No</td><td>Non taxable allowances</td></tr>
-                                <tr><td><strong>total_other_pay</strong></td><td>Numeric</td><td>No</td><td>Other earnings subtotal</td></tr>
-                                <tr><td><strong>gross_pay</strong></td><td>Numeric</td><td>No</td><td>Total gross earnings</td></tr>
-                                <tr><td colspan="4" class="font-bold bg-slate-100 text-slate-800 text-center">Tax & Contributions Deductions</td></tr>
-                                <tr><td><strong>witholding_tax</strong></td><td>Numeric</td><td>No</td><td>Withholding Tax amount</td></tr>
-                                <tr><td><strong>sss_contribution</strong></td><td>Numeric</td><td>No</td><td>SSS Employee contribution</td></tr>
-                                <tr><td><strong>phic_contribution</strong></td><td>Numeric</td><td>No</td><td>PhilHealth contribution</td></tr>
-                                <tr><td><strong>hdmf_contribution</strong></td><td>Numeric</td><td>No</td><td>Pag-IBIG contribution</td></tr>
-                                <tr><td><strong>provident_fund</strong></td><td>Numeric</td><td>No</td><td>SSS Provident Fund contribution</td></tr>
-                                <tr><td><strong>sss_loan</strong></td><td>Numeric</td><td>No</td><td>SSS regular loan deduction</td></tr>
-                                <tr><td><strong>sss_calamity_loan</strong></td><td>Numeric</td><td>No</td><td>SSS calamity loan deduction</td></tr>
-                                <tr><td><strong>hdmf_loan</strong></td><td>Numeric</td><td>No</td><td>Pag-IBIG regular loan deduction</td></tr>
-                                <tr><td><strong>hdmf_calamity_loan</strong></td><td>Numeric</td><td>No</td><td>Pag-IBIG calamity loan deduction</td></tr>
-                                <tr><td><strong>company_loan</strong></td><td>Numeric</td><td>No</td><td>Company loan deduction</td></tr>
-                                <tr><td><strong>other_loan</strong></td><td>Numeric</td><td>No</td><td>Other loan deduction</td></tr>
-                                <tr><td><strong>total_deduction</strong></td><td>Numeric</td><td>No</td><td>Total deductions subtotal</td></tr>
-                                <tr><td><strong>net_pay</strong></td><td>Numeric</td><td>No</td><td>Net pay (Take home)</td></tr>
+                            <tbody class="divide-y divide-slate-100 bg-white">
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">employee_code</td><td class="px-3 py-1.5 text-slate-500">Integer</td><td class="px-3 py-1.5 text-red-600 font-bold">Yes</td><td class="px-3 py-1.5 text-slate-500">ID of employee from DB</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">department</td><td class="px-3 py-1.5 text-slate-500">String</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Department Name</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">payroll_number</td><td class="px-3 py-1.5 text-slate-500">Integer</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">1 - 5</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">monthly_record</td><td class="px-3 py-1.5 text-slate-500">Integer</td><td class="px-3 py-1.5 text-red-600 font-bold">Yes</td><td class="px-3 py-1.5 text-slate-500">Month index (1 - 12)</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">year</td><td class="px-3 py-1.5 text-slate-500">Integer</td><td class="px-3 py-1.5 text-red-600 font-bold">Yes</td><td class="px-3 py-1.5 text-slate-500">Payroll Year (e.g. 2026)</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">date_from</td><td class="px-3 py-1.5 text-slate-500">Date</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">YYYY-MM-DD</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">date_to</td><td class="px-3 py-1.5 text-slate-500">Date</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">YYYY-MM-DD</td></tr>
+                                <tr class="bg-blue-50/60 font-semibold text-blue-900"><td colspan="4" class="px-3 py-2 text-center text-[11px] uppercase tracking-wider">Earnings & Attendance (Numeric / Decimals)</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">work_days</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Days worked</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">work_days_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Total base pay earned</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">overtime</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">OT Hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">overtime_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">OT Pay</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">ext_reg_hrs</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Extended Regular Hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">ext_reg_hrs_ammount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Extended Regular Amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">night_diff</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Night differential hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">night_diff_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Night diff amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">night_diff_restday</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Night diff restday hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">night_diff_restday_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Night diff restday amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">rest_special</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday rest hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">rest_special_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday rest amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday_day</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday day count</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday_day_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday day amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday_day_minimum</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday day minimum</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">regular_holiday_day_minimum_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Regular holiday day min amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">special_holiday_day</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday day count</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">special_holiday_day_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday day amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">special_holiday_day_minimum</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday day minimum</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">special_holiday_day_minimum_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Special holiday day min amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">absent</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Days absent</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">absent_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Deduction for absences</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">late</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Hours late</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">late_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Deduction for lates</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">sick_leave</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Sick leave days used</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">sick_leave_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Sick leave amount paid</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">vacation_leave</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">VL days used</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">vacation_leave_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">VL amount paid</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">service_leave</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Service leave days used</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">service_leave_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Service leave amount paid</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">total_basic_pay</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Basic pay subtotal</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">cola</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">COLA count/hours</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">cola_amount</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">COLA amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">thirteen_month</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Thirteen month pay amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">non_tax_other</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Non taxable allowances</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">total_other_pay</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Other earnings subtotal</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">gross_pay</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Total gross earnings</td></tr>
+                                <tr class="bg-rose-50/60 font-semibold text-rose-900"><td colspan="4" class="px-3 py-2 text-center text-[11px] uppercase tracking-wider">Tax & Contributions Deductions</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">witholding_tax</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Withholding Tax amount</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">sss_contribution</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">SSS Employee contribution</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">phic_contribution</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">PhilHealth contribution</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">hdmf_contribution</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Pag-IBIG contribution</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">provident_fund</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">SSS Provident Fund contribution</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">sss_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">SSS regular loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">sss_calamity_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">SSS calamity loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">hdmf_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Pag-IBIG regular loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">hdmf_calamity_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Pag-IBIG calamity loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">company_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Company loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">other_loan</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Other loan deduction</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-medium text-slate-700">total_deduction</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Total deductions subtotal</td></tr>
+                                <tr><td class="px-3 py-1.5 font-mono font-bold text-slate-900">net_pay</td><td class="px-3 py-1.5 text-slate-500">Numeric</td><td class="px-3 py-1.5 text-slate-400">No</td><td class="px-3 py-1.5 text-slate-500">Net pay (Take home)</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="text-right">
-                        <button type="button" id="btn-proceed-payroll-upload" class="btn btn-primary">Proceed to Upload</button>
+                    <div class="flex items-center justify-end">
+                        <button type="button" id="btn-proceed-payroll-upload" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow transition flex items-center gap-1.5">
+                            <span>Proceed to Upload</span>
+                            <i class="fa fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -187,14 +193,21 @@
                 <div id="payroll-step-2" style="display: none;">
                     <form id="payrollImportForm" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <div class="form-group">
-                            <label for="import_file" class="control-label">Select CSV File :</label>
-                            <input type="file" id="payroll_import_file" name="import_file" class="form-control" accept=".csv,text/csv,text/plain" required>
+                        <div class="p-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 text-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+                                <i class="fa fa-cloud-upload text-xl"></i>
+                            </div>
+                            <label for="payroll_import_file" class="block text-sm font-bold text-slate-700 mb-1 cursor-pointer">Choose CSV File</label>
+                            <p class="text-xs text-slate-400 mb-3">Select the exported or prepared CSV file containing 59 columns</p>
+                            <input type="file" id="payroll_import_file" name="import_file" class="form-control max-w-sm mx-auto text-xs" accept=".csv,text/csv,text/plain" required>
                         </div>
                         <div id="payroll-import-results" style="display:none;" class="alert mb-4"></div>
-                        <div class="text-center mt-4">
-                            <button type="button" id="btn-back-payroll-step-1" class="btn btn-secondary mr-2">Back</button>
-                            <button type="submit" id="btn-submit-payroll-import" class="btn btn-success">Import Now</button>
+                        <div class="flex items-center justify-center gap-2 pt-2">
+                            <button type="button" id="btn-back-payroll-step-1" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition">Back</button>
+                            <button type="submit" id="btn-submit-payroll-import" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm hover:shadow transition flex items-center gap-1.5">
+                                <i class="fa fa-check text-xs"></i>
+                                <span>Import Now</span>
+                            </button>
                         </div>
                     </form>
                 </div>

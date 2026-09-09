@@ -534,6 +534,7 @@ class PayrollController extends Controller
         }
         Employee_Payrolls::create([
             'employee_code' => $request['employee_id'],
+            'employee_id' => $request['employee_id'],
             'department' => $request['department'],
             'work_days' => $request['work_days'],
             'work_days_amount' => round($request['basic_pay'],2),

@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\ReloadDecemberLeaveCredits::class,
     ];
 
     /**
@@ -24,8 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Reload annual leave credits (6 VL, 5 SL = 11 total) on December 14 at midnight
+        $schedule->command('leave:reload-december')
+                 ->cron('1 0 14 12 *');
     }
 
     /**

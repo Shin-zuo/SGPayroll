@@ -13,36 +13,52 @@
     </nav>
 </div>
 
-<div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden mb-6">
-    <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-white">
-        <h2 class="text-base font-semibold text-slate-800">Work Hours Log</h2>
-        <a href="{{ route('employee') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
-            <i class="fa fa-arrow-left mr-1.5"></i> Back to Directory
-        </a>
+<div class="admin-table-card mb-6">
+    <div class="admin-table-header">
+        <div class="flex items-center gap-3">
+            <div class="admin-table-icon">
+                <i class="fa fa-clock-o"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-base font-bold text-slate-800">Work Hours Log</h2>
+                    <span class="admin-table-badge">{{ count($time_sheet) }} entries</span>
+                </div>
+                <p class="text-xs text-slate-400">Daily attendance and logged work durations</p>
+            </div>
+        </div>
+        <div>
+            <a href="{{ route('employee') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-colors">
+                <i class="fa fa-arrow-left text-[10px]"></i> Back to Directory
+            </a>
+        </div>
     </div>
-    <div class="overflow-x-auto p-4">
-        <table class="w-full text-left border-collapse">
+    <div class="overflow-x-auto">
+        <table class="admin-table">
             <thead>
-                <tr class="bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    <th class="px-4 py-2.5 border-b border-slate-200">Date Logged</th>
-                    <th class="px-4 py-2.5 border-b border-slate-200">Time In</th>
-                    <th class="px-4 py-2.5 border-b border-slate-200">Time Out</th>
-                    <th class="px-4 py-2.5 border-b border-slate-200 text-right">Duration (Hrs)</th>
+                <tr>
+                    <th>Date Logged</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th class="text-right">Duration (Hrs)</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody>
                 @forelse($time_sheet as $time_sheets)
-                <tr class="hover:bg-slate-50 transition-colors bg-white">
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$time_sheets->date_log}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$time_sheets->time_in}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-sm text-slate-500">{{$time_sheets->time_out}}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-semibold text-slate-800">{{$time_sheets->duration}}</td>
+                <tr>
+                    <td class="whitespace-nowrap font-medium text-slate-800">{{$time_sheets->date_log}}</td>
+                    <td class="whitespace-nowrap text-slate-600">{{$time_sheets->time_in}}</td>
+                    <td class="whitespace-nowrap text-slate-600">{{$time_sheets->time_out}}</td>
+                    <td class="whitespace-nowrap text-right font-bold text-slate-800">{{$time_sheets->duration}}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="px-4 py-8 text-center text-sm text-slate-500">
-                        <i class="fa fa-clock text-3xl text-slate-300 mb-2 block"></i>
-                        No attendance logs found.
+                    <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-clock-o text-lg"></i>
+                        </div>
+                        <p class="text-sm font-medium text-slate-600">No attendance logs found</p>
+                        <p class="text-xs text-slate-400 mt-1">There are no work hour records logged for this employee yet.</p>
                     </td>
                 </tr>
                 @endforelse
