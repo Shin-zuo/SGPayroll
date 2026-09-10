@@ -98,8 +98,8 @@ This document serves as the comprehensive log of all features, enhancements, sch
     - Double-clicking the resize handle resets width to the default `256px`.
     - Transitions are disabled during active drag (`.is-resizing`) for 60fps responsiveness, and re-enabled smoothly upon release.
   - **Toggle Triggers & Keyboard Shortcut**:
-    - Dedicated sidebar collapse button (`#sidebarToggleBtn`) in the sidebar header with smooth 180-degree icon rotation.
-    - Desktop topbar toggle button (`#desktopSidebarToggleBtn`) in the main header.
+    - Dedicated sidebar collapse button with arrow indicator (`#sidebarToggleBtn`) in the sidebar header with smooth 180-degree rotation (`<` when expanded, `>` when minimized).
+    - Removed redundant desktop topbar hamburger button so only the clean arrow button controls the sidebar.
     - Clicking the "SG" brand badge while collapsed expands the sidebar.
     - Global keyboard shortcut: `Ctrl + B` (or `Cmd + B`) toggles between expanded and minimized views.
   - **Zero-Flicker State Persistence**:

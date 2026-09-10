@@ -25,7 +25,6 @@
         var sidebar = document.getElementById('app-sidebar');
         var handle = document.getElementById('sidebarResizeHandle');
         var toggleBtn = document.getElementById('sidebarToggleBtn');
-        var desktopToggleBtn = document.getElementById('desktopSidebarToggleBtn');
         var tooltip = document.getElementById('sidebarFloatingTooltip');
         var brandLink = document.getElementById('sidebarBrandLink');
 
@@ -59,7 +58,6 @@
             localStorage.setItem(STORAGE_KEY_COLLAPSED, 'true');
             if (tooltip) tooltip.classList.remove('show');
             if (toggleBtn) toggleBtn.setAttribute('title', 'Expand sidebar (Ctrl+B)');
-            if (desktopToggleBtn) desktopToggleBtn.setAttribute('title', 'Expand sidebar (Ctrl+B)');
         }
 
         function expandSidebar(targetWidth) {
@@ -77,7 +75,6 @@
             localStorage.setItem(STORAGE_KEY_WIDTH, width);
             if (tooltip) tooltip.classList.remove('show');
             if (toggleBtn) toggleBtn.setAttribute('title', 'Collapse sidebar (Ctrl+B)');
-            if (desktopToggleBtn) desktopToggleBtn.setAttribute('title', 'Collapse sidebar (Ctrl+B)');
         }
 
         function toggleSidebar() {
@@ -88,17 +85,9 @@
             }
         }
 
-        // Toggle buttons click listeners
+        // Toggle button click listener (Arrow button)
         if (toggleBtn) {
             toggleBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleSidebar();
-            });
-        }
-
-        if (desktopToggleBtn) {
-            desktopToggleBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 toggleSidebar();

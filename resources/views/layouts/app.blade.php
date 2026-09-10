@@ -121,11 +121,6 @@
                     <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-2" aria-label="Toggle mobile menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-
-                    <!-- Desktop Sidebar Toggle Button (Desktop Topbar) -->
-                    <button id="desktopSidebarToggleBtn" type="button" class="hidden md:inline-flex items-center justify-center p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-3 transition-colors cursor-pointer" title="Toggle Sidebar (Ctrl+B)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                    </button>
                     
                     <!-- Global Search -->
                     <!-- <div class="hidden sm:block relative">
