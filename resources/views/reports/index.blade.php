@@ -103,6 +103,18 @@
             <div class="modal-body p-6">
                 <!-- Step 1: Format Guide -->
                 <div id="payroll-step-1">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl">
+                        <div class="text-xs text-emerald-950 leading-relaxed">
+                            <div class="font-bold flex items-center gap-1.5 text-emerald-800 mb-0.5">
+                                <i class="fa fa-file-excel text-emerald-600 text-sm"></i> Recommended Workflow (Excel to CSV):
+                            </div>
+                            Download our pre-formatted Excel template containing all 59 columns, populate payroll calculations in Excel, and click <strong>File &gt; Save As &gt; CSV (*.csv)</strong> before importing.
+                        </div>
+                        <a href="{{ route('reports.download-template') }}" class="btn btn-success text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap shadow-sm shrink-0">
+                            <i class="fa fa-download text-xs"></i> Download Excel Template (.xlsx)
+                        </a>
+                    </div>
+
                     <p class="text-xs text-slate-600 mb-4">The CSV columns must match the headers listed below. This file contains 59 columns representing all indicators, calculations, and deductions necessary to compile correct payroll reports.</p>
                     
                     <div style="max-height: 280px; overflow-y: auto;" class="border border-slate-200 rounded-xl mb-5 shadow-inner">
@@ -243,8 +255,16 @@
         $('#payrollImportForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-            $('#btn-submit-payroll-import').prop('disabled', true).text('Importing...');
+            var $btn = $('#btn-submit-payroll-import');
+            var originalBtnHtml = $btn.html();
+
+            // Disable buttons and show spinner
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1.5"></i> Importing Payroll...');
+            $('#btn-back-payroll-step-1, #importPayrollModal .close').prop('disabled', true);
             $('#payroll-import-results').hide().removeClass('alert-success alert-danger alert-warning').empty();
+
+            // Show non-blocking Alertify ongoing notification
+            var loadingAlert = alertify.notify('<div class="flex items-center gap-2"><i class="fa fa-spinner fa-spin text-blue-500"></i> Importing payroll records, please wait...</div>', 'message', 0);
 
             $.ajax({
                 url: '/reports/batch-import',
@@ -252,35 +272,61 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+                headers: {
+                    'Accept': 'application/json'
+                },
                 success: function(response) {
-                    $('#btn-submit-payroll-import').prop('disabled', false).text('Import Now');
-                    
-                    var alertClass = 'alert-success';
-                    var html = '<strong>' + response.message + '</strong>';
-
-                    if (response.failed && response.failed.length > 0) {
-                        alertClass = 'alert-warning';
-                        html += '<hr><p class="mb-1 font-bold">Failed rows:</p><ul class="pl-4 mb-0 text-xs">';
-                        response.failed.forEach(function(item) {
-                            html += '<li>Row ' + item.row + ': ' + item.reason + '</li>';
-                        });
-                        html += '</ul>';
+                    if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                        loadingAlert.dismiss();
                     }
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    $('#btn-back-payroll-step-1, #importPayrollModal .close').prop('disabled', false);
 
-                    $('#payroll-import-results').addClass(alertClass).html(html).show();
-                    
-                    if (response.success > 0) {
+                    var hasFailed = response.failed && response.failed.length > 0;
+
+                    if (response.success > 0 && !hasFailed) {
+                        // 100% Success Flow
+                        $('#importPayrollModal').modal('hide');
+                        alertify.success('<div class="flex items-center gap-2"><i class="fa fa-check-circle text-emerald-400"></i> <strong>Success!</strong> ' + response.message + '</div>', 5);
                         setTimeout(function() {
                             window.location.reload();
-                        }, 2500);
+                        }, 1500);
+                    } else if (response.success > 0 && hasFailed) {
+                        // Partial Success Flow
+                        alertify.warning('Payroll import completed with ' + response.failed.length + ' error(s). Please review failed rows below.');
+                        var html = '<strong>' + response.message + '</strong>';
+                        html += '<hr class="my-2 border-amber-200"><p class="mb-1 font-bold text-amber-900">Failed rows to fix:</p><ul class="pl-4 mb-0 text-xs space-y-1">';
+                        response.failed.forEach(function(item) {
+                            html += '<li><strong>Row ' + item.row + ':</strong> ' + item.reason + '</li>';
+                        });
+                        html += '</ul>';
+                        $('#payroll-import-results').addClass('alert-warning').html(html).show();
+                    } else {
+                        // 0 Succeeded Flow
+                        alertify.error(response.message || 'Import failed. No payroll records were imported.');
+                        var html = '<strong>' + (response.message || 'Import Failed') + '</strong>';
+                        if (hasFailed) {
+                            html += '<hr class="my-2 border-rose-200"><p class="mb-1 font-bold text-rose-900">Row Errors:</p><ul class="pl-4 mb-0 text-xs space-y-1">';
+                            response.failed.forEach(function(item) {
+                                html += '<li><strong>Row ' + item.row + ':</strong> ' + item.reason + '</li>';
+                            });
+                            html += '</ul>';
+                        }
+                        $('#payroll-import-results').addClass('alert-danger').html(html).show();
                     }
                 },
                 error: function(xhr) {
-                    $('#btn-submit-payroll-import').prop('disabled', false).text('Import Now');
-                    var errorMsg = 'An error occurred during import.';
+                    if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                        loadingAlert.dismiss();
+                    }
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    $('#btn-back-payroll-step-1, #importPayrollModal .close').prop('disabled', false);
+
+                    var errorMsg = 'An unexpected error occurred during payroll import.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMsg = xhr.responseJSON.message;
                     }
+                    alertify.error(errorMsg);
                     $('#payroll-import-results').addClass('alert-danger').html('<strong>' + errorMsg + '</strong>').show();
                 }
             });

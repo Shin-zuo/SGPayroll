@@ -57,7 +57,8 @@ class Employee extends Model
     ];
     public function getFullNameAttribute()
     {
-        return ucfirst($this->employee_Lname) . ', ' . ucfirst($this->employee_Fname) .' '. ucfirst(substr($this->employee_Mname,0,1)) . '.';
+        $middle = !empty($this->employee_Mname) ? (' ' . ucfirst(substr(trim($this->employee_Mname), 0, 1)) . '.') : '';
+        return ucfirst($this->employee_Lname) . ', ' . ucfirst($this->employee_Fname) . $middle;
     }
     public function payroll_timesheet()
     {

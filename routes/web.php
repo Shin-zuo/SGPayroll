@@ -43,7 +43,7 @@ Route::middleware(['auth', 'admin_hr'])->group(function () {
     Route::get('/employee','Employee\EmployeeController@index')->name('employee');
     Route::get('/employee/inactive','Employee\EmployeeController@inactiveEmployee');
     Route::get('/employee/upload-employees','Employee\EmployeeController@uploadEmployee');
-    Route::get('/employee/addEmployee','Employee\EmployeeController@addEmployee');
+    Route::match(['get', 'post'], '/employee/addEmployee', 'Employee\EmployeeController@addEmployee');
     Route::get('/employee/UpdateEmployeeAccount','Employee\EmployeeController@updateAccount');
     Route::get('/employee/DeleteEmployeeAccount/{id?}','Employee\EmployeeController@destroy');
     Route::get('/employee/ActiveEmployeeAccount/{id?}','Employee\EmployeeController@turnActive');
@@ -59,6 +59,7 @@ Route::middleware(['auth', 'admin_hr'])->group(function () {
     Route::get('/employee/account/{id}/other-computation/computeOther','Employee\EmployeeController@computeOther');
     Route::post('/uploadFile-employee/importEmployeeExcel', 'Employee\EmployeeController@uploadEmployeeDataExcel');
     Route::post('/employee/batch-import', 'Employee\EmployeeController@batchImportCsv');
+    Route::get('/employee/download-template', 'Employee\EmployeeController@downloadTemplate')->name('employee.download-template');
 
     //Department
     Route::get('/department','Department\DepartmentController@index');
@@ -112,6 +113,7 @@ Route::middleware(['auth', 'admin_hr'])->group(function () {
     Route::get('/reports','Reports\ReportsController@index');
     Route::post('/reports/view-report','Reports\ReportsController@viewReport');
     Route::post('/reports/batch-import', 'Reports\ReportsController@batchImportPayrollCsv');
+    Route::get('/reports/download-template', 'Reports\ReportsController@downloadTemplate')->name('reports.download-template');
 
     //edit
     Route::get('/edit','EditController@index');

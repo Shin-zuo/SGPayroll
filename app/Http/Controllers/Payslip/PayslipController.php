@@ -425,7 +425,13 @@ class PayslipController extends Controller
 
     public function showDataPayslip(Request $request)
     {
-        $sub_group = Employee::where("department", "=", $request['group_id'])->orderBy('employee_Lname', 'ASC')->get();
-        return $sub_group;
+        $query = Employee::where("department", "=", $request['group_id']);
+
+        if ($request->has('status') && $request['status'] !== '' && $request['status'] !== 'all') {
+            $query->where('employee_status', '=', $request['status']);
+        }
+
+        $sub_group = $query->orderBy('employee_Lname', 'ASC')->get();
+        return response()->json($sub_group);
     }
 }

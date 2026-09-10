@@ -1,6 +1,104 @@
 @extends('layouts.app')
 @section('content')
 
+<!-- Select2 Stylesheet & Custom Tailwind Integration -->
+<link rel="stylesheet" href="{{ asset('css/select2.min.css') }}"/>
+<style>
+    /* Select2 Modern SGPayroll / Tailwind Customization */
+    .select2-container {
+        width: 100% !important;
+    }
+    .select2-container--default .select2-selection--single {
+        height: 42px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0.5rem !important;
+        background-color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 10px !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default .select2-selection--single:focus {
+        border-color: #3b82f6 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #1e293b !important;
+        font-size: 0.875rem !important;
+        line-height: 40px !important;
+        padding-left: 2px !important;
+        padding-right: 24px !important;
+        width: 100% !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #94a3b8 !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 8px !important;
+        top: 1px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #64748b transparent transparent transparent !important;
+    }
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+        border-color: transparent transparent #64748b transparent !important;
+    }
+    .select2-dropdown {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05) !important;
+        background-color: #ffffff !important;
+        z-index: 9999 !important;
+        overflow: hidden !important;
+        margin-top: 4px !important;
+    }
+    .select2-search--dropdown {
+        padding: 8px 10px !important;
+        background: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+    .select2-search--dropdown .select2-search__field {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0.5rem !important;
+        padding: 7px 10px 7px 30px !important;
+        font-size: 0.875rem !important;
+        background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 8px center / 16px 16px !important;
+        outline: none !important;
+    }
+    .select2-search--dropdown .select2-search__field:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }
+    .select2-results__option {
+        padding: 8px 12px !important;
+        font-size: 0.875rem !important;
+        color: #334155 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+    .select2-results__option:last-child {
+        border-bottom: none !important;
+    }
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #eff6ff !important;
+        color: #1d4ed8 !important;
+    }
+    .select2-results__option[aria-selected="true"] {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+        font-weight: 600 !important;
+    }
+    .select2-container--default.select2-container--disabled .select2-selection--single {
+        background-color: #f1f5f9 !important;
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+        border-color: #cbd5e1 !important;
+    }
+</style>
+
 <!-- Header Section -->
 <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
@@ -81,10 +179,30 @@
                     </div>
                     
                     <div class="md:col-span-7" id="employee_select_wrapper">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Specific Employee :</label>
-                        <select id="employee_id" name="employee_id" class="w-full text-sm border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-white">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 m-0">
+                                Specific Employee :
+                            </label>
+                            <!-- Active / Inactive Status Filter Controls -->
+                            <div class="inline-flex items-center bg-slate-200/80 p-0.5 rounded-lg text-xs" id="employee_status_toggle_group" role="group" aria-label="Employee Status Filter">
+                                <button type="button" class="btn-emp-status px-2.5 py-1 rounded-md font-semibold transition-all duration-150 active bg-white text-blue-700 shadow-xs border border-slate-200/60" data-status="1" title="Show Active Employees">
+                                    <i class="fa fa-circle-check text-emerald-500 mr-1 text-[11px]"></i> Active
+                                </button>
+                                <button type="button" class="btn-emp-status px-2.5 py-1 rounded-md font-medium transition-all duration-150 text-slate-600 hover:text-slate-900" data-status="2" title="Show Inactive Employees">
+                                    <i class="fa fa-circle-xmark text-rose-500 mr-1 text-[11px]"></i> Inactive
+                                </button>
+                                <button type="button" class="btn-emp-status px-2.5 py-1 rounded-md font-medium transition-all duration-150 text-slate-600 hover:text-slate-900" data-status="all" title="Show All Employees">
+                                    <i class="fa fa-users text-slate-400 mr-1 text-[11px]"></i> All
+                                </button>
+                                <input type="hidden" id="employee_status_filter" name="employee_status_filter" value="1">
+                            </div>
+                        </div>
+                        <select id="employee_id" name="employee_id" class="w-full text-sm border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm bg-white" style="width: 100%;">
                             <option value="">-- Choose employee from department --</option>
                         </select>
+                        <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                            <i class="fa fa-magnifying-glass text-[10px]"></i> Type employee name or ID in the dropdown to quickly search.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -109,7 +227,7 @@
                 <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">
                     <i class="fas fa-table"></i>
                 </span>
-                Created Payslips Directory
+                Created Payroll Directory
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">Sorted newest at top. Search by employee or filter by month and year.</p>
         </div>
@@ -1076,5 +1194,6 @@
 @endsection
 
 @section('scripts')
+<script type="text/javascript" src="{{ asset('js/select2.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/payslip/payslip.js') }}"></script>
 @endsection

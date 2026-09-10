@@ -45,46 +45,73 @@ class EmployeeController extends Controller
     }
     public function addEmployee(Request $request)
     {
-//        dd($request);
-        $employee = Employee::create(
-            [
-                'employee_id' => $request['employee_id'],
-                'employee_status' => "1",
-                'employee_Fname' => $request['employee_Fname'],
-                'employee_Lname' => $request['employee_Lname'],
-                'employee_Mname' => $request['employee_Mname'],
-                'date_hired' => $request['date_hired'],
-                'birth_day' => $request['birth_date'],
-                'gender' => $request['gender'],
-                'department' => $request['department'],
-                'position' => $request['sub_department'],
-                'status' => $request['status'],
-                'address' => $request['address'],
-                'contactNo' => $request['contact_no'],
-                'email' => $request['emp_email'],
-                'sss_number'=> $request['sss'],
-                'tin_number' => $request['tin'],
-                'hdmf_number' => $request['hdmf'],
-                'philhealth_number' => $request['philhealth'],
-                'ucpb_number' => $request['ucpb'],
-                'passport_number' => null,
-                'passport_exp' => null,
-            ]
-        );
-
-        if ($request['emp_email']) {
-            \SGpayroll\User::firstOrCreate(
-                ['email' => $request['emp_email']],
-                [
-                    'name'        => $employee->full_name,
-                    'password'    => bcrypt('testPass'),
-                    'user_type'   => 2,
-                    'employee_id' => $employee->id,
-                ]
-            );
+        if (empty($request['employee_id'])) {
+            return response()->json(['success' => false, 'message' => 'Employee ID is required.'], 422);
+        }
+        if (empty($request['employee_Lname']) || empty($request['employee_Fname'])) {
+            return response()->json(['success' => false, 'message' => 'First and Last name are required.'], 422);
+        }
+        if (empty($request['emp_email'])) {
+            return response()->json(['success' => false, 'message' => 'Login Email Address is required.'], 422);
+        }
+        if (empty($request['contact_no'])) {
+            return response()->json(['success' => false, 'message' => 'Contact Number is required.'], 422);
         }
 
-        return response()->json(['success' => true]);
+        // Check for duplicate employee ID
+        if (Employee::where('employee_id', $request['employee_id'])->exists()) {
+            return response()->json(['success' => false, 'message' => 'Employee ID "' . $request['employee_id'] . '" is already assigned to another employee.'], 422);
+        }
+
+        try {
+            $employee = Employee::create(
+                [
+                    'employee_id' => $request['employee_id'],
+                    'employee_status' => "1",
+                    'employee_Fname' => $request['employee_Fname'],
+                    'employee_Lname' => $request['employee_Lname'],
+                    'employee_Mname' => !empty($request['employee_Mname']) ? $request['employee_Mname'] : null,
+                    'date_hired' => $request['date_hired'],
+                    'birth_day' => $request['birth_date'],
+                    'gender' => $request['gender'],
+                    'department' => $request['department'],
+                    'position' => $request['sub_department'],
+                    'status' => $request['status'],
+                    'address' => $request['address'],
+                    'contactNo' => $request['contact_no'],
+                    'email' => $request['emp_email'],
+                    'sss_number'=> $request['sss'],
+                    'tin_number' => $request['tin'],
+                    'hdmf_number' => $request['hdmf'],
+                    'philhealth_number' => $request['philhealth'],
+                    'ucpb_number' => $request['ucpb'],
+                    'passport_number' => null,
+                    'passport_exp' => null,
+                ]
+            );
+
+            if ($request['emp_email']) {
+                \SGpayroll\User::firstOrCreate(
+                    ['email' => $request['emp_email']],
+                    [
+                        'name'        => $employee->full_name,
+                        'password'    => bcrypt('testPass'),
+                        'user_type'   => 2,
+                        'employee_id' => $employee->id,
+                    ]
+                );
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Employee added successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add employee: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function accountEmployee($id)
@@ -136,7 +163,7 @@ class EmployeeController extends Controller
            'categories' => $request['categories'],
            'employee_Fname' => $request['employee_Fname'],
            'employee_Lname' => $request['employee_Lname'],
-           'employee_Mname' => $request['employee_Mname'],
+           'employee_Mname' => !empty($request['employee_Mname']) ? $request['employee_Mname'] : null,
            'date_hired' => $request['date_hired'],
            'birth_day' => $request['birth_date'],
            'gender' => $request['gender'],
@@ -402,19 +429,35 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Download the pre-formatted Excel (.xlsx) template for bulk employee onboarding.
+     */
+    public function downloadTemplate()
+    {
+        $filePath = public_path('templates/employee_import_template.xlsx');
+        if (file_exists($filePath)) {
+            return response()->download($filePath, 'employee_import_template.xlsx', [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+        }
+        return redirect()->back()->with('error', 'Employee import template file not found.');
+    }
+
+    /**
      * Batch import employees from a CSV file.
-     * For each employee with an email, automatically creates a User account
-     * with password "testPass" (same logic as addEmployee).
+     * Automatically creates both the Employee record and their User Portal account
+     * with default password "testPass".
      *
-     * Expected CSV columns (header row required):
-     * employee_id, last_name, first_name, middle_name, gender, status,
-     * date_hired, birth_date, department, position, address, email,
-     * sss_number, tin_number, hdmf_number, philhealth_number, ucpb_number,
-     * basic_pay, cola, other_nt_pay
+     * Required CSV columns (header row required):
+     * employee_id, last_name, first_name, gender, date_hired, birth_date,
+     * department, position, contact_no, email
+     *
+     * Optional CSV columns:
+     * middle_name, status, address, sss_number, tin_number, hdmf_number,
+     * philhealth_number, ucpb_number, basic_pay, cola, other_nt_pay
      */
     public function batchImportCsv(Request $request)
     {
-        // 1. Safe validation for all Laravel 5 versions
+        // 1. Safe validation for Laravel
         $this->validate($request, [
             'import_file' => 'required|file|max:5120',
         ]);
@@ -441,6 +484,8 @@ class EmployeeController extends Controller
 
             // First row = headers
             if ($headers === null) {
+                // Remove UTF-8 BOM if present on first header
+                $row[0] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[0]);
                 $headers = array_map('trim', $row);
                 continue;
             }
@@ -454,43 +499,77 @@ class EmployeeController extends Controller
             if (count($headers) !== count($row)) {
                 $failed[] = [
                     'row' => $rowNum, 
-                    'reason' => 'Column mismatch. Expected ' . count($headers) . ' columns, but found ' . count($row) . '.'
+                    'reason' => 'Column count mismatch. Expected ' . count($headers) . ' columns, but row has ' . count($row) . '.'
                 ];
                 continue;
             }
 
             $data = array_combine($headers, array_map('trim', $row));
 
-            // Validate required fields
-            if (empty($data['last_name']) || empty($data['first_name'])) {
-                $failed[] = ['row' => $rowNum, 'reason' => 'Missing first or last name.'];
+            // 4. Validate Required Fields
+            $missingFields = [];
+            if (empty($data['employee_id'])) $missingFields[] = 'employee_id';
+            if (empty($data['last_name']))   $missingFields[] = 'last_name';
+            if (empty($data['first_name']))  $missingFields[] = 'first_name';
+            if (empty($data['gender']))      $missingFields[] = 'gender';
+            if (empty($data['date_hired']))  $missingFields[] = 'date_hired';
+            if (empty($data['birth_date']))  $missingFields[] = 'birth_date';
+            if (empty($data['department']))  $missingFields[] = 'department';
+            if (empty($data['position']))    $missingFields[] = 'position';
+
+            $contactVal = !empty($data['contact_no']) ? $data['contact_no'] : (!empty($data['contact_number']) ? $data['contact_number'] : null);
+            if (empty($contactVal)) {
+                $missingFields[] = 'contact_no';
+            }
+
+            if (empty($data['email'])) {
+                $missingFields[] = 'email';
+            } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Invalid email address format: "' . $data['email'] . '".'];
+                continue;
+            }
+
+            if (!empty($missingFields)) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Missing required field(s): ' . implode(', ', $missingFields) . '.'];
+                continue;
+            }
+
+            // 5. Check Duplicates (Employee ID & Email)
+            if (Employee::where('employee_id', $data['employee_id'])->exists()) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Employee ID "' . $data['employee_id'] . '" is already registered in the system.'];
+                continue;
+            }
+
+            if (\SGpayroll\User::where('email', $data['email'])->exists()) {
+                $failed[] = ['row' => $rowNum, 'reason' => 'Email address "' . $data['email'] . '" is already registered to an existing user account.'];
                 continue;
             }
 
             DB::beginTransaction();
             try {
                 $employee = Employee::create([
-                    'employee_id'       => $data['employee_id']      ?? null,
+                    'employee_id'       => $data['employee_id'],
                     'employee_status'   => '1',
                     'employee_Lname'    => $data['last_name'],
                     'employee_Fname'    => $data['first_name'],
-                    'employee_Mname'    => $data['middle_name']      ?? null,
-                    'gender'            => $data['gender']           ?? null,
-                    'status'            => $data['status']           ?? null,
-                    'date_hired'        => !empty($data['date_hired']) ? $data['date_hired'] : null,
-                    'birth_day'         => !empty($data['birth_date']) ? $data['birth_date'] : null,
-                    'department'        => $data['department']       ?? null,
-                    'position'          => $data['position']         ?? null,
-                    'address'           => $data['address']          ?? null,
-                    'email'             => !empty($data['email'])    ? $data['email']        : null,
-                    'sss_number'        => $data['sss_number']       ?? null,
-                    'tin_number'        => $data['tin_number']       ?? null,
-                    'hdmf_number'       => $data['hdmf_number']      ?? null,
-                    'philhealth_number' => $data['philhealth_number'] ?? null,
-                    'ucpb_number'       => $data['ucpb_number'] ?? $data['ub_number'] ?? $data['ub_account_no'] ?? null,
-                    'basic_pay'         => $data['basic_pay']        ?? 0,
-                    'cola'              => $data['cola']             ?? 0,
-                    'other_nt_pay'      => $data['other_nt_pay']     ?? 0,
+                    'employee_Mname'    => !empty($data['middle_name']) ? $data['middle_name'] : null,
+                    'gender'            => $data['gender'],
+                    'status'            => !empty($data['status']) ? $data['status'] : null,
+                    'date_hired'        => $data['date_hired'],
+                    'birth_day'         => $data['birth_date'],
+                    'department'        => $data['department'],
+                    'position'          => $data['position'],
+                    'address'           => !empty($data['address']) ? $data['address'] : null,
+                    'contactNo'         => $contactVal,
+                    'email'             => $data['email'],
+                    'sss_number'        => !empty($data['sss_number']) ? $data['sss_number'] : null,
+                    'tin_number'        => !empty($data['tin_number']) ? $data['tin_number'] : null,
+                    'hdmf_number'       => !empty($data['hdmf_number']) ? $data['hdmf_number'] : null,
+                    'philhealth_number' => !empty($data['philhealth_number']) ? $data['philhealth_number'] : null,
+                    'ucpb_number'       => !empty($data['ucpb_number']) ? $data['ucpb_number'] : (!empty($data['ub_number']) ? $data['ub_number'] : null),
+                    'basic_pay'         => is_numeric($data['basic_pay'] ?? '') ? $data['basic_pay'] : 0,
+                    'cola'              => is_numeric($data['cola'] ?? '') ? $data['cola'] : 0,
+                    'other_nt_pay'      => is_numeric($data['other_nt_pay'] ?? '') ? $data['other_nt_pay'] : 0,
                     'payroll_type'      => '1',
                     'pagibig_amount'    => '100',
                     'pag_ibig_contribution' => '1',
@@ -499,22 +578,18 @@ class EmployeeController extends Controller
                     'tax_status'        => '1',
                 ]);
 
-                // Auto-create user account if email is provided
-                if (!empty($data['email'])) {
-                    \SGpayroll\User::firstOrCreate(
-                        ['email' => $data['email']],
-                        [
-                            'name'        => trim($data['first_name'] . ' ' . $data['last_name']), // Safer fallback if accessor fails
-                            'password'    => bcrypt('testPass'),
-                            'user_type'   => 2,
-                            'employee_id' => $employee->id,
-                        ]
-                    );
-                }
+                // Create User Portal Account
+                \SGpayroll\User::create([
+                    'name'        => trim($data['first_name'] . ' ' . $data['last_name']),
+                    'email'       => trim($data['email']),
+                    'password'    => bcrypt('testPass'),
+                    'user_type'   => 2,
+                    'employee_id' => $employee->id,
+                ]);
 
                 DB::commit();
                 $success++;
-            } catch (\Throwable $e) { // Catch \Throwable to trap fatal PHP 7+ errors as well as Exceptions
+            } catch (\Throwable $e) {
                 DB::rollBack();
                 $failed[] = [
                     'row'    => $rowNum,
@@ -528,10 +603,11 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => $success,
             'failed'  => $failed,
-            'message' => "{$success} employee(s) imported successfully."
+            'message' => "{$success} employee(s) and portal account(s) imported successfully."
                 . (count($failed) ? ' ' . count($failed) . ' row(s) failed.' : ''),
         ]);
     }
+
 
 
 }

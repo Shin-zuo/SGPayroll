@@ -1,44 +1,139 @@
 $(document).ready(function() {
     var url_subgroup = "/payslip/requestDataPayslip";
 
-    // When department changes, load employees
-    $('#department').on('change', function() {
-        var deptVal = $(this).val();
+    // Format employee option with status badge in Select2
+    function formatEmployeeOption(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var $element = $(state.element);
+        var empStatus = $element.data('status');
+        var statusBadge = '';
+        if (empStatus == '1' || empStatus == 1) {
+            statusBadge = '<span style="background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; text-transform: uppercase;">Active</span>';
+        } else if (empStatus == '2' || empStatus == 2) {
+            statusBadge = '<span style="background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; text-transform: uppercase;">Inactive</span>';
+        }
+
+        var $res = $(
+            '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">' +
+                '<div>' +
+                    '<span style="font-weight: 600; color: #1e293b;">' + state.text + '</span>' +
+                '</div>' +
+                '<div>' + statusBadge + '</div>' +
+            '</div>'
+        );
+        return $res;
+    }
+
+    function formatEmployeeSelection(state) {
+        return state.text;
+    }
+
+    // Initialize Select2 on employee select
+    function initEmployeeSelect2() {
+        if ($.fn.select2) {
+            $('#employee_id').select2({
+                placeholder: "-- Choose employee from department --",
+                allowClear: true,
+                width: '100%',
+                templateResult: formatEmployeeOption,
+                templateSelection: formatEmployeeSelection,
+                language: {
+                    noResults: function () {
+                        return "No matching employees found";
+                    }
+                }
+            });
+        }
+    }
+
+    // Load department employees with active/inactive status filter
+    function loadDepartmentEmployees() {
+        var deptVal = $('#department').val();
+        var statusVal = $('#employee_status_filter').val() || '1';
+
         if (!deptVal) {
-            $('#employee_id').html('<option value="">-- Choose employee from department --</option>');
+            $('#employee_id').empty().append('<option value="">-- Choose employee from department --</option>').trigger('change');
             return;
         }
 
-        var formData = {
-            group_id: deptVal,
-        };
+        // Loading state
+        $('#employee_id').empty().append('<option value="">Loading employees...</option>').prop('disabled', true).trigger('change');
 
         $.ajax({
             type: "GET",
             url: url_subgroup,
-            data: formData,
+            data: {
+                group_id: deptVal,
+                status: statusVal
+            },
             dataType: 'json',
             success: function (data) {
                 var appendData = '<option value="">-- Choose employee from department --</option>';
-                $.each(data, function (index, employee) {
-                    appendData += '<option value="' + employee.id + '">' + employee.employee_id + ' - ' + employee.employee_Lname + ', ' + employee.employee_Fname + '</option>';
-                });
-                $('#employee_id').html(appendData);
+                if (data && data.length > 0) {
+                    $.each(data, function (index, employee) {
+                        var fullName = (employee.employee_Lname ? employee.employee_Lname : '') + ', ' + (employee.employee_Fname ? employee.employee_Fname : '');
+                        var displayText = (employee.employee_id ? employee.employee_id : 'ID') + ' - ' + fullName;
+                        appendData += '<option value="' + employee.id + '" data-code="' + employee.employee_id + '" data-status="' + employee.employee_status + '">' + displayText + '</option>';
+                    });
+                } else {
+                    var statusLabel = statusVal === '1' ? 'active' : (statusVal === '2' ? 'inactive' : '');
+                    appendData = '<option value="">-- No ' + statusLabel + ' employees found in ' + deptVal + ' --</option>';
+                }
+
+                $('#employee_id').empty().append(appendData);
+
+                // Re-sync disabled state based on print_all
+                if ($('#print_all').is(':checked')) {
+                    $('#employee_id').prop('disabled', true);
+                } else {
+                    $('#employee_id').prop('disabled', false);
+                }
+                $('#employee_id').val('').trigger('change');
             },
-            error: function (data) {
-                console.log('Error:', data);
+            error: function (xhr) {
+                console.error('Error loading employees:', xhr);
+                $('#employee_id').empty().append('<option value="">-- Failed to load employees --</option>').prop('disabled', false).trigger('change');
             }
         });
+    }
+
+    // When department changes, load employees
+    $('#department').on('change', function() {
+        loadDepartmentEmployees();
+    });
+
+    // When status toggle buttons are clicked (Active / Inactive / All)
+    $(document).on('click', '.btn-emp-status', function(e) {
+        e.preventDefault();
+        var newStatus = $(this).data('status');
+
+        // Toggle button styles
+        $('.btn-emp-status').removeClass('active bg-white text-blue-700 shadow-xs border border-slate-200/60')
+                            .addClass('text-slate-600 hover:text-slate-900');
+        $(this).removeClass('text-slate-600 hover:text-slate-900')
+               .addClass('active bg-white text-blue-700 shadow-xs border border-slate-200/60');
+
+        $('#employee_status_filter').val(newStatus);
+
+        // If department already chosen, reload employees immediately
+        if ($('#department').val()) {
+            loadDepartmentEmployees();
+        }
     });
 
     // Toggle Print All vs Specific Employee
     function syncPrintAll() {
-        if ($('#print_all').is(':checked')) {
-            $("#employee_id").prop("disabled", true).addClass("opacity-50 cursor-not-allowed");
+        var isPrintAll = $('#print_all').is(':checked');
+        if (isPrintAll) {
+            $("#employee_id").prop("disabled", true).trigger('change');
             $('#employee_select_wrapper').addClass("opacity-60");
+            $('.btn-emp-status').prop('disabled', true).addClass('pointer-events-none opacity-50');
         } else {
-            $("#employee_id").prop("disabled", false).removeClass("opacity-50 cursor-not-allowed");
+            $("#employee_id").prop("disabled", false).trigger('change');
             $('#employee_select_wrapper').removeClass("opacity-60");
+            $('.btn-emp-status').prop('disabled', false).removeClass('pointer-events-none opacity-50');
         }
     }
 
@@ -46,7 +141,8 @@ $(document).ready(function() {
         syncPrintAll();
     });
 
-    // Initialize state
+    // Initialize Select2 and initial state
+    initEmployeeSelect2();
     syncPrintAll();
 
     // Handle Delete Payslip with Loan Reversal

@@ -133,20 +133,20 @@
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="employmentStatus">Status of Employment</label>
                         <select class="form-control w-full" id="employmentStatus">
-                            <option value="" selected>{{$employee->employment_status}}</option>
-                            <option value="1">Regular</option>
-                            <option value="2">Contractual</option>
-                            <option value="3">Probationary</option>
-                            <option value="4">Consultant & Senior Worker</option>
+                            <option value="" {{ empty($employee->employment_status) ? 'selected' : '' }}>Select Employment Status</option>
+                            <option value="1" {{ in_array($employee->employment_status, ['1', 'Regular']) ? 'selected' : '' }}>Regular</option>
+                            <option value="2" {{ in_array($employee->employment_status, ['2', 'Contractual']) ? 'selected' : '' }}>Contractual</option>
+                            <option value="3" {{ in_array($employee->employment_status, ['3', 'Probationary']) ? 'selected' : '' }}>Probationary</option>
+                            <option value="4" {{ in_array($employee->employment_status, ['4', 'Consultant & Senior Worker']) ? 'selected' : '' }}>Consultant & Senior Worker</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="employment_date_from">Contract Date From</label>
-                        <input type="date" class="form-control w-full" id="employment_date_from" value="{{$employee->employment_date_from}}" disabled>
+                        <input type="date" class="form-control w-full" id="employment_date_from" value="{{$employee->employment_date_from}}" {{ in_array($employee->employment_status, ['2', '3', 'Contractual', 'Probationary']) ? '' : 'disabled' }}>
                     </div>
                     <div class="form-group">
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" for="employment_date_to">Contract Date To</label>
-                        <input type="date" class="form-control w-full" id="employment_date_to" value="{{$employee->employment_date_to}}" disabled>
+                        <input type="date" class="form-control w-full" id="employment_date_to" value="{{$employee->employment_date_to}}" {{ in_array($employee->employment_status, ['2', '3', 'Contractual', 'Probationary']) ? '' : 'disabled' }}>
                     </div>
                 </div>
 

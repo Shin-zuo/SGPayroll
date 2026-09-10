@@ -4,6 +4,8 @@ services:
     build: .
     ports:
       - "8082:10000"
+    volumes:
+      - .:/var/www/html
     env_file:
       - .env
 

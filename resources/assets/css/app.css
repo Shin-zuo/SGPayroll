@@ -660,3 +660,220 @@ td.admin-table-actions {
     border-color: #f1f5f9 !important;
 }
 
+/* ==========================================================================
+   Sidebar Resizable & Minimizable System
+   ========================================================================== */
+
+:root {
+    --sidebar-width: 256px;
+    --sidebar-collapsed-width: 72px;
+}
+
+#app-sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: width, min-width;
+}
+
+/* Transitions disabled during active drag-resizing */
+#app-sidebar.is-resizing,
+body.is-resizing #app-sidebar,
+body.is-resizing * {
+    transition: none !important;
+    user-select: none !important;
+}
+
+body.is-resizing {
+    cursor: col-resize !important;
+}
+
+/* Sidebar Resize Handle */
+#sidebarResizeHandle {
+    position: absolute;
+    top: 0;
+    right: -4px;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 40;
+}
+
+#sidebarResizeHandle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 3px;
+    width: 2px;
+    background-color: transparent;
+    transition: background-color 0.15s ease;
+}
+
+#sidebarResizeHandle:hover::after,
+#sidebarResizeHandle.active::after {
+    background-color: #3b82f6;
+}
+
+/* Smooth fade & transitions for labels */
+.sidebar-brand-text,
+.sidebar-label {
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Minimized / Collapsed Sidebar State (Desktop) */
+@media (min-width: 768px) {
+    .sidebar-collapsed #app-sidebar,
+    html.sidebar-collapsed #app-sidebar {
+        width: var(--sidebar-collapsed-width) !important;
+        min-width: var(--sidebar-collapsed-width) !important;
+    }
+
+    /* Brand Header */
+    .sidebar-collapsed #app-sidebar .brand-header,
+    html.sidebar-collapsed #app-sidebar .brand-header {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        justify-content: center;
+    }
+
+    .sidebar-collapsed #sidebarBrandLink,
+    html.sidebar-collapsed #sidebarBrandLink {
+        justify-content: center;
+        width: 100%;
+        gap: 0;
+    }
+
+    .sidebar-collapsed .sidebar-brand-text,
+    html.sidebar-collapsed .sidebar-brand-text {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        max-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Toggle Button in Collapsed Mode */
+    .sidebar-collapsed #sidebarToggleBtn,
+    html.sidebar-collapsed #sidebarToggleBtn {
+        position: absolute;
+        right: -11px;
+        top: 20px;
+        width: 22px;
+        height: 22px;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        border-radius: 9999px;
+        z-index: 45;
+        color: #64748b;
+    }
+
+    .sidebar-collapsed #sidebarToggleBtn:hover,
+    html.sidebar-collapsed #sidebarToggleBtn:hover {
+        background-color: #f8fafc;
+        color: #1e293b;
+        border-color: #94a3b8;
+    }
+
+    .sidebar-collapsed #sidebarToggleIcon,
+    html.sidebar-collapsed #sidebarToggleIcon {
+        transform: rotate(180deg);
+    }
+
+    /* Navigation Items */
+    .sidebar-collapsed .sidebar-nav-item,
+    html.sidebar-collapsed .sidebar-nav-item {
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 44px;
+        height: 44px;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 0 !important;
+        border-radius: 0.5rem;
+    }
+
+    .sidebar-collapsed .sidebar-label,
+    html.sidebar-collapsed .sidebar-label {
+        display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        max-width: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+    }
+
+    .sidebar-collapsed .sidebar-icon,
+    html.sidebar-collapsed .sidebar-icon {
+        margin: 0 !important;
+        font-size: 1.05rem;
+    }
+
+    /* Category Headings become subtle dividers */
+    .sidebar-collapsed .sidebar-heading,
+    html.sidebar-collapsed .sidebar-heading {
+        height: 1px !important;
+        background-color: #f1f5f9 !important;
+        margin: 0.75rem 0.5rem !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        color: transparent !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+}
+
+/* Mobile Sidebar Override (always full width when open) */
+@media (max-width: 767px) {
+    #app-sidebar {
+        width: 16rem !important; /* w-64 */
+        min-width: 16rem !important;
+        transition: transform 0.3s ease-in-out !important;
+    }
+    #sidebarResizeHandle {
+        display: none !important;
+    }
+}
+
+/* Floating Tooltip for Minimized Sidebar */
+.sidebar-floating-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+}
+
+.sidebar-floating-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.sidebar-floating-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid #0f172a;
+}
+
+

@@ -262,8 +262,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="contact_no">Contact Number</label>
-                                <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="09XX-XXX-XXXX">
+                                <label for="contact_no">Contact Number <span class="text-rose-500">*</span></label>
+                                <input type="text" class="form-control" id="contact_no" name="contact_no" placeholder="09XX-XXX-XXXX" required>
                             </div>
                         </div>
 
@@ -303,8 +303,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="emp_email">Login Email Address</label>
-                                <input type="email" class="form-control" id="emp_email" name="emp_email" placeholder="employee@company.com">
+                                <label for="emp_email">Login Email Address <span class="text-rose-500">*</span></label>
+                                <input type="email" class="form-control" id="emp_email" name="emp_email" placeholder="employee@company.com" required>
                                 <p class="text-[11px] text-slate-400 mt-1">Default employee portal password: <code class="text-slate-600 font-mono bg-slate-100 px-1 py-0.5 rounded">testPass</code></p>
                             </div>
                         </div>
@@ -338,41 +338,141 @@
             <div class="modal-body">
                 <!-- Step 1: Format Guide -->
                 <div id="import-step-1">
-                    <div class="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl mb-4 text-xs text-blue-900 leading-relaxed">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl">
+                        <div class="text-xs text-emerald-950 leading-relaxed">
+                            <div class="font-bold flex items-center gap-1.5 text-emerald-800 mb-0.5">
+                                <i class="fa fa-file-excel text-emerald-600 text-sm"></i> Recommended Workflow (Excel to CSV):
+                            </div>
+                            Download our pre-formatted Excel template, fill in your employee records, and then click <strong>File &gt; Save As &gt; CSV (*.csv)</strong> to import.
+                        </div>
+                        <a href="{{ route('employee.download-template') }}" class="btn btn-success text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap shadow-sm shrink-0">
+                            <i class="fa fa-download text-xs"></i> Download Excel Template (.xlsx)
+                        </a>
+                    </div>
+
+                    <div class="p-3 bg-blue-50/70 border border-blue-200/80 rounded-xl mb-4 text-xs text-blue-900 leading-relaxed">
                         <i class="fa fa-info-circle text-blue-600 mr-1.5"></i>
-                        Please format your CSV file exactly as shown below. Headers must match precisely. Providing an email will automatically create a portal user account with the password <strong>"testPass"</strong>.
+                        Every imported employee will automatically have a User Portal account created using their <strong>Email</strong> with default password <code class="bg-blue-100/80 text-blue-900 px-1 py-0.5 rounded font-mono font-bold">testPass</code>.
                     </div>
                     
-                    <div class="max-h-64 overflow-y-auto rounded-xl border border-slate-200 mb-5">
+                    <div class="max-h-72 overflow-y-auto rounded-xl border border-slate-200 mb-5">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider sticky top-0">
+                                <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider sticky top-0 z-10">
                                     <th class="px-3.5 py-2.5 border-b border-slate-200">Column Name</th>
-                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Required</th>
-                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Example / Description</th>
+                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Requirement</th>
+                                    <th class="px-3.5 py-2.5 border-b border-slate-200">Description &amp; Example</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">employee_id</td><td>No</td><td class="text-slate-500">EMP-001 (Unique Code)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">last_name</td><td><span class="text-rose-600 font-semibold">Yes</span></td><td class="text-slate-500">Smith</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">first_name</td><td><span class="text-rose-600 font-semibold">Yes</span></td><td class="text-slate-500">John</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">middle_name</td><td>No</td><td class="text-slate-500">Doe</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">gender</td><td>No</td><td class="text-slate-500">Male / Female</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">status</td><td>No</td><td class="text-slate-500">Single / Married</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">date_hired</td><td>No</td><td class="text-slate-500">YYYY-MM-DD (e.g. 2026-07-03)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">birth_date</td><td>No</td><td class="text-slate-500">YYYY-MM-DD</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">department</td><td>No</td><td class="text-slate-500">Department / Group Name</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">position</td><td>No</td><td class="text-slate-500">Position / Job Title</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">address</td><td>No</td><td class="text-slate-500">Street Address</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">email</td><td>No</td><td class="text-slate-500">john@example.com (Creates user account)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">sss_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">tin_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">hdmf_number</td><td>No</td><td class="text-slate-500">Numbers only (Pag-IBIG)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">philhealth_number</td><td>No</td><td class="text-slate-500">Numbers only</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">ucpb_number / ub_number</td><td>No</td><td class="text-slate-500">UB Account Number (Numbers only)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">basic_pay</td><td>No</td><td class="text-slate-500">Decimal/Float (e.g. 25000)</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">cola</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>
-                                <tr class="hover:bg-slate-50/50"><td class="px-3.5 py-2 font-mono font-medium text-slate-700">other_nt_pay</td><td>No</td><td class="text-slate-500">Decimal/Float</td></tr>
+                                <!-- Required Columns -->
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">employee_id</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Unique employee badge or code (e.g. <span class="font-mono text-slate-700">EMP-101</span>). Links to timesheets and payslips.</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">last_name</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Employee surname (e.g. <span class="font-mono text-slate-700">Dela Cruz</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">first_name</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Employee given name (e.g. <span class="font-mono text-slate-700">Juan</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">gender</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600"><span class="font-mono text-slate-700">Male</span> or <span class="font-mono text-slate-700">Female</span>.</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">date_hired</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Date hired in <span class="font-mono text-slate-700">YYYY-MM-DD</span> format (e.g. <span class="font-mono text-slate-700">2026-01-15</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">birth_date</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Date of birth in <span class="font-mono text-slate-700">YYYY-MM-DD</span> format (e.g. <span class="font-mono text-slate-700">1995-05-20</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">department</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Department / Group name (e.g. <span class="font-mono text-slate-700">IT</span>). Needed for payroll runs and payslip generation.</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">position</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Job position or SubGroup title (e.g. <span class="font-mono text-slate-700">Developer</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">contact_no</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600">Primary phone/mobile number (e.g. <span class="font-mono text-slate-700">09123456789</span>).</td>
+                                </tr>
+                                <tr class="bg-rose-50/20 hover:bg-rose-50/40">
+                                    <td class="px-3.5 py-2 font-mono font-semibold text-slate-800">email</td>
+                                    <td><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa fa-asterisk text-[7px]"></i> Required</span></td>
+                                    <td class="text-slate-600"><strong>Required for portal login.</strong> Creates User Account with password <span class="font-mono text-slate-700">testPass</span> (e.g. <span class="font-mono text-slate-700">employee@company.com</span>).</td>
+                                </tr>
+
+                                <!-- Optional Columns -->
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">middle_name</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Middle name. Can be left empty if employee has no middle name.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">status</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Civil status (e.g. <span class="font-mono text-slate-600">Single</span>, <span class="font-mono text-slate-600">Married</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">address</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Residential address. Can be edited in Account Settings later.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">sss_number</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Social Security System ID (e.g. <span class="font-mono text-slate-600">12-3456789-0</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">tin_number</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Tax Identification Number (e.g. <span class="font-mono text-slate-600">123-456-789-000</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">hdmf_number</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Pag-IBIG / HDMF Number (e.g. <span class="font-mono text-slate-600">1234-5678-9012</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">philhealth_number</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">PhilHealth identification number (e.g. <span class="font-mono text-slate-600">12-345678901-2</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">ucpb_number</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">UnionBank / Bank disbursement account number. Also accepts <span class="font-mono text-slate-600">ub_number</span>.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">basic_pay</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Monthly basic salary rate (e.g. <span class="font-mono text-slate-600">25000</span>). Defaults to <span class="font-mono text-slate-600">0</span>.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">cola</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Cost of living allowance (e.g. <span class="font-mono text-slate-600">0</span>). Defaults to <span class="font-mono text-slate-600">0</span>.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="px-3.5 py-2 font-mono text-slate-700">other_nt_pay</td>
+                                    <td><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">Optional</span></td>
+                                    <td class="text-slate-500">Other non-taxable allowance (e.g. <span class="font-mono text-slate-600">1000</span>). Defaults to <span class="font-mono text-slate-600">0</span>.</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -383,6 +483,7 @@
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Step 2: Upload Input -->
                 <div id="import-step-2" style="display: none;">
@@ -442,8 +543,16 @@
         $('#employeeImportForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-            $('#btn-submit-import').prop('disabled', true).text('Importing...');
+            var $btn = $('#btn-submit-import');
+            var originalBtnHtml = $btn.html();
+
+            // Disable buttons and show spinner
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1.5"></i> Importing Employees...');
+            $('#btn-back-step-1, #importCsvModal .close').prop('disabled', true);
             $('#import-results').hide().removeClass('alert-success alert-danger alert-warning').empty();
+
+            // Show non-blocking Alertify ongoing notification
+            var loadingAlert = alertify.notify('<div class="flex items-center gap-2"><i class="fa fa-spinner fa-spin text-blue-500"></i> Importing employee records, please wait...</div>', 'message', 0);
 
             $.ajax({
                 url: '/employee/batch-import',
@@ -452,38 +561,60 @@
                 processData: false,
                 contentType: false,
                 headers: {
-                    'Accept': 'application/json' // Forces Laravel to send JSON validation errors instead of redirects
+                    'Accept': 'application/json'
                 },
                 success: function(response) {
-                    $('#btn-submit-import').prop('disabled', false).text('Import Now');
-                    
-                    var alertClass = 'alert-success';
-                    var html = '<strong>' + response.message + '</strong>';
-
-                    if (response.failed && response.failed.length > 0) {
-                        alertClass = 'alert-warning';
-                        html += '<hr><p class="mb-1 font-bold">Failed rows:</p><ul class="pl-4 mb-0 text-xs">';
-                        response.failed.forEach(function(item) {
-                            html += '<li>Row ' + item.row + ': ' + item.reason + '</li>';
-                        });
-                        html += '</ul>';
+                    if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                        loadingAlert.dismiss();
                     }
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    $('#btn-back-step-1, #importCsvModal .close').prop('disabled', false);
 
-                    $('#import-results').addClass(alertClass).html(html).show();
-                    
-                    // Reload table if anything succeeded
-                    if (response.success > 0) {
+                    var hasFailed = response.failed && response.failed.length > 0;
+
+                    if (response.success > 0 && !hasFailed) {
+                        // 100% Success Flow
+                        $('#importCsvModal').modal('hide');
+                        alertify.success('<div class="flex items-center gap-2"><i class="fa fa-check-circle text-emerald-400"></i> <strong>Success!</strong> ' + response.message + '</div>', 5);
                         setTimeout(function() {
                             window.location.reload();
-                        }, 2000);
+                        }, 1500);
+                    } else if (response.success > 0 && hasFailed) {
+                        // Partial Success Flow
+                        alertify.warning('Import completed with ' + response.failed.length + ' error(s). Please review failed rows below.');
+                        var html = '<strong>' + response.message + '</strong>';
+                        html += '<hr class="my-2 border-amber-200"><p class="mb-1 font-bold text-amber-900">Failed rows to fix:</p><ul class="pl-4 mb-0 text-xs space-y-1">';
+                        response.failed.forEach(function(item) {
+                            html += '<li><strong>Row ' + item.row + ':</strong> ' + item.reason + '</li>';
+                        });
+                        html += '</ul>';
+                        $('#import-results').addClass('alert-warning').html(html).show();
+                    } else {
+                        // 0 Succeeded Flow
+                        alertify.error(response.message || 'Import failed. No employees were imported.');
+                        var html = '<strong>' + (response.message || 'Import Failed') + '</strong>';
+                        if (hasFailed) {
+                            html += '<hr class="my-2 border-rose-200"><p class="mb-1 font-bold text-rose-900">Row Errors:</p><ul class="pl-4 mb-0 text-xs space-y-1">';
+                            response.failed.forEach(function(item) {
+                                html += '<li><strong>Row ' + item.row + ':</strong> ' + item.reason + '</li>';
+                            });
+                            html += '</ul>';
+                        }
+                        $('#import-results').addClass('alert-danger').html(html).show();
                     }
                 },
                 error: function(xhr) {
-                    $('#btn-submit-import').prop('disabled', false).text('Import Now');
-                    var errorMsg = 'An error occurred during import.';
+                    if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                        loadingAlert.dismiss();
+                    }
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    $('#btn-back-step-1, #importCsvModal .close').prop('disabled', false);
+
+                    var errorMsg = 'An unexpected error occurred during import.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMsg = xhr.responseJSON.message;
                     }
+                    alertify.error(errorMsg);
                     $('#import-results').addClass('alert-danger').html('<strong>' + errorMsg + '</strong>').show();
                 }
             });

@@ -642,19 +642,46 @@ class ReportsController extends Controller
      * All 59 CSV columns map directly to employee_payrolls fields and cover
      * every column consumed by all report types in viewReport().
      */
+    /**
+     * Download the pre-formatted Excel (.xlsx) template for bulk payroll records import.
+     */
+    public function downloadTemplate()
+    {
+        $filePath = public_path('templates/payroll_import_template.xlsx');
+        if (file_exists($filePath)) {
+            return response()->download($filePath, 'payroll_import_template.xlsx', [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+        }
+        return redirect()->back()->with('error', 'Payroll import template file not found.');
+    }
+
+    /**
+     * Batch import calculated payroll records from a CSV file.
+     * Maps all 59 columns directly to employee_payrolls and sends portal notifications.
+     */
     public function batchImportPayrollCsv(Request $request)
     {
-        // 1. Laravel 5 (<= 5.4) Compatible Validation
+        // 1. Safe validation for Laravel
         $this->validate($request, [
-            'import_file' => 'required',
+            'import_file' => 'required|file|max:10240',
         ]);
+
+        if (!$request->hasFile('import_file') || !$request->file('import_file')->isValid()) {
+            return response()->json(['message' => 'Uploaded file is invalid or corrupted.'], 400);
+        }
 
         $file    = $request->file('import_file');
         $handle  = fopen($file->getRealPath(), 'r');
+        if (!$handle) {
+            return response()->json(['message' => 'Could not read the uploaded CSV file.'], 500);
+        }
+
         $headers = null;
         $success = 0;
         $failed  = [];
         $rowNum  = 0;
+        $importedEmployeeCodes = [];
 
         // All 59 fillable columns for employee_payrolls
         $allowedColumns = [
@@ -698,7 +725,7 @@ class ReportsController extends Controller
 
             if ($headers === null) {
                 // Strip BOM (Byte Order Mark) from the first column if it exists
-                $row[0] = ltrim($row[0], "\xEF\xBB\xBF");
+                $row[0] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row[0]);
                 $headers = array_map('trim', $row);
                 continue;
             }
@@ -707,18 +734,48 @@ class ReportsController extends Controller
                 continue;
             }
 
+            // Prevent array_combine crash on extra or missing column commas
+            if (count($headers) !== count($row)) {
+                $failed[] = [
+                    'row'    => $rowNum,
+                    'reason' => 'Column count mismatch. Expected ' . count($headers) . ' columns, but row has ' . count($row) . '.'
+                ];
+                continue;
+            }
+
             $data = array_combine($headers, array_map('trim', $row));
 
             // Validate minimum required fields
-            if (empty($data['employee_code']) || empty($data['year']) || empty($data['monthly_record'])) {
-                $failed[] = ['row' => $rowNum, 'reason' => 'Missing employee_code, year, or monthly_record.'];
+            $missing = [];
+            if (empty($data['employee_code']))  $missing[] = 'employee_code';
+            if (empty($data['year']))           $missing[] = 'year';
+            if (empty($data['monthly_record'])) $missing[] = 'monthly_record';
+
+            if (!empty($missing)) {
+                $failed[] = [
+                    'row'    => $rowNum,
+                    'reason' => 'Missing required field(s): ' . implode(', ', $missing) . '.'
+                ];
+                continue;
+            }
+
+            // Check if employee exists in directory
+            $empExists = \SGpayroll\Employee::where('employee_id', $data['employee_code'])
+                ->orWhere('id', $data['employee_code'])
+                ->exists();
+
+            if (!$empExists) {
+                $failed[] = [
+                    'row'    => $rowNum,
+                    'reason' => 'Employee Code "' . $data['employee_code'] . '" was not found in the employee directory.'
+                ];
                 continue;
             }
 
             // Filter to only allowed columns
             $insertData = array_intersect_key($data, array_flip($allowedColumns));
 
-            // Replace empty strings with null for numeric columns
+            // Replace empty strings with null for numeric/date columns
             foreach ($insertData as $key => $value) {
                 if ($value === '') {
                     $insertData[$key] = null;
@@ -726,8 +783,6 @@ class ReportsController extends Controller
             }
 
             try {
-                // 2. Usedisset() instead of ?? for PHP < 7 compatibility
-                // 3. Used Employee_Payrolls alias since it is declared at the top of your controller
                 Employee_Payrolls::updateOrCreate(
                     [
                         'employee_code'  => $data['employee_code'],
@@ -770,4 +825,5 @@ class ReportsController extends Controller
         ]);
     }
 }
+
 

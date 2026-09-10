@@ -211,7 +211,7 @@ $(document).ready(function(){
             email: $('#email').val(),
             contactName: $('#Contactname').val() || null,
             contactNo: $('#ContactNo').val(),
-            employment_status: $('#employmentStatus :selected').text(),
+            employment_status: $('#employmentStatus').val() ? $('#employmentStatus :selected').text() : null,
             employment_date_from: $('#employment_date_from').val(),
             employment_date_to: $('#employment_date_to').val(),
             department: $("#department :selected").text(),
@@ -247,82 +247,134 @@ $(document).ready(function(){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
-
-        })
-
+        });
 
         e.preventDefault();
 
         var formData = {
-            employee_id : $('#employee_id').val(),
-            employee_Fname: $('#first_name').val(),
-            employee_Lname: $('#last_name').val(),
-            employee_Mname: $('#mid_name').val(),
+            employee_id : $.trim($('#employee_id').val()),
+            employee_Fname: $.trim($('#first_name').val()),
+            employee_Lname: $.trim($('#last_name').val()),
+            employee_Mname: $.trim($('#mid_name').val()) || null,
             gender: $('#gender').val(),
             date_hired: $('#date_hired').val(),
             birth_date: $('#birth_date').val(),
             department: $('#department').val() ? $("#department :selected").text() : "",
             sub_department: $('#sub_department').val() ? $("#sub_department :selected").text() : "",
             status: $('#status').val(),
-            address: $('#address').val(),
-            contact_no: $('#contact_no').val(),
-            sss: $('#sss_no').val(),
-            tin: $('#tin').val(),
-            hdmf: $('#hdmf').val(),
-            philhealth: $('#phil_health').val(),
-            ucpb: $('#ucpb').val(),
+            address: $.trim($('#address').val()),
+            contact_no: $.trim($('#contact_no').val()),
+            sss: $.trim($('#sss_no').val()),
+            tin: $.trim($('#tin').val()),
+            hdmf: $.trim($('#hdmf').val()),
+            philhealth: $.trim($('#phil_health').val()),
+            ucpb: $.trim($('#ucpb').val()),
             passport : null,
             passport_exp : null,
-            emp_email: $('#emp_email').val(),
-        }
+            emp_email: $.trim($('#emp_email').val()),
+        };
 
-        if(formData.employee_id=="" ) {
-            alertify.error("Employee I.D is required !");
+        if(!formData.employee_id) {
+            alertify.error("Employee ID is required !");
+            $('#employee_id').focus();
             return;
-        } else if(formData.employee_Lname=="" ) {
-            alertify.error("LastName is required !");
+        } else if(!formData.employee_Lname) {
+            alertify.error("Last Name is required !");
+            $('#last_name').focus();
             return;
-        } else if(formData.employee_Fname=="" ) {
-            alertify.error("FirstName is required !");
+        } else if(!formData.employee_Fname) {
+            alertify.error("First Name is required !");
+            $('#first_name').focus();
             return;
-        } else if(formData.employee_Mname=="" ) {
-            alertify.error("MiddleName is required !");
-            return;
-        } else if(formData.gender=="" || formData.gender==null) {
+        } else if(!formData.gender) {
             alertify.error("Gender is required !");
+            $('#gender').focus();
             return;
-        } else if(formData.date_hired=="" ) {
-            alertify.error("Date Hired is required !");
-            return;
-        } else if(formData.birth_date=="" ) {
+        } else if(!formData.birth_date) {
             alertify.error("Date of Birth is required !");
+            $('#birth_date').focus();
             return;
-        } else if(formData.department=="" || formData.department==null) {
-            alertify.error("Department is required !");
+        } else if(!formData.date_hired) {
+            alertify.error("Date Hired is required !");
+            $('#date_hired').focus();
             return;
-        } else if(formData.sub_department=="" || formData.sub_department==null) {
+        } else if(!formData.department) {
+            alertify.error("Group / Department is required !");
+            $('#department').focus();
+            return;
+        } else if(!formData.sub_department) {
             alertify.error("SubGroup is required !");
+            $('#sub_department').focus();
+            return;
+        } else if(!formData.contact_no) {
+            alertify.error("Contact Number is required !");
+            $('#contact_no').focus();
+            return;
+        } else if(!formData.emp_email) {
+            alertify.error("Login Email Address is required !");
+            $('#emp_email').focus();
             return;
         }
 
-        var type = "GET";
-        var my_url = url;
-        console.log(formData);
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.emp_email)) {
+            alertify.error("Please enter a valid email address !");
+            $('#emp_email').focus();
+            return;
+        }
+
+        // Loading state
+        var $btnSubmit = $("#btn-submit");
+        var originalBtnHtml = $btnSubmit.html();
+        $btnSubmit.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1.5"></i> Adding Employee...');
+        $('#btn-danger').prop('disabled', true);
+        $('#addEmployee [data-dismiss="modal"]').prop('disabled', true);
+
+        // Show a non-blocking loading notification
+        var loadingAlert = alertify.notify('<div class="flex items-center gap-2"><i class="fa fa-spinner fa-spin text-blue-500"></i> Adding employee, please wait...</div>', 'message', 0);
 
         $.ajax({
-
-            type: type,
-            url: my_url,
+            type: "GET",
+            url: url,
             data: formData,
             dataType: 'json',
             success: function (data) {
-                console.log(data);
+                if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                    loadingAlert.dismiss();
+                }
+
+                if (data && data.success === false) {
+                    $btnSubmit.prop('disabled', false).html(originalBtnHtml);
+                    $('#btn-danger').prop('disabled', false);
+                    $('#addEmployee [data-dismiss="modal"]').prop('disabled', false);
+                    alertify.error(data.message || "Failed to add employee.");
+                    return;
+                }
+
+                // Close modal
                 $('#addEmployee').modal('hide');
-                location.reload();
+
+                // Smooth success alert
+                alertify.success('<div class="flex items-center gap-2"><i class="fa fa-check-circle text-emerald-400"></i> <strong>Success!</strong> Employee added successfully.</div>', 4);
+
+                // Smooth delay before refresh
+                setTimeout(function() {
+                    location.reload();
+                }, 1200);
             },
-            error: function (data) {
-                // console.log('Error:', data);
-                alertify.error("An error occurred while adding the employee.");
+            error: function (xhr) {
+                if (loadingAlert && typeof loadingAlert.dismiss === 'function') {
+                    loadingAlert.dismiss();
+                }
+                $btnSubmit.prop('disabled', false).html(originalBtnHtml);
+                $('#btn-danger').prop('disabled', false);
+                $('#addEmployee [data-dismiss="modal"]').prop('disabled', false);
+
+                var errMsg = "An error occurred while adding the employee.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errMsg = xhr.responseJSON.message;
+                }
+                alertify.error(errMsg);
             }
         });
     });
@@ -429,21 +481,26 @@ $(document).ready(function(){
             }
         });
     });
-    $( "#employmentStatus" ).change(function() {
-        // console.log($('#employmentStatus').val())
-        if($('#employmentStatus').val() == 2)
-        {
-            $('#employment_date_from').prop('disabled',false);
-            $('#employment_date_to').prop('disabled',false);
-        }
-        else
-        {
-            $('#employment_date_from').prop('disabled',true);
-            $('#employment_date_to').prop('disabled',true);
+    function checkEmploymentStatusDates() {
+        var val = $('#employmentStatus').val();
+        var text = $.trim($('#employmentStatus :selected').text().toLowerCase());
+        if (val == '2' || val == '3' || text === 'contractual' || text === 'probationary') {
+            $('#employment_date_from').prop('disabled', false);
+            $('#employment_date_to').prop('disabled', false);
+        } else {
+            $('#employment_date_from').prop('disabled', true);
+            $('#employment_date_to').prop('disabled', true);
             $('#employment_date_from').val('');
             $('#employment_date_to').val('');
         }
+    }
+
+    $("#employmentStatus").on('change', function() {
+        checkEmploymentStatusDates();
     });
+
+    // Run on page load for existing employee accounts
+    checkEmploymentStatusDates();
 
 
 });

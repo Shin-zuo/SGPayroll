@@ -50,27 +50,52 @@
     </script>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Prevent sidebar layout shift / FOUC -->
+    <script>
+        (function() {
+            try {
+                var isCollapsed = localStorage.getItem('sgpayroll_sidebar_collapsed') === 'true';
+                var savedWidth = localStorage.getItem('sgpayroll_sidebar_width');
+                if (isCollapsed) {
+                    document.documentElement.classList.add('sidebar-collapsed');
+                } else if (savedWidth) {
+                    var w = parseInt(savedWidth, 10);
+                    if (w >= 180 && w <= 480) {
+                        document.documentElement.style.setProperty('--sidebar-width', w + 'px');
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body class="bg-slate-50/50 font-sans text-slate-800 antialiased" x-data="{ sidebarOpen: false, profileOpen: false }">
     <div class="flex h-screen overflow-hidden">
         
         <!-- Sidebar -->
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-200/80 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col shrink-0 shadow-xs">
+        <aside id="app-sidebar" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 bg-white border-r border-slate-200/80 md:relative md:translate-x-0 flex flex-col shrink-0 shadow-xs relative select-none">
             <!-- Brand Area -->
-            <div class="flex items-center justify-between h-16 px-5 border-b border-slate-100">
-                <a href="/" class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-sm shadow-blue-500/20">
+            <div class="brand-header flex items-center justify-between h-16 px-4 border-b border-slate-100 relative shrink-0">
+                <a href="/" class="flex items-center gap-3 overflow-hidden min-w-0" id="sidebarBrandLink" title="SGPayroll">
+                    <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-sm shadow-blue-500/20 shrink-0">
                         SG
                     </div>
-                    <span class="text-base font-bold text-slate-900 tracking-tight">SGPayroll</span>
+                    <span class="sidebar-brand-text text-base font-bold text-slate-900 tracking-tight whitespace-nowrap">SGPayroll</span>
                 </a>
+
+                <!-- Collapse / Expand Toggle Button (Sidebar Header) -->
+                <button id="sidebarToggleBtn" type="button" class="hidden md:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0 cursor-pointer" title="Collapse sidebar (Ctrl+B)">
+                    <i id="sidebarToggleIcon" class="fa fa-angle-left text-sm transition-transform duration-200"></i>
+                </button>
+
+                <!-- Mobile Close Button -->
                 <button @click="sidebarOpen = false" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
                     <i class="fa fa-times text-sm"></i>
                 </button>
             </div>
             
             <!-- Sidebar Links -->
-            <div class="flex-1 overflow-y-auto py-3">
+            <div class="flex-1 overflow-y-auto py-3 overflow-x-hidden">
                 @if(auth()->check())
                     @if(auth()->user()->user_type == 0)
                         @include('superadmin.sidebar')
@@ -81,6 +106,9 @@
                     @endif
                 @endif
             </div>
+
+            <!-- Resize Handle (Right Border, Desktop Only) -->
+            <div id="sidebarResizeHandle" class="hidden md:block" title="Drag to resize sidebar"></div>
         </aside>
 
         <!-- Main Content Wrapper -->
@@ -89,9 +117,14 @@
             <!-- Top Header -->
             <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-slate-200/80 flex items-center justify-between px-6 sticky top-0 z-20 shrink-0">
                 <div class="flex items-center">
-                    <!-- Hamburger Toggle Button -->
-                    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-2">
+                    <!-- Hamburger Toggle Button (Mobile) -->
+                    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-2" aria-label="Toggle mobile menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+
+                    <!-- Desktop Sidebar Toggle Button (Desktop Topbar) -->
+                    <button id="desktopSidebarToggleBtn" type="button" class="hidden md:inline-flex items-center justify-center p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-3 transition-colors cursor-pointer" title="Toggle Sidebar (Ctrl+B)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
                     </button>
                     
                     <!-- Global Search -->
@@ -486,5 +519,8 @@
     @endif
     @yield('scripts')
     @stack('scripts')
+
+    <!-- Floating Tooltip for Minimized Sidebar -->
+    <div id="sidebarFloatingTooltip" class="sidebar-floating-tooltip"></div>
 </body>
 </html>
