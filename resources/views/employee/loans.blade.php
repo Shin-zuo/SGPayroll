@@ -18,19 +18,19 @@
 </div>
 
 <!-- Table Card -->
-<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
+    <div class="bg-slate-50/80 dark:bg-slate-900/60 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-sm">
+            <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shadow-xs">
                     <i class="fas fa-receipt"></i>
                 </span>
                 Loans for {{ strtoupper($employee->full_name) }}
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Employee ID: <span class="font-mono font-semibold text-slate-700">{{ $employee->employee_id }}</span> &bull; Active Loan Records</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Employee ID: <span class="font-mono font-semibold text-slate-700 dark:text-slate-200">{{ $employee->employee_id }}</span> &bull; Active Loan Records</p>
         </div>
         <div class="flex items-center gap-2.5">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700/60 text-xs font-semibold">
                 {{ $employee_loan->count() }} records
             </span>
             <a href="/employee/account/{{ $employee->id }}" class="btn btn-secondary text-xs font-medium flex items-center gap-1.5">
@@ -45,7 +45,7 @@
     <div class="p-5 overflow-x-auto">
         <table class="w-full text-left border-collapse" style="font-size: 12px;">
             <thead>
-                <tr class="bg-slate-100/75 font-semibold text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
+                <tr class="bg-slate-100/75 dark:bg-slate-800/80 font-semibold text-slate-600 dark:text-slate-300 uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800">
                     <th class="py-2.5 px-3">Date Started</th>
                     <th class="py-2.5 px-3">Loan Type</th>
                     <th class="py-2.5 px-3 text-right">Amount</th>
@@ -56,16 +56,16 @@
                     <th class="py-2.5 px-3 text-center" style="width: 90px;">Action</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse($employee_loan as $employee_loans)
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                    <td class="py-2.5 px-3 font-mono text-slate-600" style="font-size: 11px;">{{$employee_loans->deduction_date}}</td>
-                    <td class="py-2.5 px-3 font-semibold text-slate-800" style="font-size: 12px;">{{$employee_loans->loan_name}}</td>
-                    <td class="py-2.5 px-3 text-right font-medium text-slate-700" style="font-size: 12px;">₱{{number_format($employee_loans->loan_amount, 2)}}</td>
-                    <td class="py-2.5 px-3 text-center text-slate-600" style="font-size: 11px;">{{$employee_loans->original_term}}</td>
-                    <td class="py-2.5 px-3 text-center text-slate-600" style="font-size: 11px;">{{$employee_loans->remaining_term}}</td>
-                    <td class="py-2.5 px-3 text-slate-500 max-w-xs truncate" style="font-size: 11px;" title="{{$employee_loans->promissory_note}}">{{$employee_loans->promissory_note ?: '—'}}</td>
-                    <td class="py-2.5 px-3 text-right font-bold text-rose-600" style="font-size: 12px;">₱{{number_format($employee_loans->deduction, 2)}}</td>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-300" style="font-size: 11px;">{{$employee_loans->deduction_date}}</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-white" style="font-size: 12px;">{{$employee_loans->loan_name}}</td>
+                    <td class="py-2.5 px-3 text-right font-medium text-slate-700 dark:text-slate-100" style="font-size: 12px;">₱{{number_format($employee_loans->loan_amount, 2)}}</td>
+                    <td class="py-2.5 px-3 text-center text-slate-600 dark:text-slate-300" style="font-size: 11px;">{{$employee_loans->original_term}}</td>
+                    <td class="py-2.5 px-3 text-center text-slate-600 dark:text-slate-300" style="font-size: 11px;">{{$employee_loans->remaining_term}}</td>
+                    <td class="py-2.5 px-3 text-slate-500 dark:text-slate-300 max-w-xs truncate" style="font-size: 11px;" title="{{$employee_loans->promissory_note}}">{{$employee_loans->promissory_note ?: '—'}}</td>
+                    <td class="py-2.5 px-3 text-right font-bold text-rose-600 dark:text-rose-400" style="font-size: 12px;">₱{{number_format($employee_loans->deduction, 2)}}</td>
                     <td class="py-2.5 px-3 text-center">
                         <div class="admin-action-btn-group">
                             <button type="button" data-toggle="modal" class="admin-btn-action admin-btn-action-edit" data-id="{{$employee_loans->id}}" data-target="#editLoan" title="Edit Loan">

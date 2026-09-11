@@ -207,11 +207,11 @@
                 </div>
             </div>
 
-            <div class="pt-2 flex items-center justify-between">
+            <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <span class="text-xs text-slate-400">
                     <i class="fa fa-info-circle mr-1.5"></i> Generated PDF opens in a new browser tab for direct printing.
                 </span>
-                <button type="submit" formtarget="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center shadow-sm text-sm cursor-pointer">
+                <button type="submit" formtarget="_blank" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center justify-center shadow-sm text-sm cursor-pointer">
                     <i class="fa fa-print mr-1.5"></i> Generate & Print Payslips
                 </button>
             </div>
@@ -221,35 +221,35 @@
 
 <!-- Created Payslips Table Section -->
 <div id="created-payslips" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div class="bg-slate-50/80 dark:bg-slate-900/60 px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="fas fa-table"></i>
+            <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-xs">
+                    <i class="fa fa-file-invoice-dollar"></i>
                 </span>
                 Created Payroll Directory
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Sorted newest at top. Search by employee or filter by month and year.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sorted newest at top. Search by employee or filter by month and year.</p>
         </div>
         <div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent dark:border-slate-700/60 text-xs font-semibold">
                 Showing {{ $payrolls->firstItem() ?? 0 }} - {{ $payrolls->lastItem() ?? 0 }} of {{ $payrolls->total() }} records
             </span>
         </div>
     </div>
 
-    <!-- Search & Filter Controls (Single Clean Line) -->
-    <div class="p-4 bg-slate-50/70 border-b border-slate-200">
-        <form method="GET" action="{{ url('/payslip') }}" style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0;">
-            <!-- Search Input: compact and comfortable width -->
-            <div style="position: relative; width: 260px;">
+    <!-- Search & Filter Controls (Responsive Flex) -->
+    <div class="p-3.5 sm:p-4 bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-200 dark:border-slate-800">
+        <form method="GET" action="{{ url('/payslip') }}" class="flex flex-wrap items-center gap-2.5 m-0">
+            <!-- Search Input: fluid on mobile, fixed width on larger screens -->
+            <div class="relative w-full sm:w-64">
                 <input type="text" 
                        id="payslip_search_input"
                        name="search" 
                        value="{{ request('search') }}" 
                        placeholder="Search employee or code..." 
                        class="form-control"
-                       style="height: 38px; padding-left: 32px; padding-right: 28px; width: 100%; border-radius: 6px; font-size: 13px; background-color: #fff;">
+                       style="height: 38px; padding-left: 32px; padding-right: 28px; width: 100%; border-radius: 8px; font-size: 13px;">
                 <i class="fa fa-search text-slate-400" style="position: absolute; left: 10px; top: 12px; font-size: 13px; pointer-events: none;"></i>
                 @if(!empty(request('search')))
                 <a href="{{ url('/payslip?' . http_build_query(request()->except('search'))) }}" 
@@ -261,8 +261,8 @@
             </div>
 
             <!-- Month Filter -->
-            <div style="width: 140px;">
-                <select name="month" class="form-control" style="height: 38px; width: 100%; border-radius: 6px; font-size: 13px; background-color: #fff;">
+            <div class="w-full sm:w-36">
+                <select name="month" class="form-control" style="height: 38px; width: 100%; border-radius: 8px; font-size: 13px;">
                     <option value="all">All Months</option>
                     @for($m = 1; $m <= 12; $m++)
                         <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
@@ -273,8 +273,8 @@
             </div>
 
             <!-- Year Filter -->
-            <div style="width: 125px;">
-                <select name="year" class="form-control" style="height: 38px; width: 100%; border-radius: 6px; font-size: 13px; background-color: #fff;">
+            <div class="w-full sm:w-32">
+                <select name="year" class="form-control" style="height: 38px; width: 100%; border-radius: 8px; font-size: 13px;">
                     <option value="all">All Years</option>
                     @foreach($availableYears as $yr)
                         <option value="{{ $yr }}" {{ (request('year') == $yr) ? 'selected' : '' }}>{{ $yr }}</option>
@@ -283,8 +283,8 @@
             </div>
 
             <!-- Department Filter -->
-            <div style="width: 170px;">
-                <select name="dept" class="form-control" style="height: 38px; width: 100%; border-radius: 6px; font-size: 13px; background-color: #fff;">
+            <div class="w-full sm:w-44">
+                <select name="dept" class="form-control" style="height: 38px; width: 100%; border-radius: 8px; font-size: 13px;">
                     <option value="all">All Departments</option>
                     @foreach($department as $deptItem)
                         <option value="{{ strtoupper($deptItem->department_name) }}" {{ request('dept') == strtoupper($deptItem->department_name) ? 'selected' : '' }}>
@@ -295,12 +295,12 @@
             </div>
 
             <!-- Action Buttons -->
-            <div style="display: inline-flex; align-items: center; gap: 8px;">
-                <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 16px; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; cursor: pointer;">
+            <div class="flex items-center gap-2">
+                <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 16px; border-radius: 8px; font-size: 13px; display: inline-flex; align-items: center; cursor: pointer;">
                     <i class="fa fa-filter mr-1.5"></i> Filter
                 </button>
                 @if(!empty(request('search')) || (request('month') && request('month') !== 'all') || (request('year') && request('year') !== 'all') || (request('dept') && request('dept') !== 'all'))
-                <a href="{{ url('/payslip') }}" class="btn btn-secondary" style="height: 38px; padding: 0 12px; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; cursor: pointer;" title="Reset All Filters">
+                <a href="{{ url('/payslip') }}" class="btn btn-secondary" style="height: 38px; padding: 0 12px; border-radius: 8px; font-size: 13px; display: inline-flex; align-items: center; cursor: pointer;" title="Reset All Filters">
                     <i class="fa fa-undo mr-1.5"></i> Reset
                 </a>
                 @endif
@@ -308,23 +308,23 @@
         </form>
     </div>
 
-    <!-- Table Content -->
-    <div>
+    <!-- Table Content (Responsive Scroll) -->
+    <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse" style="font-size: 12px;">
             <thead>
-                <tr class="bg-slate-100/75 font-semibold text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
-                    <th class="py-2.5 px-2" style="width: 48px;">Ref #</th>
-                    <th class="py-2.5 px-2">Employee</th>
-                    <th class="py-2.5 px-2">Dept / Payroll</th>
-                    <th class="py-2.5 px-2">Period</th>
-                    <th class="py-2.5 px-2 text-right">Gross</th>
-                    <th class="py-2.5 px-2 text-right">Deductions</th>
-                    <th class="py-2.5 px-2 text-right">Net Pay</th>
-                    <th class="py-2.5 px-2">Created</th>
-                    <th class="py-2.5 px-2 text-center" style="width: 108px;">Actions</th>
+                <tr class="bg-slate-100/75 dark:bg-slate-800/80 font-semibold text-slate-600 dark:text-slate-300 uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800">
+                    <th class="py-2.5 px-3" style="width: 55px;">Ref #</th>
+                    <th class="py-2.5 px-3">Employee</th>
+                    <th class="py-2.5 px-3">Dept / Payroll</th>
+                    <th class="py-2.5 px-3">Period</th>
+                    <th class="py-2.5 px-3 text-right">Gross</th>
+                    <th class="py-2.5 px-3 text-right">Deductions</th>
+                    <th class="py-2.5 px-3 text-right">Net Pay</th>
+                    <th class="py-2.5 px-3">Created</th>
+                    <th class="py-2.5 px-3 text-center" style="width: 112px;">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse($payrolls as $p)
                 @php
                     $emp = $p->employee;
@@ -333,43 +333,43 @@
                     $initials = $emp ? strtoupper(substr($emp->employee_Fname, 0, 1) . substr($emp->employee_Lname, 0, 1)) : 'EP';
                     $deductions = $p->total_deduction > 0 ? $p->total_deduction : max(0, $p->gross_pay - $p->net_pay);
                 @endphp
-                <tr class="hover:bg-slate-50/80 transition-colors" id="payslip-row-{{ $p->id }}">
-                    <td class="py-2.5 px-2 font-mono text-slate-500" style="font-size: 11px;">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors" id="payslip-row-{{ $p->id }}">
+                    <td class="py-2.5 px-3 font-mono text-slate-500 dark:text-slate-300 font-semibold" style="font-size: 11px;">
                         #{{ $p->id }}
                     </td>
-                    <td class="py-2.5 px-2">
-                        <div class="font-semibold text-slate-800" style="font-size: 12px;">{{ $empName }}</div>
-                        <div class="text-slate-400 font-mono" style="font-size: 10px;">{{ $empCode }}</div>
+                    <td class="py-2.5 px-3">
+                        <div class="font-bold text-slate-800 dark:text-white" style="font-size: 12px;">{{ $empName }}</div>
+                        <div class="text-slate-400 dark:text-slate-300 font-mono" style="font-size: 10px;">{{ $empCode }}</div>
                     </td>
-                    <td class="py-2.5 px-2">
-                        <div class="text-slate-700 font-medium" style="font-size: 11px;">{{ $p->department }}</div>
-                        <div class="text-slate-400" style="font-size: 10px;">#{{ $p->payroll_number }}</div>
+                    <td class="py-2.5 px-3">
+                        <div class="font-semibold text-slate-700 dark:text-slate-100" style="font-size: 11px;">{{ $p->department }}</div>
+                        <div class="text-slate-400 dark:text-slate-300" style="font-size: 10px;">#{{ $p->payroll_number }}</div>
                     </td>
-                    <td class="py-2.5 px-2" style="white-space: nowrap;">
-                        <div class="text-slate-700 font-medium" style="font-size: 11px;">{{ \Carbon\Carbon::parse($p->date_from)->format('M d') }} – {{ \Carbon\Carbon::parse($p->date_to)->format('M d, Y') }}</div>
-                        <div class="text-slate-400" style="font-size: 10px;">Mo. {{ $p->monthly_record }} / {{ $p->year }}</div>
+                    <td class="py-2.5 px-3" style="white-space: nowrap;">
+                        <div class="font-medium text-slate-700 dark:text-slate-100" style="font-size: 11px;">{{ \Carbon\Carbon::parse($p->date_from)->format('M d') }} – {{ \Carbon\Carbon::parse($p->date_to)->format('M d, Y') }}</div>
+                        <div class="text-slate-400 dark:text-slate-300" style="font-size: 10px;">Mo. {{ $p->monthly_record }} / {{ $p->year }}</div>
                     </td>
-                    <td class="py-2.5 px-2 text-right font-medium text-slate-700 col-gross-pay" style="white-space: nowrap; font-size: 12px;">
+                    <td class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-100 col-gross-pay" style="white-space: nowrap; font-size: 12px;">
                         ₱{{ number_format((float)$p->gross_pay, 2) }}
                     </td>
-                    <td class="py-2.5 px-2 text-right font-medium text-rose-600 col-total-deductions" style="white-space: nowrap; font-size: 12px;">
+                    <td class="py-2.5 px-3 text-right font-bold text-rose-600 dark:text-rose-400 col-total-deductions" style="white-space: nowrap; font-size: 12px;">
                         ₱{{ number_format((float)$deductions, 2) }}
                     </td>
-                    <td class="py-2.5 px-2 text-right font-bold text-emerald-600 col-net-pay" style="white-space: nowrap; font-size: 13px;">
+                    <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400 col-net-pay" style="white-space: nowrap; font-size: 13px;">
                         ₱{{ number_format((float)$p->net_pay, 2) }}
                     </td>
-                    <td class="py-2.5 px-2 text-slate-500" style="font-size: 11px; white-space: nowrap;">
+                    <td class="py-2.5 px-3 text-slate-600 dark:text-slate-200 font-medium" style="font-size: 11px; white-space: nowrap;">
                         {{ $p->created_at ? $p->created_at->format('M d, Y') : '—' }}
                     </td>
-                    <td class="py-2.5 px-2 text-center" style="width: 108px;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 5px;">
-                            <button type="button" class="btn-edit-payslip" style="width: 28px; height: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: #0284c7; background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 5px; cursor: pointer;" data-id="{{ $p->id }}" title="Edit Payslip" aria-label="Edit Payslip">
+                    <td class="py-2.5 px-3 text-center" style="width: 112px;">
+                        <div class="admin-action-btn-group">
+                            <button type="button" class="admin-btn-action admin-btn-action-edit btn-edit-payslip" data-id="{{ $p->id }}" title="Edit Payslip" aria-label="Edit Payslip">
                                 <i class="fa fa-pen"></i>
                             </button>
-                            <a href="{{ route('payslip.print-single', $p->id) }}" target="_blank" style="width: 28px; height: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: #2563eb; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 5px; text-decoration: none; cursor: pointer;" title="Print Payslip" aria-label="Print Payslip">
+                            <a href="{{ route('payslip.print-single', $p->id) }}" target="_blank" class="admin-btn-action admin-btn-action-print" title="Print Payslip" aria-label="Print Payslip">
                                 <i class="fa fa-print"></i>
                             </a>
-                            <button type="button" class="btn-delete-payslip" style="width: 28px; height: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: #e11d48; background-color: #fff1f2; border: 1px solid #fecdd3; border-radius: 5px; cursor: pointer;" data-id="{{ $p->id }}" data-employee="{{ $empName }}" title="Delete Payslip" aria-label="Delete Payslip">
+                            <button type="button" class="admin-btn-action admin-btn-action-danger btn-delete-payslip" data-id="{{ $p->id }}" data-employee="{{ $empName }}" title="Delete Payslip" aria-label="Delete Payslip">
                                 <i class="fa fa-trash-alt"></i>
                             </button>
                         </div>

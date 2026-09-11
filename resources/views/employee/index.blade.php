@@ -22,69 +22,69 @@
 @endphp
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <!-- Total Employees -->
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5 flex items-center justify-between">
         <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Employees</p>
-            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalEmp }}</p>
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Total Employees</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{{ $totalEmp }}</p>
         </div>
-        <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <i class="fa fa-users text-lg"></i>
         </div>
     </div>
 
     <!-- Active Employees -->
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5 flex items-center justify-between">
         <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Active Employees</p>
-            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $activeEmp }}</p>
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Active Employees</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{{ $activeEmp }}</p>
         </div>
-        <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <i class="fa fa-user-check text-lg"></i>
         </div>
     </div>
 
     <!-- Inactive Employees -->
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5 flex items-center justify-between">
         <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Inactive Employees</p>
-            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalEmp - $activeEmp }}</p>
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Inactive Employees</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{{ $totalEmp - $activeEmp }}</p>
         </div>
-        <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
             <i class="fa fa-user-slash text-lg"></i>
         </div>
     </div>
 
     <!-- Groups Count -->
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5 flex items-center justify-between">
         <div>
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Groups</p>
-            <p class="text-2xl font-bold text-slate-900 tracking-tight">{{ count($department) }}</p>
+            <p class="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Total Groups</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{{ count($department) }}</p>
         </div>
-        <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
             <i class="fa fa-sitemap text-lg"></i>
         </div>
     </div>
 </div>
 
 <!-- Data Table Section -->
-<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-    <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-8">
+    <div class="bg-slate-50/80 dark:bg-slate-900/60 px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm">
+            <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-xs">
                     <i class="fas fa-users"></i>
                 </span>
                 Active Employee Directory
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Filter, search, or add employee records and statutory configurations.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Filter, search, or add employee records and statutory configurations.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700/60 text-xs font-semibold">
                 {{ $activeEmp }} active employees
             </span>
             <button type="button" id="btn-import-employee-csv"
                 class="btn btn-secondary text-xs font-medium flex items-center gap-2">
-                <i class="fa fa-file-csv text-emerald-600"></i> Import CSV
+                <i class="fa fa-file-csv text-emerald-600 dark:text-emerald-400"></i> Import CSV
             </button>
             <button type="button" class="btn btn-primary text-xs font-medium flex items-center gap-2" data-toggle="modal" data-target="#addEmployee" title="Add Employee">
                 <i class="fa fa-plus text-xs"></i> Add Employee
@@ -92,10 +92,10 @@
         </div>
     </div>
     
-    <div class="p-5 overflow-x-auto">
+    <div class="p-3.5 sm:p-5 overflow-x-auto">
         <table id="emptable" class="w-full text-left border-collapse" style="font-size: 12px;">
             <thead>
-                <tr class="bg-slate-100/75 font-semibold text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
+                <tr class="bg-slate-100/75 dark:bg-slate-800/80 font-semibold text-slate-600 dark:text-slate-300 uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800">
                     <th class="py-2.5 px-3" style="width: 55px;">Ref #</th>
                     <th class="py-2.5 px-3">Full Name</th>
                     <th class="py-2.5 px-3">Group</th>
@@ -104,21 +104,21 @@
                     <th class="py-2.5 px-3 text-center" style="width: 108px;">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @foreach($employee as $employees)
-                <tr class="hover:bg-slate-50/80 transition-colors">
-                    <td class="py-2.5 px-3 font-mono text-slate-500" style="font-size: 11px;">#{{ $employees->id }}</td>
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="py-2.5 px-3 font-mono text-slate-500 dark:text-slate-300" style="font-size: 11px;">#{{ $employees->id }}</td>
                     <td class="py-2.5 px-3">
-                        <div class="font-semibold text-slate-800" style="font-size: 12px;">{{ strtoupper($employees->full_name) }}</div>
-                        <div class="text-slate-400 font-mono" style="font-size: 10px;">{{ $employees->employee_id }}</div>
+                        <div class="font-semibold text-slate-800 dark:text-white" style="font-size: 12px;">{{ strtoupper($employees->full_name) }}</div>
+                        <div class="text-slate-400 dark:text-slate-300 font-mono" style="font-size: 10px;">{{ $employees->employee_id }}</div>
                     </td>
-                    <td class="py-2.5 px-3 text-slate-700 font-medium" style="font-size: 11px;">{{ strtoupper($employees->department) }}</td>
-                    <td class="py-2.5 px-3 text-slate-500" style="font-size: 11px;">{{ $employees->position ?: '—' }}</td>
+                    <td class="py-2.5 px-3 text-slate-700 dark:text-slate-100 font-medium" style="font-size: 11px;">{{ strtoupper($employees->department) }}</td>
+                    <td class="py-2.5 px-3 text-slate-500 dark:text-slate-300" style="font-size: 11px;">{{ $employees->position ?: '—' }}</td>
                     <td class="py-2.5 px-3 text-center">
                         @if($employees->status == 'Inactive')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">Inactive</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">Inactive</span>
                         @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">Active</span>
                         @endif
                     </td>
                     <td class="py-2.5 px-3 text-center">
@@ -192,7 +192,7 @@
                                 <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="e.g. EMP-001" required>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="last_name">Last Name <span class="text-rose-500">*</span></label>
                                     <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required>
@@ -203,7 +203,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="mid_name">Middle Name</label>
                                     <input type="text" class="form-control" id="mid_name" name="mid_name" placeholder="Middle Name">
@@ -218,7 +218,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="status">Civil Status</label>
                                     <select id="status" class="form-control" name="status">
@@ -238,7 +238,7 @@
                                 <input type="date" class="form-control" id="date_hired" name="date_hired" required>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="department">Group <span class="text-rose-500">*</span></label>
                                     <select id="department" class="form-control" name="department" required>
@@ -275,7 +275,7 @@
                                 </h5>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="sss_no">SSS Number</label>
                                     <input type="text" class="form-control" id="sss_no" name="sss_no" placeholder="00-0000000-0">
@@ -286,7 +286,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div class="form-group">
                                     <label for="tin">TIN Number</label>
                                     <input type="text" class="form-control" id="tin" name="tin" placeholder="000-000-000">
@@ -310,7 +310,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer flex-wrap gap-2">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-secondary" id="btn-danger">Clear Fields</button>
                     <button type="submit" class="btn btn-primary" id="btn-submit">

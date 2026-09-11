@@ -51,10 +51,19 @@
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Prevent sidebar layout shift / FOUC -->
+    <!-- Theme & Sidebar Immediate Restoration (Prevent FOUC) -->
     <script>
         (function() {
             try {
+                // Dark Mode restoration
+                var theme = localStorage.getItem('sgpayroll_theme');
+                if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+
+                // Sidebar state restoration
                 var isCollapsed = localStorage.getItem('sgpayroll_sidebar_collapsed') === 'true';
                 var savedWidth = localStorage.getItem('sgpayroll_sidebar_width');
                 if (isCollapsed) {
@@ -69,33 +78,33 @@
         })();
     </script>
 </head>
-<body class="bg-slate-50/50 font-sans text-slate-800 antialiased" x-data="{ sidebarOpen: false, profileOpen: false }">
+<body class="bg-slate-50/50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 antialiased" x-data="{ sidebarOpen: false, profileOpen: false }">
     <div class="flex h-screen overflow-hidden">
         
         <!-- Sidebar -->
-        <aside id="app-sidebar" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 bg-white border-r border-slate-200/80 md:relative md:translate-x-0 flex flex-col shrink-0 shadow-xs relative select-none">
+        <aside id="app-sidebar" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-40 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 md:relative md:translate-x-0 flex flex-col shrink-0 shadow-xs select-none">
             <!-- Brand Area -->
-            <div class="brand-header flex items-center justify-between h-16 px-4 border-b border-slate-100 relative shrink-0">
+            <div class="brand-header flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-800 relative shrink-0">
                 <a href="/" class="flex items-center gap-3 overflow-hidden min-w-0" id="sidebarBrandLink" title="SGPayroll">
                     <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-sm shadow-blue-500/20 shrink-0">
                         SG
                     </div>
-                    <span class="sidebar-brand-text text-base font-bold text-slate-900 tracking-tight whitespace-nowrap">SGPayroll</span>
+                    <span class="sidebar-brand-text text-base font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">SGPayroll</span>
                 </a>
 
                 <!-- Collapse / Expand Toggle Button (Sidebar Header) -->
-                <button id="sidebarToggleBtn" type="button" class="hidden md:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0 cursor-pointer" title="Collapse sidebar (Ctrl+B)">
+                <button id="sidebarToggleBtn" type="button" class="hidden md:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shrink-0 cursor-pointer" title="Collapse sidebar (Ctrl+B)">
                     <i id="sidebarToggleIcon" class="fa fa-angle-left text-sm transition-transform duration-200"></i>
                 </button>
 
                 <!-- Mobile Close Button -->
-                <button @click="sidebarOpen = false" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+                <button @click="sidebarOpen = false" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
                     <i class="fa fa-times text-sm"></i>
                 </button>
             </div>
             
             <!-- Sidebar Links -->
-            <div class="flex-1 overflow-y-auto py-3 overflow-x-hidden">
+            <div class="flex-1 overflow-y-auto py-3 overflow-x-hidden" @click="if (window.innerWidth < 768) sidebarOpen = false">
                 @if(auth()->check())
                     @if(auth()->user()->user_type == 0)
                         @include('superadmin.sidebar')
@@ -111,14 +120,29 @@
             <div id="sidebarResizeHandle" class="hidden md:block" title="Drag to resize sidebar"></div>
         </aside>
 
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div 
+            x-show="sidebarOpen" 
+            @click="sidebarOpen = false" 
+            x-transition:enter="transition-opacity ease-linear duration-200" 
+            x-transition:enter-start="opacity-0" 
+            x-transition:enter-end="opacity-100" 
+            x-transition:leave="transition-opacity ease-linear duration-200" 
+            x-transition:leave-start="opacity-100" 
+            x-transition:leave-end="opacity-0" 
+            class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-30 md:hidden" 
+            style="display: none;"
+            aria-hidden="true"
+        ></div>
+
         <!-- Main Content Wrapper -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             
             <!-- Top Header -->
-            <header class="h-16 bg-white/90 backdrop-blur-sm border-b border-slate-200/80 flex items-center justify-between px-6 sticky top-0 z-20 shrink-0">
+            <header class="h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20 shrink-0">
                 <div class="flex items-center">
                     <!-- Hamburger Toggle Button (Mobile) -->
-                    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-2" aria-label="Toggle mobile menu">
+                    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 mr-2" aria-label="Toggle mobile menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     
@@ -132,21 +156,32 @@
                 </div>
 
                 <!-- User Actions -->
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 sm:space-x-3">
                     @if(auth()->check())
+                    <!-- Dark Mode Toggle Button (Beside Notification Bell) -->
+                    <button 
+                        id="themeToggleBtn" 
+                        type="button" 
+                        class="relative w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none cursor-pointer" 
+                        title="Toggle dark mode"
+                        aria-label="Toggle dark mode"
+                    >
+                        <i id="themeToggleIcon" class="fa fa-moon text-sm"></i>
+                    </button>
+
                     <!-- Notification Bell Dropdown -->
                     <div class="relative" x-data="notificationDropdown()" x-init="init()">
                         <button 
                             @click="toggleDropdown()" 
                             type="button"
-                            class="relative w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none"
-                            :class="{ 'bg-slate-100 text-slate-600': isOpen }"
+                            class="relative w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+                            :class="{ 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200': isOpen }"
                             aria-label="Notifications"
                         >
                             <i class="fa fa-bell text-sm"></i>
                             <template x-if="unreadCount > 0">
                                 <span 
-                                    class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white shadow-sm"
+                                    class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900 shadow-sm"
                                     x-text="unreadCount > 99 ? '99+' : unreadCount"
                                 ></span>
                             </template>
@@ -162,15 +197,15 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
                             x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-                            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden flex flex-col max-h-[480px]"
+                            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 z-50 overflow-hidden flex flex-col max-h-[480px]"
                             style="display: none;"
                         >
                             <!-- Header -->
-                            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+                            <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-800/60">
                                 <div class="flex items-center space-x-2">
-                                    <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Notifications</h3>
+                                    <h3 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Notifications</h3>
                                     <template x-if="unreadCount > 0">
-                                        <span class="px-2 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700 rounded-full" x-text="unreadCount + ' new'"></span>
+                                        <span class="px-2 py-0.5 text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full" x-text="unreadCount + ' new'"></span>
                                     </template>
                                 </div>
                                 <div class="flex items-center space-x-2 text-xs">
@@ -178,7 +213,7 @@
                                         <button 
                                             @click.stop="markAllAsRead()" 
                                             type="button"
-                                            class="text-blue-600 hover:text-blue-700 text-[11px] font-medium transition-colors hover:underline"
+                                            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-[11px] font-medium transition-colors hover:underline"
                                         >
                                             Mark all read
                                         </button>
@@ -187,7 +222,7 @@
                                         <button 
                                             @click.stop="clearAll()" 
                                             type="button"
-                                            class="text-slate-400 hover:text-rose-600 text-[11px] font-medium transition-colors hover:underline flex items-center"
+                                            class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 text-[11px] font-medium transition-colors hover:underline flex items-center"
                                             title="Clear all notifications"
                                         >
                                             <i class="fa fa-trash-can mr-1 text-[10px]"></i> Clear all
@@ -197,7 +232,7 @@
                             </div>
 
                             <!-- Notification Items List -->
-                            <div class="overflow-y-auto flex-1 divide-y divide-slate-100/80">
+                            <div class="overflow-y-auto flex-1 divide-y divide-slate-100/80 dark:divide-slate-800/80">
                                 <!-- Loading State -->
                                 <template x-if="loading && notifications.length === 0">
                                     <div class="p-8 text-center text-slate-400">
@@ -209,11 +244,11 @@
                                 <!-- Empty State -->
                                 <template x-if="!loading && notifications.length === 0">
                                     <div class="p-8 text-center">
-                                        <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                                        <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mb-3">
                                             <i class="fa fa-bell-slash text-base"></i>
                                         </div>
-                                        <p class="text-xs font-semibold text-slate-700">No notifications yet</p>
-                                        <p class="text-[11px] text-slate-400 mt-0.5">You're all caught up!</p>
+                                        <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">No notifications yet</p>
+                                        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">You're all caught up!</p>
                                     </div>
                                 </template>
 
@@ -221,28 +256,28 @@
                                 <template x-for="item in notifications" :key="item.id">
                                     <div 
                                         @click="clickNotification(item)" 
-                                        class="group relative p-3.5 flex items-start space-x-3 transition-colors cursor-pointer hover:bg-slate-50/90"
-                                        :class="item.is_read ? 'bg-white' : 'bg-blue-50/50'"
+                                        class="group relative p-3.5 flex items-start space-x-3 transition-colors cursor-pointer hover:bg-slate-50/90 dark:hover:bg-slate-800/80"
+                                        :class="item.is_read ? 'bg-white dark:bg-slate-900' : 'bg-blue-50/50 dark:bg-slate-800/40'"
                                     >
                                         <!-- Type Icon -->
                                         <div class="shrink-0 mt-0.5">
                                             <template x-if="item.type === 'leave_application'">
-                                                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xs shadow-xs">
+                                                <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shadow-xs">
                                                     <i class="fa fa-calendar-alt"></i>
                                                 </div>
                                             </template>
                                             <template x-if="item.type === 'leave_status'">
-                                                <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs shadow-xs">
+                                                <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shadow-xs">
                                                     <i class="fa fa-clipboard-check"></i>
                                                 </div>
                                             </template>
                                             <template x-if="item.type === 'new_payslip'">
-                                                <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xs shadow-xs">
+                                                <div class="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shadow-xs">
                                                     <i class="fa fa-file-invoice-dollar"></i>
                                                 </div>
                                             </template>
                                             <template x-if="!['leave_application', 'leave_status', 'new_payslip'].includes(item.type)">
-                                                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs shadow-xs">
+                                                <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs shadow-xs">
                                                     <i class="fa fa-bell"></i>
                                                 </div>
                                             </template>
@@ -251,13 +286,13 @@
                                         <!-- Text Details -->
                                         <div class="flex-1 min-w-0 pr-1">
                                             <div class="flex items-center space-x-1.5">
-                                                <h4 class="text-xs font-semibold text-slate-900 truncate" x-text="item.title"></h4>
+                                                <h4 class="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate" x-text="item.title"></h4>
                                                 <template x-if="!item.is_read">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 shrink-0"></span>
                                                 </template>
                                             </div>
-                                            <p class="text-[11px] text-slate-600 leading-snug mt-0.5 line-clamp-2" x-text="item.message"></p>
-                                            <div class="flex items-center space-x-1 text-[10px] text-slate-400 mt-1.5">
+                                            <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5 line-clamp-2" x-text="item.message"></p>
+                                            <div class="flex items-center space-x-1 text-[10px] text-slate-400 dark:text-slate-500 mt-1.5">
                                                 <i class="fa fa-clock text-[9px]"></i>
                                                 <span x-text="item.time_ago"></span>
                                             </div>
@@ -267,7 +302,7 @@
                                         <button 
                                             @click.stop="deleteNotification(item.id)" 
                                             type="button" 
-                                            class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-70 group-hover:opacity-100 focus:opacity-100"
+                                            class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors opacity-70 group-hover:opacity-100 focus:opacity-100"
                                             title="Delete notification"
                                             aria-label="Delete notification"
                                         >
@@ -279,8 +314,8 @@
 
                             <!-- Footer -->
                             <template x-if="notifications.length > 0">
-                                <div class="px-4 py-2 border-t border-slate-100 bg-slate-50/40 text-center">
-                                    <p class="text-[10px] text-slate-400">Click a notification to view details</p>
+                                <div class="px-4 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/40 text-center">
+                                    <p class="text-[10px] text-slate-400 dark:text-slate-500">Click a notification to view details</p>
                                 </div>
                             </template>
                         </div>
@@ -289,7 +324,7 @@
 
                     @if(auth()->check())
                     <div class="relative">
-                        <button @click="profileOpen = !profileOpen" @click.away="profileOpen = false" class="flex items-center space-x-2.5 focus:outline-none rounded-lg p-1.5 hover:bg-slate-50 border border-transparent hover:border-slate-200/70 transition-all">
+                        <button @click="profileOpen = !profileOpen" @click.away="profileOpen = false" class="flex items-center space-x-2.5 focus:outline-none rounded-lg p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200/70 dark:hover:border-slate-700 transition-all">
                             @php
                                 $profilePic = null;
                                 if (Auth::user()->profile_picture) {
@@ -300,35 +335,35 @@
                             @endphp
                             
                             @if($profilePic)
-                                <img src="{{ asset('images/profiles/' . $profilePic) }}" alt="Profile" class="h-7 w-7 rounded-full object-cover ring-1 ring-slate-200">
+                                <img src="{{ asset('images/profiles/' . $profilePic) }}" alt="Profile" class="h-7 w-7 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700">
                             @else
-                                <div class="h-7 w-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-semibold ring-1 ring-slate-200">
+                                <div class="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 flex items-center justify-center text-xs font-semibold ring-1 ring-slate-200 dark:ring-slate-700">
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </div>
                             @endif
-                            <span class="hidden md:inline-block text-xs font-medium text-slate-700 max-w-[120px] truncate">{{ Auth::user()->name }}</span>
+                            <span class="hidden md:inline-block text-xs font-medium text-slate-700 dark:text-slate-300 max-w-[120px] truncate">{{ Auth::user()->name }}</span>
                             <i class="fa fa-chevron-down text-[10px] text-slate-400"></i>
                         </button>
 
                         <!-- Dropdown Menu -->
-                        <div x-show="profileOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg py-1.5 border border-slate-100 z-50" style="display: none;">
-                            <div class="px-4 py-2.5 border-b border-slate-100">
-                                <p class="text-xs font-semibold text-slate-900 leading-tight">{{ Auth::user()->name }}</p>
-                                <p class="text-[11px] text-slate-400 truncate mt-0.5">{{ Auth::user()->email ?? 'Employee' }}</p>
+                        <div x-show="profileOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl shadow-lg py-1.5 border border-slate-100 dark:border-slate-800 z-50" style="display: none;">
+                            <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800">
+                                <p class="text-xs font-semibold text-slate-900 dark:text-white leading-tight">{{ Auth::user()->name }}</p>
+                                <p class="text-[11px] text-slate-400 dark:text-slate-500 truncate mt-0.5">{{ Auth::user()->email ?? 'Employee' }}</p>
                             </div>
                             
                             <div class="py-1">
                                 @if(auth()->user()->user_type == 2)
-                                    <a href="/portal/profile" class="flex items-center px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                                    <a href="/portal/profile" class="flex items-center px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                         <i class="fa fa-cog w-4 mr-2 text-slate-400"></i> Settings
                                     </a>
                                 @else
-                                    <a href="/admin/settings" class="flex items-center px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                                    <a href="/admin/settings" class="flex items-center px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                         <i class="fa fa-cog w-4 mr-2 text-slate-400"></i> Settings
                                     </a>
                                 @endif
                                 
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50/70 transition-colors">
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center px-4 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50/70 dark:hover:bg-rose-950/30 transition-colors">
                                     <i class="fa fa-sign-out-alt w-4 mr-2"></i> Logout
                                 </a>
                             </div>
@@ -342,7 +377,7 @@
             </header>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto bg-slate-50/50 p-6 lg:p-8">
+            <main class="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950 p-3.5 sm:p-5 md:p-6 lg:p-8">
                 <div class="max-w-7xl mx-auto w-full">
                     @yield('content')
                 </div>

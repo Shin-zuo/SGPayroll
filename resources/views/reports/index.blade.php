@@ -77,11 +77,11 @@
                 </div>
             </div>
 
-            <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
-                <button type="button" id="btn-import-payroll-csv" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-6 rounded-md transition-colors flex items-center gap-2 shadow-sm">
+            <div class="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
+                <button type="button" id="btn-import-payroll-csv" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-6 rounded-md transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                     <i class="fas fa-file-import"></i> Import Payroll CSV
                 </button>
-                <button type="submit" formtarget="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-md transition-colors flex items-center gap-2 shadow-sm">
+                <button type="submit" formtarget="_blank" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-md transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                     <i class="fas fa-print"></i> Generate Report
                 </button>
             </div>

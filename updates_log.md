@@ -4,6 +4,157 @@ This document serves as the comprehensive log of all features, enhancements, sch
 
 ---
 
+## [2026-09-11] — Payroll Group Matrix (/payroll/{group}) Dark Mode Contrast & Grid Standardization
+
+### 1. Light Pastel Washed-Out Colors & High Contrast Overhaul
+- **Problem**: In the payroll computation matrix page ([`resources/views/payroll/index.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/payroll/index.blade.php)), sections for `Debit`, `Credit`, `Non-Tax Benefits`, `Non-Tax Other Pay`, `Contributions`, `Loans`, `Gross Pay`, and `Net Pay` used light-mode pastel utility classes (`bg-red-50`, `bg-yellow-50`, `bg-purple-50`, `bg-green-50`, `bg-orange-50`, `bg-teal-50`, `bg-blue-100`, `bg-green-100` and `/30` variants) without dark mode definitions. In dark mode, these rendered with blinding white/pastel backgrounds and washed-out text.
+- **Root Cause & Solution**:
+  - **Global Palette Accents in `resources/assets/css/app.css`**: Added dark mode rules for all pastel background utilities and their fractional opacity variants (`.bg-red-50`, `.bg-yellow-50`, `.bg-purple-50`, `.bg-green-50`, `.bg-orange-50`, `.bg-teal-50`, `.bg-blue-100`, `.bg-green-100`), mapping them to elevated translucent dark card surfaces (`rgba(..., 0.25)`).
+  - **Vibrant High-Contrast Text Scales**: Added dark text overrides in `app.css` for `text-red-800/600` (`#fb7185`), `text-yellow-800/600` (`#fcd34d`), `text-purple-800/600` (`#c084fc`), `text-green-800/700/600` (`#34d399`), `text-orange-800/600` (`#fdba74`), `text-teal-800/600` (`#5eead4`), and `text-blue-800/700` (`#93c5fd`).
+  - **Dedicated Payroll Matrix Styling**: Added `.payroll-table-main` rules in `app.css` ensuring table cells, dark numeric inputs, and disabled inputs retain full opacity (`opacity: 1 !important`) and high contrast.
+
+### 2. Blade Template Dark Mode & Table Grid Alignment
+- **Loans Header Alignment Bug**: Fixed `colspan="8"` to `colspan="7"` on the `Loans` header in [`resources/views/payroll/index.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/payroll/index.blade.php), eliminating the rogue empty black cell that previously appeared beside `SSS EMERG.`.
+- **Department Filter Card**: Applied `dark:bg-slate-900`, `dark:border-slate-800`, styled dark inputs and selects, high-contrast labels, and elevated filter button.
+- **Employee Header Bar**: Modernized `bg-blue-600` with `dark:bg-slate-800`, avatar badge, and subtle reference tag (`Ref: #ID`).
+- **Matrix Inputs & Summary Badges**:
+  - Replaced flat inputs with styled dark inputs (`dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 font-mono text-center`).
+  - Styled `Excess Hours` (`dark:bg-slate-800 dark:text-slate-100`), `Gross Pay` (`dark:bg-blue-950/70 dark:text-blue-200`), and `Net Pay` (`dark:bg-emerald-950/50 dark:text-emerald-400 font-mono font-bold`).
+- **Recompiled Assets**: Compiled minified styles into [`public/css/tailwind.css`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/public/css/tailwind.css) via `npm run build:css`.
+
+---
+
+## [2026-09-11] — Mobile Viewport Full-Width Responsiveness & Off-Canvas Sidebar Layout Fix
+
+### 1. Mobile Sidebar Flow & 250px Blank Void Bug Resolution
+- **Problem**: In mobile viewports (< 768px), the main application view had a 256px blank gap/void on the left side of the screen, severely squeezing the main content container and tables to the right and causing awkward horizontal overflow.
+- **Root Cause**: In [`resources/views/layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/layouts/app.blade.php), `<aside id="app-sidebar">` contained conflicting position classes (`fixed inset-y-0 left-0 ... md:relative ... relative`). Because `relative` appeared at the end of the class list, on mobile devices (where `md:relative` was not yet active), the element took `position: relative`. In CSS Flexbox (`<div class="flex h-screen overflow-hidden">`), a `relative` element with `-translate-x-full` still occupies its full 256px layout box in the flex flow, displacing the sibling content container `<div class="flex-1 flex flex-col min-w-0">` 256px to the right and leaving an empty 256px void on the left.
+- **Solution**:
+  - **Blade Class Cleanup**: Removed the conflicting trailing `relative` class from `<aside id="app-sidebar">` in [`layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/layouts/app.blade.php) line 85.
+  - **Hardened Mobile Drawer CSS in `resources/assets/css/app.css`**: Added an explicit `@media (max-width: 767px)` rule for `#app-sidebar` specifying `position: fixed !important; top: 0 !important; bottom: 0 !important; left: 0 !important; z-index: 40 !important; width: 16rem !important; max-width: 80vw !important; transition: transform 0.3s ease-in-out !important;` and hiding the desktop resize handle (`#sidebarResizeHandle { display: none !important; }`). This ensures that on mobile screens the sidebar is strictly removed from document flex flow and operates solely as an off-canvas drawer.
+  - **Container Width & Padding Optimization**: Set responsive padding on `<main class="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950 p-3.5 sm:p-5 md:p-6 lg:p-8">` allowing mobile devices to make use of 100% of the display viewport width.
+
+### 2. Page-Specific Mobile Viewport Optimizations
+- **Employee Account View ([resources/views/employee/account.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/account.blade.php))**:
+  - Converted the profile header to a responsive flex layout (`flex-col sm:flex-row sm:items-center justify-between gap-3`) preventing action buttons from overflowing.
+  - Converted statutory deduction checkboxes from a rigid 4-column grid to responsive `grid-cols-2 sm:grid-cols-4 gap-2`.
+  - Added responsive flex wrap on the annual leave credits lock header (`flex-col sm:flex-row sm:items-center justify-between gap-2.5`).
+- **Reports Page ([resources/views/reports/index.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/reports/index.blade.php))**:
+  - Converted report action buttons into full-width stacked buttons on mobile (`w-full sm:w-auto flex-col-reverse sm:flex-row`) for improved touch usability.
+- **Asset Recompilation**: Recompiled all styles into [`public/css/tailwind.css`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/public/css/tailwind.css) via `npm run build:css`.
+
+---
+
+## [2026-09-11] — Directory Badges & Directory Tables Dark Mode Contrast Fixes (Active, Inactive, Leave, Loans)
+
+### 1. Count Badges Dark Mode Background & Text Contrast
+- **Problem**: Badges indicating record counts (e.g. `X active employees` in Active Employee Directory, `X records` in Leave Applications, `X inactive records` in Inactive Employee Directory, `X records` in Employee Loans) had `bg-slate-200/70 text-slate-700`. Because `bg-slate-200/70` had no dark mode background override while `text-slate-700` remapped to light slate in dark mode, the badge rendered with light text on a light background, making it unreadable.
+- **Solution**:
+  - **Global CSS in `resources/assets/css/app.css`**: Added dark mode rules for `html.dark .bg-slate-200`, `.bg-slate-200\/60`, `.bg-slate-200\/70`, `.bg-slate-200\/80` to automatically style badges as elevated dark cards (`#1e293b`) with light text (`#e2e8f0`) and a subtle border (`#334155`).
+  - **Blade Template Dark Classes**: Updated count badges in [`employee/index.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/index.blade.php), [`leave/index.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/leave/index.blade.php), [`employee/inactive.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/inactive.blade.php), and [`employee/loans.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/loans.blade.php) with explicit `dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-transparent dark:border-slate-700/60` classes.
+
+### 2. Comprehensive Table Surface & Contrast Overhaul
+- **Active Employee Directory ([employee/index.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/index.blade.php))**:
+  - Added dark mode support to top stat cards (`Total Employees`, `Active Employees`, `Inactive Employees`, `Total Groups`) with elevated dark backgrounds (`#111a2e`), high-contrast headings, and translucent icon badges.
+  - Added dark surface classes (`dark:bg-slate-900 dark:border-slate-800`) to the table container and header.
+  - Upgraded table cells with high-contrast text: Ref # (`dark:text-slate-300`), Employee Name (`dark:text-white`), Employee ID (`dark:text-slate-300`), Group (`dark:text-slate-100`), Position (`dark:text-slate-300`), and dark-tinted status badges.
+- **Leave Applications Directory ([leave/index.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/leave/index.blade.php))**:
+  - Applied dark styling to the directory card and header bar.
+  - Upgraded table cells: Ref # (`dark:text-slate-300`), Employee Name (`dark:text-white`), Employee ID (`dark:text-slate-300`), Leave Type (`dark:bg-blue-900/40 dark:text-blue-300`), Period (`dark:text-slate-100`), Days (`dark:text-slate-100`), Reason (`dark:text-slate-300`).
+  - Dark-tinted status badges for `Pending` (amber), `Approved` (emerald), and `Rejected` (rose) with dark borders and vibrant text.
+- **Inactive Employee Directory ([employee/inactive.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/inactive.blade.php))**:
+  - Applied dark surface styling to container, header, and back button.
+  - Upgraded table rows with high-contrast text and dark-tinted `Inactive` status pills.
+- **Employee Loans Directory ([employee/loans.blade.php](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/employee/loans.blade.php))**:
+  - Applied dark mode surface styling to container, header, count badge, and table entries.
+- **Recompiled Assets**: Built minified styles into [`public/css/tailwind.css`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/public/css/tailwind.css) via `npm run build:css`.
+
+---
+
+## [2026-09-11] — Created Payroll Directory Table Standardization & Dark Mode Readability Fixes
+
+### 1. Action Buttons Consistency & Styling
+- **Problem**: In the "Created Payroll Directory" table ([`resources/views/payslip/index.blade.php`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/views/payslip/index.blade.php)), action buttons had hardcoded inline styles (`style="background-color: #f0f9ff..."`, `#eff6ff`, `#fff1f2`, borders, dimensions) which overrode dark mode styling, causing them to render as jarring, solid white rectangular boxes instead of translucent badge buttons.
+- **Solution**:
+  - Replaced inline styles with standardized `.admin-action-btn-group` and `.admin-btn-action` classes matching other directory tables (`employee/index.blade.php`, `employee/loans.blade.php`, `department/index.blade.php`).
+  - Standardized the action button set:
+    - **Edit**: `.admin-btn-action.admin-btn-action-edit.btn-edit-payslip` with modern `<i class="fa fa-pen"></i>` (soft blue in light mode, translucent cyan `rgba(14, 165, 233, 0.15)` with `#38bdf8` icon and glow on hover in dark mode).
+    - **Print**: `.admin-btn-action.admin-btn-action-print` with modern `<i class="fa fa-print"></i>` (soft indigo in light mode, translucent blue `rgba(37, 99, 235, 0.15)` with `#60a5fa` icon in dark mode).
+    - **Delete**: `.admin-btn-action.admin-btn-action-danger.btn-delete-payslip` with modern `<i class="fa fa-trash-alt"></i>` (soft rose in light mode, translucent rose `rgba(225, 29, 72, 0.15)` with `#fb7185` icon in dark mode).
+  - Preserved all JavaScript event bindings (`.btn-edit-payslip`, `.btn-delete-payslip`, `data-id`, `data-employee`).
+
+### 2. Header Icon & Visual Identity Alignment
+- **Problem**: The directory header previously used a green spreadsheet icon badge (`bg-emerald-100` + `fa-table`), which clashed with the blue theme used on directory tables throughout the application.
+- **Solution**: Replaced the icon badge with SGPayroll's brand blue container and payslip invoice icon: `<span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-xs"><i class="fa fa-file-invoice-dollar"></i></span>`.
+
+### 3. Text Contrast & Dark Mode Readability Overhaul
+- **Problem**: Table entries had poor contrast on dark surfaces: `text-slate-300` had an inverted CSS rule (`color: #64748b !important`) in dark mode causing text to turn nearly black, while employee codes, department numbers, gross pay, deductions, and created dates blended into the `#111a2e` background.
+- **Solution**:
+  - **Fixed Global Text Scale in `resources/assets/css/app.css`**: Corrected `html.dark .text-slate-300` to `#cbd5e1 !important` (soft readable light slate), added `html.dark .text-slate-200` (`#e2e8f0 !important`), and `html.dark .text-slate-100` (`#f8fafc !important`).
+  - **High-Contrast Column Colors**:
+    - **Ref #**: `font-mono text-slate-500 dark:text-slate-300 font-semibold` (crisp, high-contrast numeric reference).
+    - **Employee Name**: `font-bold text-slate-800 dark:text-white` (pure bright white in dark mode).
+    - **Employee ID**: `text-slate-400 dark:text-slate-300 font-mono` (soft readable slate).
+    - **Department**: `font-semibold text-slate-700 dark:text-slate-100` (bright off-white).
+    - **Payroll #**: `text-slate-400 dark:text-slate-300` (accessible secondary text).
+    - **Period Range**: `font-medium text-slate-700 dark:text-slate-100` (clean off-white).
+    - **Period Month/Year**: `text-slate-400 dark:text-slate-300`.
+    - **Gross Pay**: `font-bold text-slate-800 dark:text-slate-100 col-gross-pay` (bright crisp white).
+    - **Deductions**: `font-bold text-rose-600 dark:text-rose-400 col-total-deductions` (vibrant coral rose `#fb7185`).
+    - **Net Pay**: `font-bold text-emerald-600 dark:text-emerald-400 col-net-pay` (vivid emerald green `#34d399`).
+    - **Created Date**: `text-slate-600 dark:text-slate-200 font-medium` (`#e2e8f0` in dark mode).
+  - **Edit Payslip Modal Dark Theme**: Added full dark mode support for `#editPayslipModal` in [`resources/assets/css/app.css`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/resources/assets/css/app.css) covering KPI cards, tab navigation, input wrappers, currency prefixes, and footer action buttons.
+  - **Recompiled Assets**: Compiled minified styles into [`public/css/tailwind.css`](file:///c:/Users/PC/Documents/segovia/sgpayroll/sgpayroll/public/css/tailwind.css) via `npm run build:css`.
+
+---
+
+## [2026-09-11] — Full Dark Mode System, Theme Switcher & Mobile UI/UX Responsiveness Overhaul
+
+### 1. Complete Dark Mode System Across All Pages & Components
+- **Business Need & User Goal**: Users requested a modern, high-contrast Dark Mode with a toggle button situated directly beside the top navigation bar's notification bell. The dark theme needed to cover all layout surfaces, data tables, modals, form controls, dropdowns, and notifications while guaranteeing readable text and smooth transitions.
+- **Architectural Implementation**:
+  - **Zero-Flicker Head Restoration**: Added immediate inline JavaScript in [`resources/views/layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\layouts\app.blade.php) `<head>` that inspects `localStorage.getItem('sgpayroll_theme')` (or system `prefers-color-scheme`) and applies the `.dark` class before DOM render, preventing any flash of unstyled light content (FOUC).
+  - **Dark Mode Toggle Button**: Positioned `#themeToggleBtn` in [`layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\layouts\app.blade.php) right beside the notification bell dropdown with an animated `#themeToggleIcon` (`fa-moon` in light mode, `fa-sun` in dark mode).
+  - **Theme Controller (`sidebar.js`)**: Added `initThemeToggle()` to [`public/js/sidebar.js`](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\public\js\sidebar.js) that handles click events, toggles the `.dark` class on `document.documentElement`, updates `localStorage`, and dynamically updates tooltip accessibility titles (`Switch to light mode` / `Switch to dark mode`).
+  - **Comprehensive Color Palette & Contrast in `app.css`**:
+    - **Background / Canvas**: `#090d16` (deep midnight slate, reducing eye fatigue).
+    - **Sidebar & Elevated Panels**: `#0c1322` / `#111a2e` with subtle `#1e293b` borders.
+    - **Headers & Subsurfaces**: `#16223b`.
+    - **Primary High-Contrast Text**: `#f8fafc` (crisp white for headings, values, and titles).
+    - **Secondary Readable Text**: `#cbd5e1` / `#e2e8f0` (clean off-white for body text and table cells).
+    - **Muted Labels & Captions**: `#94a3b8` (accessible slate-400 for subtext and hints).
+    - **Form Controls & Inputs**: `#0b1322` background, `#243452` border, `#f8fafc` text, with vivid `#3b82f6` focus ring.
+    - **Action Buttons**: Custom dark-tinted badge buttons with glowing borders (`.admin-btn-action-view`, `.admin-btn-action-print`, `.admin-btn-action-delete`, `.admin-btn-action-success`).
+    - **DataTables & Pagination**: Dark inputs, length selects, and blue-active page buttons (`.paginate_button.current`).
+    - **Select2 Dropdowns**: Styled container, placeholder, search bar, and highlighted option states for dark mode.
+    - **Modals & Dialogs**: Rich `#111a2e` modal body, elevated header, `#0d1527` footer, and dark backdrop overlay.
+    - **Alertify Alerts**: Notifications, confirm dialogs, and popups styled for dark mode readability.
+
+### 2. Mobile UI/UX Responsiveness Overhaul
+- **Business Need & User Goal**: On mobile phones and tablet devices, the desktop sidebar lacked an overlay, pages suffered from cramped table layouts, action buttons wrapped awkwardly, and modal input fields became unreadable.
+- **Implemented Mobile Enhancements**:
+  - **Sidebar Clean-Up & Overlay**:
+    - Removed duplicate desktop collapse toggle from the topbar, retaining only the single sidebar header arrow button (`<`) per user request.
+    - Added an animated mobile backdrop overlay (`fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-25 md:hidden`) in [`layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\layouts\app.blade.php) with click-to-dismiss.
+    - Added auto-dismiss for the mobile sidebar drawer when any navigation link is clicked (`@click="if (window.innerWidth < 768) sidebarOpen = false"`).
+  - **Responsive Layout & Container Padding**:
+    - Adjusted main container padding in [`layouts/app.blade.php`](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\layouts\app.blade.php) from hardcoded `p-6 lg:p-8` to responsive `p-3.5 sm:p-5 md:p-6 lg:p-8`, expanding usable mobile screen width.
+  - **Employee Directory ([employee/index.blade.php](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\employee\index.blade.php))**:
+    - Action bar adjusted to `flex flex-wrap items-center gap-2 sm:gap-3` so import and create buttons wrap cleanly on narrow screens.
+    - Added `overflow-x-auto` to table card with reduced mobile padding `p-3.5 sm:p-5`.
+    - Converted Add Employee modal input columns to responsive `grid-cols-1 sm:grid-cols-2 gap-3` so inputs remain comfortable touch targets.
+  - **Payslip Management ([payslip/index.blade.php](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\payslip\index.blade.php))**:
+    - Submit row converted to `flex flex-col sm:flex-row sm:items-center justify-between gap-3` with full-width print button on phones (`w-full sm:w-auto`).
+    - Filter toolbar inputs adjusted to fluid responsive widths (`w-full sm:w-auto`).
+    - Added `overflow-x-auto` wrapping around the Created Payroll Directory table.
+  - **Report Generation ([reports/index.blade.php](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\reports\index.blade.php))**:
+    - Action buttons converted to stack cleanly on mobile (`flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3`) with full-width touch buttons.
+  - **Employee Account Settings ([employee/account.blade.php](file:///c:/Users/PC/Documents/segovia\sgpayroll\sgpayroll\resources\views\employee\account.blade.php))**:
+    - Header converted to `flex-col sm:flex-row` and action buttons wrapped in `flex flex-wrap gap-2` to prevent button row clipping.
+    - Statutory deduction checkboxes adjusted from rigid 4 columns to responsive `grid-cols-2 sm:grid-cols-4 gap-2`.
+
+---
+
 ## [2026-09-10] — CSV Onboarding Overhaul, Excel Template Download, Employee Modal Requirements & Payslip Enhancements
 
 ### 1. Bulk Employee CSV Onboarding, Alertify Feedback & Excel Template Download

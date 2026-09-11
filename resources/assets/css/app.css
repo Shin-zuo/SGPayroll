@@ -828,11 +828,17 @@ body.is-resizing {
     }
 }
 
-/* Mobile Sidebar Override (always full width when open) */
+/* Mobile Sidebar Override (always fixed drawer off-canvas on mobile) */
 @media (max-width: 767px) {
     #app-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        z-index: 40 !important;
         width: 16rem !important; /* w-64 */
         min-width: 16rem !important;
+        max-width: 80vw !important;
         transition: transform 0.3s ease-in-out !important;
     }
     #sidebarResizeHandle {
@@ -875,5 +881,782 @@ body.is-resizing {
     border-bottom: 4px solid transparent;
     border-right: 4px solid #0f172a;
 }
+
+/* ==========================================================================
+   SGPayroll Comprehensive Dark Mode System
+   ========================================================================== */
+
+html.dark {
+    color-scheme: dark;
+}
+
+/* Smooth UI transition when switching themes */
+body, 
+#app-sidebar, 
+header, 
+main, 
+.card, 
+.panel, 
+.admin-table-card, 
+.modal-content, 
+.form-control,
+.select2-selection,
+.dataTables_wrapper input,
+.dataTables_wrapper select {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Base Body & Surfaces */
+html.dark body {
+    background-color: #090d16 !important;
+    color: #f1f5f9 !important;
+}
+
+html.dark #app-sidebar {
+    background-color: #0c1322 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .brand-header {
+    border-color: #1e293b !important;
+}
+
+html.dark .sidebar-brand-text {
+    color: #f8fafc !important;
+}
+
+html.dark .sidebar-nav-item {
+    color: #cbd5e1 !important;
+}
+
+html.dark .sidebar-nav-item:hover {
+    color: #ffffff !important;
+    background-color: #16223b !important;
+}
+
+html.dark .sidebar-nav-item.bg-blue-50,
+html.dark a.sidebar-nav-item[class*="bg-blue-50"] {
+    background-color: rgba(30, 58, 138, 0.45) !important;
+    color: #60a5fa !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+html.dark a.sidebar-nav-item[class*="bg-blue-50"] i {
+    color: #60a5fa !important;
+}
+
+html.dark .sidebar-heading {
+    color: #64748b !important;
+}
+
+html.dark .sidebar-collapsed #sidebarToggleBtn {
+    background-color: #16223b !important;
+    border-color: #2a3a58 !important;
+    color: #94a3b8 !important;
+}
+
+html.dark .sidebar-collapsed #sidebarToggleBtn:hover {
+    background-color: #203152 !important;
+    color: #ffffff !important;
+}
+
+html.dark .sidebar-floating-tooltip {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid #334155 !important;
+}
+
+html.dark .sidebar-floating-tooltip::before {
+    border-right-color: #1e293b !important;
+}
+
+/* Global Card & Container Surfaces */
+html.dark .bg-white {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/40,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-50\/80,
+html.dark .bg-slate-50\/90,
+html.dark .bg-slate-100,
+html.dark .bg-slate-100\/75,
+html.dark .bg-slate-100\/80 {
+    background-color: #16223b !important;
+}
+
+html.dark .bg-slate-200,
+html.dark .bg-slate-200\/60,
+html.dark .bg-slate-200\/70,
+html.dark .bg-slate-200\/80 {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/60,
+html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-300 {
+    border-color: #1e293b !important;
+}
+
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #1e293b !important;
+}
+
+/* High Contrast Readable Text */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+    color: #f8fafc !important;
+}
+
+html.dark .text-slate-700 {
+    color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600 {
+    color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400 {
+    color: #94a3b8 !important;
+}
+
+html.dark .text-slate-300 {
+    color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-200 {
+    color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-100 {
+    color: #f8fafc !important;
+}
+
+/* Status Badges & Accents in Dark Mode */
+html.dark .text-emerald-700,
+html.dark .text-emerald-600 {
+    color: #34d399 !important;
+}
+html.dark .text-rose-700,
+html.dark .text-rose-600 {
+    color: #fb7185 !important;
+}
+html.dark .text-amber-700,
+html.dark .text-amber-600 {
+    color: #fbbf24 !important;
+}
+html.dark .text-blue-700,
+html.dark .text-blue-600 {
+    color: #60a5fa !important;
+}
+
+html.dark .border-emerald-200 {
+    border-color: rgba(16, 185, 129, 0.4) !important;
+}
+html.dark .border-rose-200 {
+    border-color: rgba(244, 63, 94, 0.4) !important;
+}
+html.dark .border-amber-200 {
+    border-color: rgba(245, 158, 11, 0.4) !important;
+}
+html.dark .border-blue-100,
+html.dark .border-blue-200 {
+    border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Soft Color Accents & Matrix Card Surfaces in Dark Mode */
+html.dark .bg-blue-50,
+html.dark .bg-blue-50\/50 {
+    background-color: rgba(30, 58, 138, 0.35) !important;
+    color: #60a5fa !important;
+}
+html.dark .bg-blue-100 {
+    background-color: rgba(30, 58, 138, 0.55) !important;
+    color: #93c5fd !important;
+}
+html.dark .text-blue-800,
+html.dark .text-blue-700 {
+    color: #93c5fd !important;
+}
+
+html.dark .bg-red-50,
+html.dark .bg-red-50\/30,
+html.dark .bg-red-50\/70,
+html.dark .bg-rose-50,
+html.dark .bg-rose-50\/30,
+html.dark .bg-rose-50\/70 {
+    background-color: rgba(136, 19, 55, 0.25) !important;
+}
+html.dark .text-red-800,
+html.dark .text-red-600 {
+    color: #fb7185 !important;
+}
+
+html.dark .bg-yellow-50,
+html.dark .bg-yellow-50\/30,
+html.dark .bg-yellow-50\/70,
+html.dark .bg-amber-50,
+html.dark .bg-amber-50\/30,
+html.dark .bg-amber-50\/70 {
+    background-color: rgba(120, 53, 15, 0.25) !important;
+}
+html.dark .text-yellow-800,
+html.dark .text-yellow-600 {
+    color: #fcd34d !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-purple-50\/30,
+html.dark .bg-purple-50\/70,
+html.dark .bg-indigo-50,
+html.dark .bg-indigo-50\/30,
+html.dark .bg-indigo-50\/70 {
+    background-color: rgba(88, 28, 135, 0.25) !important;
+}
+html.dark .text-purple-800,
+html.dark .text-purple-600 {
+    color: #c084fc !important;
+}
+
+html.dark .bg-green-50,
+html.dark .bg-green-50\/30,
+html.dark .bg-green-50\/70,
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/30,
+html.dark .bg-emerald-50\/70,
+html.dark .bg-emerald-50\/80 {
+    background-color: rgba(6, 78, 59, 0.25) !important;
+}
+html.dark .bg-green-100,
+html.dark .bg-emerald-100 {
+    background-color: rgba(6, 78, 59, 0.55) !important;
+    color: #6ee7b7 !important;
+}
+html.dark .text-green-800,
+html.dark .text-green-700,
+html.dark .text-green-600 {
+    color: #34d399 !important;
+}
+
+html.dark .bg-orange-50,
+html.dark .bg-orange-50\/30,
+html.dark .bg-orange-50\/70 {
+    background-color: rgba(154, 52, 18, 0.25) !important;
+}
+html.dark .text-orange-800,
+html.dark .text-orange-600 {
+    color: #fdba74 !important;
+}
+
+html.dark .bg-teal-50,
+html.dark .bg-teal-50\/30,
+html.dark .bg-teal-50\/70 {
+    background-color: rgba(19, 78, 74, 0.25) !important;
+}
+html.dark .text-teal-800,
+html.dark .text-teal-600 {
+    color: #5eead4 !important;
+}
+
+/* Payroll Computation Matrix Grid Styling */
+.payroll-table-main table th,
+.payroll-table-main table td {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark .payroll-table-main .bg-white {
+    background-color: #0d1527 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .payroll-table-main table {
+    border-color: #1e293b !important;
+}
+
+html.dark .payroll-table-main th,
+html.dark .payroll-table-main td {
+    border-color: #1e293b !important;
+}
+
+html.dark .payroll-table-main input[type="number"] {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+    color: #f8fafc !important;
+}
+
+html.dark .payroll-table-main input[type="number"]:focus {
+    background-color: #0f1c33 !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+}
+
+html.dark .payroll-table-main input:disabled {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    border-color: #1e293b !important;
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+}
+
+html.dark .payroll-table-main #gross_pay {
+    color: #93c5fd !important;
+    background-color: rgba(30, 58, 138, 0.3) !important;
+}
+
+html.dark .payroll-table-main td[name="net_pay"] {
+    background-color: rgba(6, 78, 59, 0.4) !important;
+    color: #34d399 !important;
+}
+
+
+/* Form Controls & Inputs */
+html.dark .form-control,
+html.dark input[type="text"],
+html.dark input[type="month"],
+html.dark input[type="date"],
+html.dark input[type="number"],
+html.dark input[type="password"],
+html.dark input[type="email"],
+html.dark select,
+html.dark textarea {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+    color: #f8fafc !important;
+}
+
+html.dark .form-control:focus,
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+    background-color: #0e172a !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+html.dark .form-control:disabled,
+html.dark .form-control[readonly] {
+    background-color: #151f33 !important;
+    border-color: #1e293b !important;
+    color: #64748b !important;
+}
+
+html.dark .form-group label,
+html.dark .control-label {
+    color: #94a3b8 !important;
+}
+
+/* Buttons */
+html.dark .btn-secondary {
+    background-color: #16223b !important;
+    border-color: #2a3a58 !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark .btn-secondary:hover {
+    background-color: #1e2f50 !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+/* Tables, Admin Tables & Lists */
+html.dark .admin-table-card {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .admin-table-header {
+    background-color: #16223b !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .admin-table-filter {
+    background-color: #131d33 !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .admin-table thead tr,
+html.dark table thead tr {
+    background-color: #16223b !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .admin-table thead th,
+html.dark table thead th {
+    color: #cbd5e1 !important;
+}
+
+html.dark .admin-table tbody tr,
+html.dark table tbody tr {
+    border-bottom: 1px solid #1a263d !important;
+}
+
+html.dark .admin-table tbody tr:hover,
+html.dark table tbody tr:hover,
+html.dark tr.hover\:bg-slate-50\/80:hover {
+    background-color: #182540 !important;
+}
+
+html.dark .admin-table tbody td,
+html.dark table tbody td {
+    color: #cbd5e1 !important;
+}
+
+html.dark .admin-table-badge {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    color: #94a3b8 !important;
+}
+
+html.dark .admin-pagination-container {
+    background-color: #131d33 !important;
+    border-top: 1px solid #1e293b !important;
+}
+
+html.dark .admin-pagination-info {
+    color: #94a3b8 !important;
+}
+
+/* Standardized Action Buttons in Dark Mode */
+html.dark .admin-btn-action-view,
+html.dark .admin-btn-action-edit {
+    color: #38bdf8 !important;
+    background-color: rgba(14, 165, 233, 0.15) !important;
+    border-color: rgba(14, 165, 233, 0.3) !important;
+}
+html.dark .admin-btn-action-view:hover,
+html.dark .admin-btn-action-edit:hover {
+    background-color: rgba(14, 165, 233, 0.28) !important;
+    color: #7dd3fc !important;
+}
+
+html.dark .admin-btn-action-print {
+    color: #60a5fa !important;
+    background-color: rgba(37, 99, 235, 0.15) !important;
+    border-color: rgba(37, 99, 235, 0.3) !important;
+}
+html.dark .admin-btn-action-print:hover {
+    background-color: rgba(37, 99, 235, 0.28) !important;
+    color: #93c5fd !important;
+}
+
+html.dark .admin-btn-action-delete,
+html.dark .admin-btn-action-danger {
+    color: #fb7185 !important;
+    background-color: rgba(225, 29, 72, 0.15) !important;
+    border-color: rgba(225, 29, 72, 0.3) !important;
+}
+html.dark .admin-btn-action-delete:hover,
+html.dark .admin-btn-action-danger:hover {
+    background-color: rgba(225, 29, 72, 0.28) !important;
+    color: #fda4af !important;
+}
+
+html.dark .admin-btn-action-success {
+    color: #34d399 !important;
+    background-color: rgba(5, 150, 105, 0.15) !important;
+    border-color: rgba(5, 150, 105, 0.3) !important;
+}
+html.dark .admin-btn-action-success:hover {
+    background-color: rgba(5, 150, 105, 0.28) !important;
+    color: #6ee7b7 !important;
+}
+
+/* Modals */
+html.dark .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+html.dark .modal-content {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+html.dark .modal-header,
+html.dark .admin-modal-hero {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .modal-body {
+    background-color: #111a2e !important;
+}
+
+html.dark .modal-footer {
+    background-color: #0d1527 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .modal-title {
+    color: #f8fafc !important;
+}
+
+html.dark .modal-subtitle {
+    color: #94a3b8 !important;
+}
+
+html.dark .modal-header .close {
+    color: #94a3b8 !important;
+}
+
+html.dark .modal-header .close:hover {
+    color: #f8fafc !important;
+    background-color: #1e293b !important;
+}
+
+/* Edit Payslip Modal Dark Mode Support */
+html.dark #editPayslipModal .modal-content {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+}
+html.dark #editPayslipModal .kpi-dashboard {
+    background-color: #111a2e !important;
+    border-bottom-color: #1e293b !important;
+}
+html.dark #editPayslipModal .kpi-card-gross {
+    background-color: rgba(6, 78, 59, 0.25) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+}
+html.dark #editPayslipModal .kpi-card-gross #live_gross_pay {
+    color: #6ee7b7 !important;
+}
+html.dark #editPayslipModal .kpi-card-deductions {
+    background-color: rgba(136, 19, 55, 0.25) !important;
+    border-color: rgba(244, 63, 94, 0.35) !important;
+}
+html.dark #editPayslipModal .kpi-card-deductions #live_total_deductions {
+    color: #fda4af !important;
+}
+html.dark #editPayslipModal .kpi-card-net {
+    background-color: rgba(14, 165, 233, 0.2) !important;
+    border-color: #0284c7 !important;
+}
+html.dark #editPayslipModal .kpi-card-net #live_net_pay {
+    color: #38bdf8 !important;
+}
+html.dark #editPayslipModal .nav-tabs-custom {
+    background-color: #0b1322 !important;
+    border-bottom-color: #1e293b !important;
+}
+html.dark #editPayslipModal .tab-btn {
+    color: #94a3b8 !important;
+}
+html.dark #editPayslipModal .tab-btn:hover {
+    color: #f1f5f9 !important;
+    background-color: #16223b !important;
+}
+html.dark #editPayslipModal .tab-btn.active {
+    color: #60a5fa !important;
+    background-color: #111a2e !important;
+    border-bottom-color: #3b82f6 !important;
+}
+html.dark #editPayslipModal .field-card {
+    background-color: #16223b !important;
+    border-color: #1e293b !important;
+}
+html.dark #editPayslipModal .field-label {
+    color: #cbd5e1 !important;
+}
+html.dark #editPayslipModal .input-currency-wrapper,
+html.dark #editPayslipModal .input-hours-wrapper {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+}
+html.dark #editPayslipModal .currency-prefix,
+html.dark #editPayslipModal .hours-suffix {
+    color: #64748b !important;
+}
+html.dark #editPayslipModal .custom-input {
+    color: #f8fafc !important;
+}
+html.dark #editPayslipModal .modal-footer {
+    background-color: #0b1322 !important;
+    border-top-color: #1e293b !important;
+}
+
+/* DataTables in Dark Mode */
+html.dark .dataTables_wrapper .dataTables_length,
+html.dark .dataTables_wrapper .dataTables_filter,
+html.dark .dataTables_wrapper .dataTables_info {
+    color: #94a3b8 !important;
+}
+
+html.dark .dataTables_wrapper .dataTables_length select,
+html.dark .dataTables_wrapper .dataTables_filter input {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+    color: #f8fafc !important;
+}
+
+html.dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #16223b !important;
+    border-color: #243452 !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #203152 !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+html.dark .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+html.dark .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    background-color: #111a2e !important;
+    border-color: #1e293b !important;
+    color: #475569 !important;
+}
+
+/* Select2 in Dark Mode */
+html.dark .select2-container--default .select2-selection--single {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+    color: #f8fafc !important;
+}
+
+html.dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #f8fafc !important;
+}
+
+html.dark .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #64748b !important;
+}
+
+html.dark .select2-dropdown {
+    background-color: #111a2e !important;
+    border-color: #243452 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark .select2-search--dropdown {
+    background-color: #0d1527 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .select2-search--dropdown .select2-search__field {
+    background-color: #0b1322 !important;
+    border-color: #243452 !important;
+    color: #f8fafc !important;
+}
+
+html.dark .select2-results__option {
+    color: #cbd5e1 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .select2-results__option--highlighted[aria-selected] {
+    background-color: #1e3a8a !important;
+    color: #93c5fd !important;
+}
+
+html.dark .select2-results__option[aria-selected="true"] {
+    background-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}
+
+html.dark .select2-container--default.select2-container--disabled .select2-selection--single {
+    background-color: #151f33 !important;
+    border-color: #1e293b !important;
+    color: #64748b !important;
+}
+
+/* Alertify Alerts & Prompts in Dark Mode */
+html.dark .alertify .ajs-dialog {
+    background-color: #111a2e !important;
+    border: 1px solid #1e293b !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    color: #f8fafc !important;
+}
+
+html.dark .alertify .ajs-header {
+    background-color: #111a2e !important;
+    color: #f8fafc !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .alertify .ajs-body {
+    background-color: #111a2e !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark .alertify .ajs-footer {
+    background-color: #0d1527 !important;
+    border-top: 1px solid #1e293b !important;
+}
+
+html.dark .alertify .ajs-footer .ajs-buttons .ajs-button {
+    background-color: #16223b !important;
+    border: 1px solid #2a3a58 !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+html.dark .alertify-notifier .ajs-message {
+    background-color: #111a2e !important;
+    color: #f8fafc !important;
+    border: 1px solid #1e293b !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark .alertify-notifier .ajs-message.ajs-success {
+    background-color: #064e3b !important;
+    border-color: #059669 !important;
+    color: #a7f3d0 !important;
+}
+
+html.dark .alertify-notifier .ajs-message.ajs-error {
+    background-color: #881337 !important;
+    border-color: #e11d48 !important;
+    color: #fecdd3 !important;
+}
+
+html.dark .alertify-notifier .ajs-message.ajs-warning {
+    background-color: #78350f !important;
+    border-color: #d97706 !important;
+    color: #fde68a !important;
+}
+
+/* Custom Status Pills & Filter Groups */
+html.dark #employee_status_toggle_group {
+    background-color: #16223b !important;
+    border: 1px solid #1e293b !important;
+}
+
+html.dark #employee_status_toggle_group .btn-emp-status.active {
+    background-color: #1e3a8a !important;
+    color: #93c5fd !important;
+    border-color: #2563eb !important;
+}
+
+html.dark #employee_status_toggle_group .btn-emp-status {
+    color: #94a3b8 !important;
+}
+
+html.dark #employee_status_toggle_group .btn-emp-status:hover {
+    color: #f8fafc !important;
+}
+
 
 

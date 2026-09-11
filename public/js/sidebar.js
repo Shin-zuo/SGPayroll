@@ -230,9 +230,56 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSidebar);
-    } else {
+    // -------------------------------------------------------------
+    // Dark Mode Controller
+    // -------------------------------------------------------------
+    function initThemeToggle() {
+        var themeToggleBtn = document.getElementById('themeToggleBtn');
+        var themeToggleIcon = document.getElementById('themeToggleIcon');
+
+        function updateIcon(isDark) {
+            if (!themeToggleIcon) return;
+            if (isDark) {
+                themeToggleIcon.className = 'fa fa-sun text-amber-400 text-sm transition-transform duration-200';
+                if (themeToggleBtn) {
+                    themeToggleBtn.setAttribute('title', 'Switch to light mode');
+                    themeToggleBtn.setAttribute('aria-label', 'Switch to light mode');
+                }
+            } else {
+                themeToggleIcon.className = 'fa fa-moon text-slate-500 text-sm transition-transform duration-200';
+                if (themeToggleBtn) {
+                    themeToggleBtn.setAttribute('title', 'Switch to dark mode');
+                    themeToggleBtn.setAttribute('aria-label', 'Switch to dark mode');
+                }
+            }
+        }
+
+        // Sync initial icon state
+        var isCurrentlyDark = document.documentElement.classList.contains('dark');
+        updateIcon(isCurrentlyDark);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var isDark = document.documentElement.classList.toggle('dark');
+                try {
+                    localStorage.setItem('sgpayroll_theme', isDark ? 'dark' : 'light');
+                } catch(e) {}
+                updateIcon(isDark);
+            });
+        }
+    }
+
+    function initAll() {
         initSidebar();
+        initThemeToggle();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
     }
 })();

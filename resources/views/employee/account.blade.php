@@ -14,12 +14,12 @@
 </div>
 
 <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden mb-6">
-    <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-white">
+    <div class="px-4 py-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
         <div>
             <h2 class="text-base font-semibold text-slate-800">{{ $employee->full_name }}</h2>
             <p class="text-xs text-slate-500">Manage rates, deductions, previous information, and profile metrics</p>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex flex-wrap items-center gap-2">
             @if(auth()->user()->user_type == 1)
             <button type="button" id="btn-open-rates"
                 class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
@@ -271,7 +271,7 @@
 
                     <!-- Annual Leave Credits Section with Accidental-Typing Toggle -->
                     <div class="mt-4 pt-3 border-t border-slate-100">
-                        <div class="flex items-center justify-between mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
                             <div>
                                 <span class="text-xs font-bold uppercase tracking-wider text-slate-700 block">Annual Leave Credits</span>
                                 <span class="text-[11px] text-slate-400">Locked by default to prevent accidental edits.</span>
@@ -338,7 +338,7 @@
                     <input type="hidden" id="sss_status" name="sss_status" value="{{$employee->sss_status}}">
                     <input type="hidden" id="pagibig" name="pagibig" value="{{$employee->pag_ibig_contribution}}">
                     
-                    <div class="grid grid-cols-4 gap-2 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <label class="inline-flex items-center text-xs font-semibold text-slate-700 cursor-pointer justify-center">
                             <input class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1.5" type="checkbox" id="tax_deduction" name="tax_deduction">
                             <span>TAX</span>

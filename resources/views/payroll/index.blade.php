@@ -2,42 +2,50 @@
 @section('content')
 
 @if($employee->count()!=0)
-<div class="mb-4">
-    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-            <h3 class="text-base font-bold text-slate-800">{{$employee->first()->department}}</h3>
-            <div class="flex space-x-4 items-center">
-                <div class="flex items-center space-x-2">
-                    <input class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" value="1" id="13Month" name="13Month">
-                    <label class="text-sm font-medium text-slate-700" for="13Month">Compute 13th month</label>
+<div class="mb-5">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="bg-slate-50/80 dark:bg-slate-800/80 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap gap-3 justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-xs">
+                    <i class="fa fa-layer-group"></i>
+                </span>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white leading-tight">{{$employee->first()->department}}</h3>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Active Department Payroll Matrix</p>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <input class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" value="1" id="endMonth" name="endMonth">
-                    <label class="text-sm font-medium text-slate-700" for="endMonth">End of Month</label>
-                </div>
-                <button type="button" id="insertFinishData" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded flex items-center transition-colors">
-                    <i class="fa fa-save mr-1.5"></i> Save Data
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <label class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-100/70 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 cursor-pointer">
+                    <input class="w-4 h-4 text-blue-600 dark:bg-slate-900 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500" type="checkbox" value="1" id="13Month" name="13Month">
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">Compute 13th Month</span>
+                </label>
+                <label class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-100/70 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 cursor-pointer">
+                    <input class="w-4 h-4 text-blue-600 dark:bg-slate-900 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500" type="checkbox" value="1" id="endMonth" name="endMonth">
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">End of Month</span>
+                </label>
+                <button type="button" id="insertFinishData" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-sm shadow-blue-500/20 transition-all cursor-pointer">
+                    <i class="fa fa-save"></i> Save Data
                 </button>
             </div>
         </div>
         
         <input type="hidden" id="payrollType" value="{{$employee->first()->payroll_type}}">
         
-        <div class="p-4 bg-white">
+        <div class="p-4 bg-white dark:bg-slate-900">
             @if(session()->has('message'))
-                <div class="mb-4 rounded-md bg-green-50 p-3 border border-green-200 text-green-700 text-sm">
-                    {{ session()->get('message') }}
+                <div class="mb-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 p-3 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium flex items-center gap-2">
+                    <i class="fa fa-check-circle"></i> {{ session()->get('message') }}
                 </div>
             @endif
             
-            <form action="/payroll" method="get" class="flex flex-wrap items-end gap-4">
+            <form action="/payroll" method="get" class="flex flex-wrap items-end gap-3 sm:gap-4">
                 {{csrf_field()}}
                 <input type="hidden" id="employeePayroll_type" name="employeePayroll_type" value="{{$employee->first()->payroll_type}}">
                 <input type="hidden" id="deptCode" name="deptCode" value="{{$employee->first()->department}}">
                 
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Payroll No.</label>
-                    <select class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="payroll_no" name="payroll_no">
+                <div class="min-w-[120px]">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Payroll No.</label>
+                    <select class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="payroll_no" name="payroll_no">
                         @if($employee->first()->payroll_type==1 || $employee->first()->payroll_type==2 || empty($employee->first()->payroll_type))
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -52,18 +60,18 @@
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Period From</label>
-                    <input type="date" class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="date_from" name="date_from">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Period From</label>
+                    <input type="date" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="date_from" name="date_from">
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Period To</label>
-                    <input type="date" class="text-sm border-slate-300 rounded-md p-1.5 focus:ring-1 focus:ring-blue-500" id="date_to" name="date_to">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Period To</label>
+                    <input type="date" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="date_to" name="date_to">
                 </div>
                 
                 <div>
-                    <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-1.5 rounded border border-slate-300 transition-colors">
-                        Filter
+                    <button type="submit" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer">
+                        <i class="fa fa-filter mr-1"></i> Filter
                     </button>
                 </div>
             </form>
@@ -78,133 +86,141 @@
     <input type="hidden" id="employee" name="employee" value="{{$employees->id}}">
     <input type="hidden" id="deptName" name="deptName" value="{{$employees->department}}">
     
-    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <div class="bg-blue-600 px-4 py-2 border-b border-blue-700">
-            <h4 class="text-sm font-bold text-white flex items-center gap-2">
-                <i class="fa fa-user"></i> {{$employees->full_name}}
-            </h4>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="bg-blue-600 dark:bg-slate-800 px-4 py-2.5 border-b border-blue-700 dark:border-slate-700 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-md bg-white/20 dark:bg-blue-500/20 text-white dark:text-blue-400 flex items-center justify-center text-xs shadow-xs">
+                    <i class="fa fa-user"></i>
+                </span>
+                <h4 class="text-sm font-bold text-white tracking-wide">
+                    {{$employees->full_name}}
+                </h4>
+            </div>
+            <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-white/15 dark:bg-slate-700/60 text-white dark:text-slate-300 border border-white/10 dark:border-slate-600/40">
+                Ref: #{{$employees->id}}
+            </span>
         </div>
         
         <div class="p-0 overflow-x-auto">
             <!-- Basic Pay Table -->
-            <table class="w-full text-left border-collapse border-b border-slate-200 text-xs">
+            <table class="w-full text-left border-collapse border-b border-slate-200 dark:border-slate-800 text-xs">
                 <thead>
-                    <tr class="bg-blue-50 text-blue-800 font-semibold border-b border-slate-200">
-                        <th class="px-2 py-1.5 border-r border-slate-200 text-center" colspan="13">Basic Pay Earnings (Hours/Days)</th>
+                    <tr class="bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+                        <th class="px-2 py-2 border-r border-slate-200 dark:border-slate-800 text-center tracking-wide" colspan="13">Basic Pay Earnings (Hours/Days)</th>
                     </tr>
-                    <tr class="bg-slate-50 text-slate-600 font-medium border-b border-slate-200 text-[10px] uppercase tracking-wider">
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Work(days)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">OT(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Ext.Reg(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Night Diff(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">ND Rest(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Rest Day(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Rest(ehrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Reg Hol(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">Reg Hol(ehrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Reg(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Reg(ehrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Spl(hrs)</th>
-                        <th class="px-1 py-1.5 border-r border-slate-200 whitespace-nowrap text-center">RD on Spl(ehrs)</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 font-medium border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase tracking-wider">
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Work(days)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">OT(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Ext.Reg(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Night Diff(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">ND Rest(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Rest Day(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Rest(ehrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Reg Hol(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">Reg Hol(ehrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">RD on Reg(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">RD on Reg(ehrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">RD on Spl(hrs)</th>
+                        <th class="px-1.5 py-1.5 border-r border-slate-200 dark:border-slate-800 whitespace-nowrap text-center">RD on Spl(ehrs)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="work_days" name="work_days"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="overtime_hours" name="overtime_hours"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="extra_regular_hour" name="extra_regular_hour"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="night_diff" name="night_diff"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="night_diff_restday" name="night_diff_restday"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="rest_special" name="rest_special"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="rest_special_exc" name="rest_special_exc"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_hour" name="regular_holiday_hour"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_hour_exc" name="regular_holiday_hour_exc"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_regular" name="restday_on_regular"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_regular_exc" name="restday_on_regular_exc"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_special" name="restday_on_special"></td>
-                        <td class="p-1 border-r border-slate-200"><input type="number" class="w-full text-xs p-1 border rounded" id="restday_on_special_exc" name="restday_on_special_exc"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="work_days" name="work_days"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="overtime_hours" name="overtime_hours"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="extra_regular_hour" name="extra_regular_hour"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="night_diff" name="night_diff"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="night_diff_restday" name="night_diff_restday"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="rest_special" name="rest_special"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="rest_special_exc" name="rest_special_exc"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="regular_holiday_hour" name="regular_holiday_hour"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="regular_holiday_hour_exc" name="regular_holiday_hour_exc"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="restday_on_regular" name="restday_on_regular"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="restday_on_regular_exc" name="restday_on_regular_exc"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="restday_on_special" name="restday_on_special"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center focus:ring-1 focus:ring-blue-500" id="restday_on_special_exc" name="restday_on_special_exc"></td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- Debit/Credit Table -->
-            <table class="w-full text-left border-collapse border-b border-slate-200 text-xs mt-4">
+            <table class="w-full text-left border-collapse border-b border-slate-200 dark:border-slate-800 text-xs mt-3">
                 <thead>
-                    <tr class="border-b border-slate-200">
-                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-red-50 text-red-800 font-semibold">Debit</th>
-                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 text-center bg-yellow-50 text-yellow-800 font-semibold">Credit</th>
-                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-purple-50 text-purple-800 font-semibold">Non-Tax Benefits</th>
-                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 text-center bg-green-50 text-green-800 font-semibold">Non-Tax Other Pay</th>
-                        <th rowspan="2" class="px-2 py-1.5 text-center bg-slate-100 text-slate-800 font-bold border-l border-slate-200">Excess Hours</th>
-                        <th rowspan="2" class="px-2 py-1.5 text-center bg-blue-100 text-blue-800 font-bold border-l border-slate-200">Gross Pay</th>
+                    <tr class="border-b border-slate-200 dark:border-slate-800">
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-red-50 dark:bg-rose-950/60 text-red-800 dark:text-rose-300 font-semibold">Debit</th>
+                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-yellow-50 dark:bg-amber-950/60 text-yellow-800 dark:text-amber-300 font-semibold">Credit</th>
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 font-semibold">Non-Tax Benefits</th>
+                        <th colspan="2" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-green-50 dark:bg-emerald-950/60 text-green-800 dark:text-emerald-300 font-semibold">Non-Tax Other Pay</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold border-l border-slate-200 dark:border-slate-800">Excess Hours</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-200 font-bold border-l border-slate-200 dark:border-slate-800">Gross Pay</th>
                     </tr>
-                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200">
-                        <th class="px-1 py-1.5 bg-red-50 text-red-600 border-r border-slate-200 text-center">Absent(days)</th>
-                        <th class="px-1 py-1.5 bg-red-50 text-red-600 border-r border-slate-200 text-center">UT(hrs)</th>
-                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Reg Hol(days)</th>
-                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Spl Hol(days)</th>
-                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Reg Hol(Min)</th>
-                        <th class="px-1 py-1.5 bg-yellow-50 text-yellow-600 border-r border-slate-200 text-center">Spl Hol(Min)</th>
-                        <th class="px-1 py-1.5 bg-purple-50 text-purple-600 border-r border-slate-200 text-center">VL(days)</th>
-                        <th class="px-1 py-1.5 bg-purple-50 text-purple-600 border-r border-slate-200 text-center">SL(days)</th>
-                        <th class="px-1 py-1.5 bg-green-50 text-green-600 border-r border-slate-200 text-center">Other NT</th>
-                        <th class="px-1 py-1.5 bg-green-50 text-green-600 text-center">13th Month</th>
+                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200 dark:border-slate-800">
+                        <th class="px-1 py-1.5 bg-red-50/70 dark:bg-rose-950/40 text-red-600 dark:text-rose-400 border-r border-slate-200 dark:border-slate-800 text-center">Absent(days)</th>
+                        <th class="px-1 py-1.5 bg-red-50/70 dark:bg-rose-950/40 text-red-600 dark:text-rose-400 border-r border-slate-200 dark:border-slate-800 text-center">UT(hrs)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50/70 dark:bg-amber-950/40 text-yellow-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">Reg Hol(days)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50/70 dark:bg-amber-950/40 text-yellow-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">Spl Hol(days)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50/70 dark:bg-amber-950/40 text-yellow-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">Reg Hol(Min)</th>
+                        <th class="px-1 py-1.5 bg-yellow-50/70 dark:bg-amber-950/40 text-yellow-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">Spl Hol(Min)</th>
+                        <th class="px-1 py-1.5 bg-purple-50/70 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border-r border-slate-200 dark:border-slate-800 text-center">VL(days)</th>
+                        <th class="px-1 py-1.5 bg-purple-50/70 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border-r border-slate-200 dark:border-slate-800 text-center">SL(days)</th>
+                        <th class="px-1 py-1.5 bg-green-50/70 dark:bg-emerald-950/40 text-green-600 dark:text-emerald-400 border-r border-slate-200 dark:border-slate-800 text-center">Other NT</th>
+                        <th class="px-1 py-1.5 bg-green-50/70 dark:bg-emerald-950/40 text-green-600 dark:text-emerald-400 text-center">13th Month</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="p-1 border-r border-slate-200 bg-red-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="absent" name="absent"></td>
-                        <td class="p-1 border-r border-slate-200 bg-red-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="underTime" name="underTime"></td>
-                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday" name="regular_holiday"></td>
-                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="special_holiday" name="special_holiday"></td>
-                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="regular_holiday_minimum" name="regular_holiday_minimum"></td>
-                        <td class="p-1 border-r border-slate-200 bg-yellow-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="special_holiday_minimum" name="special_holiday_minimum"></td>
-                        <td class="p-1 border-r border-slate-200 bg-purple-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="vacation_leave" name="vacation_leave"></td>
-                        <td class="p-1 border-r border-slate-200 bg-purple-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="sick_leave" name="sick_leave"></td>
-                        <td class="p-1 border-r border-slate-200 bg-green-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="other_pay" name="other_pay"></td>
-                        <td class="p-1 border-r border-slate-200 bg-green-50/30"><input type="number" class="w-full text-xs p-1 border rounded" id="thirteen_month" name="thirteen_month"></td>
-                        <td class="p-1 border-l border-r border-slate-200 bg-slate-50"><input type="number" class="w-full text-xs p-1 border rounded bg-transparent font-semibold" id="excess_amount" name="excess_amount" disabled></td>
-                        <td class="p-1 border-l border-slate-200 bg-blue-50/50"><input type="number" class="w-full text-xs p-1 border rounded bg-transparent font-bold text-blue-700" id="gross_pay" name="gross_pay" disabled></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-red-50/30 dark:bg-rose-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="absent" name="absent"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-red-50/30 dark:bg-rose-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="underTime" name="underTime"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-yellow-50/30 dark:bg-amber-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="regular_holiday" name="regular_holiday"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-yellow-50/30 dark:bg-amber-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="special_holiday" name="special_holiday"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-yellow-50/30 dark:bg-amber-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="regular_holiday_minimum" name="regular_holiday_minimum"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-yellow-50/30 dark:bg-amber-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="special_holiday_minimum" name="special_holiday_minimum"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-purple-50/30 dark:bg-purple-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="vacation_leave" name="vacation_leave"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-purple-50/30 dark:bg-purple-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="sick_leave" name="sick_leave"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-green-50/30 dark:bg-emerald-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="other_pay" name="other_pay"></td>
+                        <td class="p-1 border-r border-slate-200 dark:border-slate-800 bg-green-50/30 dark:bg-emerald-950/20"><input type="number" class="w-full text-xs p-1.5 border rounded bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-mono text-center" id="thirteen_month" name="thirteen_month"></td>
+                        <td class="p-1 border-l border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60"><input type="number" class="w-full text-xs p-1.5 border rounded bg-transparent font-semibold font-mono text-center border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100" id="excess_amount" name="excess_amount" disabled></td>
+                        <td class="p-1 border-l border-slate-200 dark:border-slate-800 bg-blue-50/50 dark:bg-blue-950/40"><input type="number" class="w-full text-xs p-1.5 border rounded bg-transparent font-bold font-mono text-center text-blue-700 dark:text-blue-300 border-slate-200 dark:border-slate-700" id="gross_pay" name="gross_pay" disabled></td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- Contributions & Loans -->
-            <table class="w-full text-left border-collapse text-xs mt-4">
+            <table class="w-full text-left border-collapse text-xs mt-3">
                 <thead>
-                    <tr class="border-b border-slate-200">
-                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 text-center bg-orange-50 text-orange-800 font-semibold">Contributions</th>
-                        <th colspan="8" class="px-2 py-1.5 border-r border-slate-200 text-center bg-teal-50 text-teal-800 font-semibold">Loans</th>
-                        <th rowspan="2" class="px-2 py-1.5 text-center bg-green-100 text-green-800 font-bold border-l border-slate-200">Net Pay</th>
+                    <tr class="border-b border-slate-200 dark:border-slate-800">
+                        <th colspan="4" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-orange-50 dark:bg-amber-950/60 text-orange-800 dark:text-amber-300 font-semibold">Contributions</th>
+                        <th colspan="7" class="px-2 py-1.5 border-r border-slate-200 dark:border-slate-800 text-center bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 font-semibold">Loans</th>
+                        <th rowspan="2" class="px-2 py-1.5 text-center bg-green-100 dark:bg-emerald-950/70 text-green-800 dark:text-emerald-300 font-bold border-l border-slate-200 dark:border-slate-800">Net Pay</th>
                     </tr>
-                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200">
-                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">W.Tax</th>
-                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">SSS</th>
-                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">PHIC</th>
-                        <th class="px-1 py-1.5 bg-orange-50 text-orange-600 border-r border-slate-200 text-center">HDMF</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Insure</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">SSS</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Calamity</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Cal(HDMF)</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 border-r border-slate-200 text-center">Pag-IBIG Safe</th>
-                        <th class="px-1 py-1.5 bg-teal-50 text-teal-600 text-center">SSS Emerg.</th>
+                    <tr class="text-[10px] uppercase tracking-wider font-medium border-b border-slate-200 dark:border-slate-800">
+                        <th class="px-1 py-1.5 bg-orange-50/70 dark:bg-amber-950/40 text-orange-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">W.Tax</th>
+                        <th class="px-1 py-1.5 bg-orange-50/70 dark:bg-amber-950/40 text-orange-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">SSS</th>
+                        <th class="px-1 py-1.5 bg-orange-50/70 dark:bg-amber-950/40 text-orange-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">PHIC</th>
+                        <th class="px-1 py-1.5 bg-orange-50/70 dark:bg-amber-950/40 text-orange-600 dark:text-amber-400 border-r border-slate-200 dark:border-slate-800 text-center">HDMF</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">Insure</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">SSS</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">Calamity</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">Pag-IBIG</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">Cal(HDMF)</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 border-r border-slate-200 dark:border-slate-800 text-center">Pag-IBIG Safe</th>
+                        <th class="px-1 py-1.5 bg-teal-50/70 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 text-center border-r border-slate-200 dark:border-slate-800">SSS Emerg.</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="witholding_tax">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="sss_deduction">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="phil_deduction">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-orange-50/30 text-center font-medium" name="pagibig_deduction">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="insurance">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="calamity_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="hdmf_calamity_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="other_loan">0.00</td>
-                        <td class="p-2 border-r border-slate-200 bg-teal-50/30 text-center font-medium" name="sss_emergency_loan">0.00</td>
-                        <td class="p-2 border-l border-slate-200 bg-green-50 text-center text-sm font-bold text-green-700" name="net_pay">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-orange-50/30 dark:bg-amber-950/20 text-center font-medium font-mono text-slate-700 dark:text-amber-200" name="witholding_tax">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-orange-50/30 dark:bg-amber-950/20 text-center font-medium font-mono text-slate-700 dark:text-amber-200" name="sss_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-orange-50/30 dark:bg-amber-950/20 text-center font-medium font-mono text-slate-700 dark:text-amber-200" name="phil_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-orange-50/30 dark:bg-amber-950/20 text-center font-medium font-mono text-slate-700 dark:text-amber-200" name="pagibig_deduction">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="insurance">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="sss_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="calamity_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="hdmf_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="hdmf_calamity_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="other_loan">0.00</td>
+                        <td class="p-2 border-r border-slate-200 dark:border-slate-800 bg-teal-50/30 dark:bg-teal-950/20 text-center font-medium font-mono text-slate-700 dark:text-teal-200" name="sss_emergency_loan">0.00</td>
+                        <td class="p-2 border-l border-slate-200 dark:border-slate-800 bg-green-50 dark:bg-emerald-950/50 text-center text-sm font-bold font-mono text-green-700 dark:text-emerald-400" name="net_pay">0.00</td>
                     </tr>
                 </tbody>
             </table>
